@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react-refresh/only-export-components */
-
 import {
   useState,
   useEffect,
@@ -11,33 +10,33 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Loader from "../components/loader";
-// import { TokenContext } from "../context/token/tokenContext.jsx";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 const AuthContext = createContext();
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
+export const useAuth = () => useContext(AuthContext);
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState("");
-  const [user, setUser] = useState("");
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  
+// console.log(user, token , "dslkdnnlksnd")
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
       setToken(storedToken);
     }
-  }, [setToken]);
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -66,11 +65,13 @@ export const AuthProvider = ({ children }) => {
         }
       );
       setLoading(false);
-      console.log(response, "Ahmed This is local response");
+      // console.log(response, "Ahmed This is local response");
       const authToken = response.data.token;
       localStorage.setItem("token", authToken);
       setToken(authToken);
-      setUser(response.data.result)
+
+      setUser(response.data.result);
+      localStorage.setItem("user", JSON.stringify(response.data.result));
       setSnackbarMessage("Login successful!");
       setOpenSnackbar(true);
       navigate("/dashboard/main");
@@ -108,12 +109,18 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const value = { token, login, registerOrg, user };
+  const isAuthenticated = !!token;
+
+  const value = { token, user, isAuthenticated, login, registerOrg };
 
   return (
     <AuthContext.Provider value={value}>
       <Loader loaderValue={loading} />
-      <Snackbar open={openSnackbar} anchorOrigin={{ vertical: 'bottom' , horizontal: 'right' }} autoHideDuration={6000} onClose={handleCloseSnackbar}
+      <Snackbar
+        open={openSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
       >
         <Alert onClose={handleCloseSnackbar} severity="success">
           {snackbarMessage}

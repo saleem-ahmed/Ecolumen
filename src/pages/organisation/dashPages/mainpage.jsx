@@ -27,14 +27,33 @@ import BgCard1 from "../../../assets/dashboard/bg-card1.svg";
 import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
 import BgCard4 from "../../../assets/dashboard/bg-card4.svg";
-// import { Bar , Pie} from "react-chartjs-2";
 import MapImg from "../../../assets/dashboard/map.png";
-import OverviewImg from "../../../assets/dashboard/workowerview.png";
-import StatusImg from "../../../assets/dashboard/status.png";
 import StatusImg1 from "../../../assets/dashboard/statustableimg.svg";
-// import OverveiwChart from "../../../components/OverveiwChart.jsx";
-// import UserStatus from "../../../components/userStatus.jsx";
-import { UserData } from "../../../Data.js";
+import OverveiwChart from "../../../components/OverveiwChart";
+import UserStatus from "../../../components/userStatus.jsx";
+
+const labels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+const values = [
+  {
+    a: [45, 55, 100, 95, 85, 103, 119, 95, 55, 10, 40, 49],
+    b: [65, 75, 120, 25, 58, 109, 19, 59, 70, 100, 60, 79],
+    c: [19, 59, 70, 100, 60, 79, 45, 55, 100, 95, 85, 103],
+  },
+];
+
 const AddUser = [
   {
     name: "Ahmed Saleem",
@@ -143,62 +162,7 @@ const EditOptions = ["Edit", "Remove"];
 const Mainpage = () => {
   const [page, setPage] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  // const [userData] = useState({
-  //   labels: UserData.map((data) => data.year),
-  //   datasets: [
-  //     {
-  //       label: "Users Gained",
-  //       data: UserData.map((data) => data.userGain),
-  //       backgroundColor: [
-  //         "rgba(75,192,192,1)",
-  //         "#ecf0f1",
-  //         "#50AF95",
-  //         "#f3ba2f",
-  //         "#2a71d0",
-  //       ],
-  //       // borderColor: "black",
-  //       borderWidth: 2,
-  //     },
-  //     {
-  //       label: "Users lost",
-  //       data: UserData.map((data) => data.userLost),
-  //       backgroundColor: [
-  //         "rgba(75,192,192,1)",
-  //         "#ecf0f1",
-  //         "#50AF95",
-  //         "#f3ba2f",
-  //         "#2a71d0",
-  //       ],
-  //       // borderColor: "black",
-  //       borderWidth: 2,
-  //     },
-  //     {
-  //       label: "Users lost",
-  //       data: UserData.map((data) => data.userGain),
-  //       backgroundColor: [
-  //         "rgba(75,192,192,1)",
-  //         "#ecf0f1",
-  //         "#50AF95",
-  //         "#f3ba2f",
-  //         "#2a71d0",
-  //       ],
-  //       // borderColor: "black",
-  //       borderWidth: 2,
-  //     },
-  //   ],
-  // });
-  // const options = {
-  //   responsive: true,
-  //   plugins: {
-  //     legend: {
-  //       position: "top",
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Chart.js Bar Chart",
-  //     },
-  //   },
-  // };
+
   const handleChangePage = (newPage) => {
     setPage(newPage);
   };
@@ -636,15 +600,23 @@ const Mainpage = () => {
             md: "row",
             xs: "column",
           }}
+          py={"20px"}
           gap={"23px"}
+          sx={{ boxSizing: "border-box" }}
         >
-          <Box bgcolor={"#ffffff"} p={"10px"} sx={{ borderRadius: "12px" }}>
+          <Box
+            bgcolor={"#ffffff"}
+            width={{ md: "60%", xs: "100%" }}
+            p={"0px"}
+            sx={{ borderRadius: "12px" }}
+          >
             <Box
               display={"flex"}
               justifyContent={"space-between"}
               alignItems={"center"}
+              p={"10px"}
             >
-              <Typography variant="h3">Work Overview</Typography>
+              <Typography variant="h3">Work Overveiw</Typography>
               <div>
                 <IconButton
                   aria-label="more"
@@ -685,11 +657,86 @@ const Mainpage = () => {
             </Box>
             <Divider />
             <Box>
-             <img src={OverviewImg} alt="" />
-              {/* <Bar chartData={userData} options={options} /> */}
+              <OverveiwChart labels={labels} values={values} />
             </Box>
           </Box>
-          <Box bgcolor={"#ffffff"} p={"10px"} sx={{ borderRadius: "12px" }}>
+          <Box
+            bgcolor={"#ffffff"}
+            py={"10px"}
+            width={{ md: "38%", xs: "100%" }}
+            sx={{ borderRadius: "12px" }}
+          >
+            <Box
+              display={"flex"}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+              px={"20px"}
+            >
+              <Typography variant="h3">Users Status</Typography>
+              <div>
+                <IconButton
+                  aria-label="more"
+                  id="long-button"
+                  aria-controls={open ? "long-menu" : undefined}
+                  aria-expanded={open ? "true" : undefined}
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <MoreHorizIcon color="#FFFFFF" />
+                </IconButton>
+                <Menu
+                  id="long-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "long-button",
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  PaperProps={{
+                    style: {
+                      maxHeight: ITEM_HEIGHT * 4.5,
+                      width: "20ch",
+                    },
+                  }}
+                >
+                  {EditOptions.map((option) => (
+                    <MenuItem
+                      key={option}
+                      selected={option === "Pyxis"}
+                      onClick={handleClose}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </div>
+            </Box>
+            <Divider />
+            <Box>
+              <UserStatus />
+            </Box>
+          </Box>
+        </Box>
+        {/*  */}
+        {/* <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+
+            my: 1,
+            p: 1,
+            gap: "30px",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              background: "#fff",
+              padding: "10px",
+              borderRadius: "12px",
+            }}
+          >
             <Box
               display={"flex"}
               justifyContent={"space-between"}
@@ -734,13 +781,10 @@ const Mainpage = () => {
                 </Menu>
               </div>
             </Box>
-            <Divider />
-            <Box>
-            <img src={StatusImg} alt="" />
-              {/* <Pie chartData={userData} options={options} /> */}
-            </Box>
+
+            <UserStatus />
           </Box>
-        </Box>
+        </Box> */}
       </Grid>
     </>
   );

@@ -7,7 +7,7 @@ const client = axios.create({
 // for storing tokens / post the tokens to headers
 client.interceptors.request.use((req) => {
   const token = localStorage.getItem('token');
-  console.log("Token from localStorage:", token);
+  // console.log("Token from localStorage:", token);
   if (token) {
     req.headers.Authorization = `Bearer ${token}`;
   }

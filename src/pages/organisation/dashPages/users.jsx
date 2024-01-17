@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -7,136 +7,109 @@ import {
   TextField,
   InputAdornment,
   TableContainer,
+  Dialog,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  FormControlLabel,
-  Checkbox,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
   IconButton,
   Menu,
   MenuItem,
-} from "@mui/material";
+  TablePagination  // Updated Import
+} from "@mui/material";  // Ensure all components are imported from '@mui/material'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import UserImg from "../../../assets/dashboard/user-img.svg";
 import { Search } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import OrgServices from "../../../apis/Organisation";
+import { useAuth } from "../../../Auth";
+import Loader from "../../../components/loader";
 
-const options = ["Edit", "add", "Remove"];
+
 const ITEM_HEIGHT = 48;
 const Users = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
+  const Navigate = useNavigate();
+  const { user } = useAuth();
+  const [loader, setloader] = useState(true);
+  const [staff, setstaff] = useState([]);
+  const [anchorElObj, setAnchorElObj] = useState({});
+  const [searchQuery, setSearchQuery] = useState(""); //for search on table
+  const [page, setPage] = useState(0); //for paginattion
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [removeConfirmation, setRemoveConfirmation] = useState({
+    open: false,
+    user: null,
+  });
+  useEffect(() => {
+    OrgServices.getStaff(user ? user : null).then((res) => {
+      setstaff(res.staffMembers);
+      setloader(false);
+    });
+  }, [user, staff]);
+
+  // Filter staff based on the search query
+  const filteredStaff = staff.filter(
+    (staffMember) =>
+      staffMember.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staffMember.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // Determine whether to show the original staff or the filtered staff
+  const displayStaff = searchQuery ? filteredStaff : staff;
+  // Calculate the range of displayed staff for the current page
+  const startIndex = page * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
-  const UserData = [
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Active",
-      color: "#CDD200",
-    },
-    {
-      img: UserImg,
-      name: "Scarlett Johansson 1",
-      role: "Director",
-      email: "scarlettjohansson@gmail.com",
-      status: "Not Active",
-      color: "#F44",
-    },
-  ];
-  // const handleOpen = () => setMopen(true);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const handleMenuClick = (event, index) => {
+    setAnchorElObj((prevObj) => ({
+      ...prevObj,
+      [index]: event.currentTarget,
+    }));
+  };
+
+  const handleMenuClose = (index) => {
+    setAnchorElObj((prevObj) => ({
+      ...prevObj,
+      [index]: null,
+    }));
+  };
+
+  const handleEditClick = (index, staffMember) => {
+    handleMenuClose(index);
+    Navigate("/dashboard/editUsers", { state: staffMember });
+  };
+
+  const handleRemoveClick = (index, staffMember) => {
+    handleMenuClose(index);
+    setRemoveConfirmation({ open: true, user: staffMember });
+  };
+
+  const handleRemoveConfirm = async () => {
+    setRemoveConfirmation({ open: false, user: null });
+    await OrgServices.deleteStaff(user, removeConfirmation.user).then((res) => {
+      alert(res.message);
+    });
+  };
+
+  const handleRemoveCancel = () => {
+    setRemoveConfirmation({ open: false, user: null });
+  };
 
   return (
     <>
+      <Loader loaderValue={loader} />
       <Grid>
         <Box
           display={"flex"}
@@ -150,7 +123,7 @@ const Users = () => {
         </Box>
         <Box
           bgcolor={"#ffffff"}
-          heigh
+          height
           py={"10px"}
           sx={{ borderRadius: "12px" }}
         >
@@ -172,108 +145,180 @@ const Users = () => {
                   ),
                 }}
                 InputLabelProps={{
-                  shrink: true, // This ensures the label stays inside
+                  shrink: true,
                 }}
                 placeholder="Search by Email/Name"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ marginBottom: 16 }}
               />
             </div>
-
             <Button color="success" variant="contained">
-              <Link to="/dashboard/addUsers" style={{ textDecoration:"none", color: "#ffffff"  }}>Add User</Link>
+              <Link
+                to="/dashboard/addUsers"
+                style={{ textDecoration: "none", color: "#ffffff" }}
+              >
+                Add User
+              </Link>
             </Button>
           </Box>
           <TableContainer>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table style={{ tableLayout: "auto" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell>
-                    <FormControlLabel control={<Checkbox />} />
-                  </TableCell>
                   <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Role</TableCell>
                   <TableCell align="left">Email</TableCell>
+                  <TableCell align="left">Role</TableCell>
+                  <TableCell align="left">Phone Number</TableCell>
                   <TableCell align="left">Status</TableCell>
                   <TableCell align="left">Edit</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {UserData.map((e) => (
-                  <TableRow key={e.id}>
-                    <TableCell width={"50px"} component="th" scope="row">
-                      <FormControlLabel control={<Checkbox />} />
-                    </TableCell>
-                    <TableCell align="left" width={"350px"}>
-                      <Box display="flex" alignItems="center" gap={"10px"}>
-                        <img src={e.img} alt="" />
-                        <Typography variant="span">{e.name}</Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell align="left">{e.role}</TableCell>
-                    <TableCell
-                      align="left"
-                      sx={{ color: "rgba(0, 71, 255, 0.43)" }}
-                    >
-                      {e.email}
-                    </TableCell>
-                    <TableCell align="left">
-                      <Button
-                        style={{
-                          backgroundColor: e.color,
-                          color: "white",
-                          width: "70%",
-                          fontSize: "11px",
+                {displayStaff
+                  .slice(startIndex, endIndex)
+                  .map((staffMember, index) => (
+                    <TableRow key={staffMember._id}>
+                      <TableCell
+                        sx={{
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
                         }}
-                        variant="contained"
                       >
-                        {e.status}
-                      </Button>
-                    </TableCell>
-                    <TableCell align="left">
-                      <div>
-                        <IconButton
-                          aria-label="more"
-                          id="long-button"
-                          aria-controls={open ? "long-menu" : undefined}
-                          aria-expanded={open ? "true" : undefined}
-                          aria-haspopup="true"
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                          id="long-menu"
-                          MenuListProps={{
-                            "aria-labelledby": "long-button",
+                        <img
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50%",
                           }}
-                          anchorEl={anchorEl}
-                          open={open}
-                          onClose={handleClose}
-                          PaperProps={{
-                            style: {
-                              maxHeight: ITEM_HEIGHT * 4.5,
-                              width: "20ch",
-                            },
-                          }}
-                        >
-                          {options.map((option) => (
+                          src={staffMember.staffImage}
+                          alt=""
+                        />
+
+                        {staffMember.name}
+                      </TableCell>
+                      <TableCell>{staffMember.email}</TableCell>
+                      <TableCell>
+                        {staffMember.role == 1 ? (
+                          <span style={{ color: "green" }}>admin</span>
+                        ) : staffMember.role == 2 ? (
+                          <span style={{ color: "blue" }}>Manager</span>
+                        ) : staffMember.role == 3 ? (
+                          <span style={{ color: "orange" }}>Staff </span>
+                        ) : (
+                          staffMember.role
+                        )}
+                      </TableCell>
+                      <TableCell>{staffMember.phoneNumber}</TableCell>
+                      <TableCell>
+                        {staffMember.isActive ? (
+                          <Button
+                            style={{
+                              backgroundColor: "#CDD200",
+                              color: "white",
+                              width: "70%",
+                              fontSize: "11px",
+                            }}
+                            variant="contained"
+                          >
+                            Active
+                          </Button>
+                        ) : (
+                          <Button
+                            style={{
+                              backgroundColor: "#F44",
+                              color: "white",
+                              width: "70%",
+                              fontSize: "11px",
+                            }}
+                            variant="contained"
+                          >
+                            Inactive
+                          </Button>
+                        )}
+                      </TableCell>
+                      <TableCell align="left">
+                        <div>
+                          <IconButton
+                            aria-label="more"
+                            id={`long-button-${index}`}
+                            aria-controls={
+                              open ? `long-menu-${index}` : undefined
+                            }
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={(event) => handleMenuClick(event, index)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id={`long-menu-${index}`}
+                            MenuListProps={{
+                              "aria-labelledby": `long-button-${index}`,
+                            }}
+                            anchorEl={anchorElObj[index]}
+                            open={Boolean(anchorElObj[index])}
+                            onClose={() => handleMenuClose(index)}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: "20ch",
+                              },
+                            }}
+                          >
                             <MenuItem
-                              key={option}
-                              selected={option === "Pyxis"}
-                              onClick={handleClose}
+                              onClick={() =>
+                                handleEditClick(index, staffMember)
+                              }
                             >
-                              {option}
+                              Edit
                             </MenuItem>
-                          ))}
-                        </Menu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                            <MenuItem
+                              onClick={() =>
+                                handleRemoveClick(index, staffMember)
+                              }
+                            >
+                              Remove
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              count={displayStaff.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </TableContainer>
         </Box>
       </Grid>
+      <Dialog
+        open={removeConfirmation.open}
+        onClose={handleRemoveCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Are You Sure?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Do you want to delete this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleRemoveCancel}>Cancel</Button>
+          <Button onClick={handleRemoveConfirm} autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

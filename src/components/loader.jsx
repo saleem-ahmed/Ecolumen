@@ -12,7 +12,8 @@ const loader = ({ loaderValue }) => {
         position: "fixed",
         top: 0,
         left: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "rgb(40 66 89 / 46%)",
+        backdropFilter: "blur(16px)",
         zIndex: 1000,
       }}
     >

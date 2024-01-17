@@ -23,8 +23,8 @@ const OrgVerify = () => {
     onSubmit: async () => {
       navigate("/orgLogin");
       alert("You have Verified the Code");
-      //   await login(formik.values.email, formik.values.password);
-      
+     // await login(formik.values.email, formik.values.password);
+  
     },
   });
 
@@ -143,19 +143,7 @@ const OrgVerify = () => {
             >
               Confirm
             </Button>
-            {/* <Typography variant="subtitle1">
-              If you don{"'"}t have an account{" "}
-              <Link
-                to="/orgRegister"
-                style={{
-                  textDecoration: "none",
-                  color: "#284259",
-                  fontWeight: "500",
-                }}
-              >
-                Register
-              </Link>
-            </Typography> */}
+            
           </Stack>
         </Stack>
       </Grid>

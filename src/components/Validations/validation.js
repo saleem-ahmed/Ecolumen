@@ -108,10 +108,10 @@ export const addUserSchema = yup.object().shape({
       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
       "Invalid email address format"
     ),
-  Role: yup.string().required("Required field *"),
+  // Role: yup.string().required("Required field *"),
   confirmPassword: yup.string().required("Required field *"),
   passwords: yup.string().required("Required field *"),
-  divisions: yup.string().required("Required field *"),
+  // divisions: yup.string().required("Required field *"),
 });
 
 // export const classesSchema = yup.object().shape({

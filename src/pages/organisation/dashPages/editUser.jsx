@@ -1,8 +1,4 @@
-/* eslint-disable no-undef */
-// import React from "react";
-import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Grid,
   Box,
@@ -10,37 +6,23 @@ import {
   FormControl,
   Button,
   Select,
+  ListItemText,
   MenuItem,
   Checkbox,
   TextField,
   InputLabel,
-  OutlinedInput,
-  ListItemText,
 } from "@mui/material";
 import { useFormik } from "formik";
-import { AddCircleOutline } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import UploadImage from "../../../components/ImageUpload/imageupload";
 import OrgServices from "../../../apis/Organisation";
+import { AddCircleOutline } from "@mui/icons-material";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
-import "../../../styles/globals/variables.scss";
+import UploadImage from "../../../components/ImageUpload/imageupload";
+import { useState } from "react";
 
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = ["update", "read", "create", "delete"];
-
-const AddUsers = () => {
+const EditUser = () => {
+  const location = useLocation();
+  console.log(location);
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loader, setloader] = useState(false);
@@ -48,19 +30,8 @@ const AddUsers = () => {
   const [City, setCity] = useState("");
   const [Gender, setGender] = useState("");
   const [Role, setRole] = useState("");
-  const [Permission, setPermission] = useState([]);
-  const [staffImage, setStaffImage] = useState({});
-  const [startDate, setStartDate] = useState(new Date());
-  const handleImageUpdate = (newImage) => {
-    setStaffImage(newImage);
-  };
+  const [Permission, setPermission] = useState("");
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPermission(typeof value === "string" ? value.split(",") : value);
-  };
   const formik = useFormik({
     // validationSchema: addUserSchema,
     enableReinitialize: true,
@@ -89,13 +60,13 @@ const AddUsers = () => {
         country: Country,
         city: City,
         gender: Gender,
-        dob: startDate,
+        dob: formik.values.dateOfBrith,
         role: Role,
-        permissions: "create",
-        staffImage: staffImage,
+        permission: Permission,
+        staffImage: ""
       };
       setloader(true);
-      const result = await OrgServices.AddStaff(data, user ? user : null);
+      const result = await OrgServices.upStaff(data, user ? user : null , location.state);
       console.log(result);
       navigate("/dashboard/users");
     },
@@ -112,7 +83,7 @@ const AddUsers = () => {
           width={"100%"}
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
-            AddUsers
+            Edit Users {location.state.name}
           </Typography>
         </Box>
         <Box
@@ -124,10 +95,7 @@ const AddUsers = () => {
         >
           <Grid container display={"flex"} justifyContent={"center"}>
             <Grid item md={12} xs={12}>
-              <UploadImage
-                imageProp={staffImage}
-                onImageChange={handleImageUpdate}
-              />
+              <UploadImage />
             </Grid>
 
             <Grid
@@ -343,13 +311,26 @@ const AddUsers = () => {
                       </Typography>
                     )}
                   </FormControl>
-                  <Box fullWidth>
-                    <DatePicker
-                      showIcon
-                      selected={startDate}
-                      onChange={(date) => setStartDate(date)}
-                    />
-                  </Box>
+                  <TextField
+                    label="Date of birth"
+                    required
+                    fullWidth
+                    name="dateOfBrith"
+                    onChange={(e) => {
+                      formik.setFieldValue("dateOfBrith", e.target.value);
+                    }}
+                    value={formik.values.dateOfBrith}
+                    error={
+                      formik.touched.dateOfBrith &&
+                      Boolean(formik.errors.dateOfBrith)
+                    }
+                    helperText={
+                      <Typography sx={{ fontSize: 10, color: "red" }}>
+                        {formik.touched.dateOfBrith &&
+                          formik.errors.dateOfBrith}
+                      </Typography>
+                    }
+                  />
                 </Box>
 
                 <Box
@@ -388,9 +369,8 @@ const AddUsers = () => {
                       error={formik.touched.role && Boolean(formik.errors.role)}
                       // country
                     >
-                      <MenuItem value="admin">admin</MenuItem>
-                      <MenuItem value="staff">staff</MenuItem>
-                      <MenuItem value="ldc">ldc</MenuItem>
+                      <MenuItem value="Pakistan">Male</MenuItem>
+                      <MenuItem value="China">Female</MenuItem>
                     </Select>
                     {formik.errors.role && (
                       <Typography
@@ -421,24 +401,65 @@ const AddUsers = () => {
                 </Box>
                 <Box display={"flex"} gap={"20px"} my={2}>
                   <FormControl fullWidth>
-                    <InputLabel id="Permission">Permission</InputLabel>
+                    <InputLabel>Permission</InputLabel>
                     <Select
-                      labelId="Permission"
-                      id="demo-multiple-checkbox"
-                      multiple
-                      value={Permission}
-                      onChange={handleChange}
-                      input={<OutlinedInput label="Permission" />}
-                      renderValue={(selected) => selected.join(", ")}
-                      MenuProps={MenuProps}
+                      defaultValue={formik.values.permission}
+                      label="Permission"
+                      {...{
+                        formik,
+                        checkValidation: true,
+                      }}
+                      onChange={(e) => {
+                        setPermission(e.target.value);
+
+                        formik.setFieldValue("permission", e.target.value);
+                      }}
+                      error={
+                        formik.touched.permission &&
+                        Boolean(formik.errors.permission)
+                      }
+                      // country
                     >
-                      {names.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          <Checkbox checked={Permission.indexOf(name) > -1} />
-                          <ListItemText primary={name} />
-                        </MenuItem>
-                      ))}
+                      <Box display={"flex"} gap={"5px"}>
+                        <Box>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                        </Box>
+                        <Box>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                        </Box>
+                        <Box>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                          <MenuItem>
+                            <Checkbox />
+                            <ListItemText>placeName</ListItemText>
+                          </MenuItem>
+                        </Box>
+                      </Box>
                     </Select>
+                    {formik.errors.permission && (
+                      <Typography
+                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
+                      >
+                        {formik.errors.permission}
+                      </Typography>
+                    )}
                   </FormControl>
                 </Box>
 
@@ -462,4 +483,4 @@ const AddUsers = () => {
   );
 };
 
-export default AddUsers;
+export default EditUser;
