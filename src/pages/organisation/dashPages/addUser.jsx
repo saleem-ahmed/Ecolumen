@@ -91,7 +91,7 @@ const AddUsers = () => {
         gender: Gender,
         dob: startDate,
         role: Role,
-        permissions: "create",
+        permissions: Permission,
         staffImage: staffImage,
       };
       setloader(true);
@@ -313,7 +313,7 @@ const AddUsers = () => {
                     )}
                   </FormControl>
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box display={"flex"} gap={"20px"} sx={{ width:"100%" , boxSizing: "border-box" }} my={2}>
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
@@ -343,7 +343,7 @@ const AddUsers = () => {
                       </Typography>
                     )}
                   </FormControl>
-                  <Box fullWidth>
+                  <Box width={"100%"} display={"flex"} alignItems={"center"}>
                     <DatePicker
                       showIcon
                       selected={startDate}
@@ -390,7 +390,7 @@ const AddUsers = () => {
                     >
                       <MenuItem value="admin">admin</MenuItem>
                       <MenuItem value="staff">staff</MenuItem>
-                      <MenuItem value="ldc">ldc</MenuItem>
+                      <MenuItem value="manager">manager</MenuItem>
                     </Select>
                     {formik.errors.role && (
                       <Typography
