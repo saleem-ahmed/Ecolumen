@@ -28,7 +28,6 @@ import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
 import BgCard4 from "../../../assets/dashboard/bg-card4.svg";
 import MapImg from "../../../assets/dashboard/map.png";
-import StatusImg1 from "../../../assets/dashboard/statustableimg.svg";
 import OverveiwChart from "../../../components/OverveiwChart";
 import UserStatus from "../../../components/userStatus.jsx";
 
@@ -85,52 +84,18 @@ const AddUser = [
     role: "Single license",
     email: "aaa00@gmail.com",
   },
+  {
+    name: "Arshad",
+    role: "Single license",
+    email: "aaa00@gmail.com",
+  },
+  {
+    name: "Sami Ullah",
+    role: "Single license",
+    email: "aaa00@gmail.com",
+  },
 ];
 
-const StatusUser = [
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "Denied",
-    color: "red",
-  },
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "pending",
-    color: "#CDD200",
-  },
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "Denied",
-    color: "red",
-  },
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "Denied",
-    color: "red",
-  },
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "Denied",
-    color: "red",
-  },
-  {
-    img: StatusImg1,
-    name: "Valentine Maton",
-    desg: "Engineer",
-    status: "pending",
-    color: "#CDD200",
-  },
-];
 const UserCard = [
   {
     title: "Number Of Users",
@@ -467,7 +432,7 @@ const Mainpage = () => {
               alignItems={"center"}
               px={"20px"}
             >
-              <Typography variant="h3">Access To Users</Typography>
+              <Typography variant="h3">Users Status</Typography>
               <div>
                 <IconButton
                   aria-label="more"
@@ -508,87 +473,7 @@ const Mainpage = () => {
             </Box>
             <Divider />
             <Box>
-              <TableContainer component={Paper}>
-                <Table
-                  // sx={{  }}
-                  size="small"
-                  aria-label="a dense table"
-                  sx={{
-                    "&:last-child td, &:last-child th": { border: "0px" },
-                    minWidth: 450,
-                  }}
-                >
-                  <TableBody>
-                    {StatusUser.map((e) => (
-                      <TableRow key={e.name}>
-                        <TableCell width={"44px"} component="th" scope="row">
-                          <img src={e.img} alt="" />
-                        </TableCell>
-                        <TableCell align="left">
-                          <Typography variant="heading">{e.name}</Typography>
-                          <br />
-                          <Typography variant="paragraph">{e.desg}</Typography>
-                        </TableCell>
-                        <TableCell align="left">
-                          <div
-                            style={{
-                              backgroundColor: `${e.color}`,
-                              color: "#FFFFFF",
-                              textAlign: "center",
-                              width: "57.06px",
-                              height: "24px",
-                              padding: "7px 9.06px 6px 9px",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                            }}
-                          >
-                            {e.status}
-                          </div>
-                        </TableCell>
-                        <TableCell align="left">
-                          <div>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-controls={open ? "long-menu" : undefined}
-                              aria-expanded={open ? "true" : undefined}
-                              aria-haspopup="true"
-                              onClick={handleClick}
-                            >
-                              <MoreHorizIcon color="#FFFFFF" />
-                            </IconButton>
-                            <Menu
-                              id="long-menu"
-                              MenuListProps={{
-                                "aria-labelledby": "long-button",
-                              }}
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              PaperProps={{
-                                style: {
-                                  maxHeight: ITEM_HEIGHT * 4.5,
-                                  width: "20ch",
-                                },
-                              }}
-                            >
-                              {EditOptions.map((option) => (
-                                <MenuItem
-                                  key={option}
-                                  selected={option === "Pyxis"}
-                                  onClick={handleClose}
-                                >
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <UserStatus />
             </Box>
           </Box>
         </Box>
@@ -606,7 +491,7 @@ const Mainpage = () => {
         >
           <Box
             bgcolor={"#ffffff"}
-            width={{ md: "60%", xs: "100%" }}
+            width={"100%"}
             p={"0px"}
             sx={{ borderRadius: "12px" }}
           >
@@ -660,131 +545,7 @@ const Mainpage = () => {
               <OverveiwChart labels={labels} values={values} />
             </Box>
           </Box>
-          <Box
-            bgcolor={"#ffffff"}
-            py={"10px"}
-            width={{ md: "38%", xs: "100%" }}
-            sx={{ borderRadius: "12px" }}
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              px={"20px"}
-            >
-              <Typography variant="h3">Users Status</Typography>
-              <div>
-                <IconButton
-                  aria-label="more"
-                  id="long-button"
-                  aria-controls={open ? "long-menu" : undefined}
-                  aria-expanded={open ? "true" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon color="#FFFFFF" />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  MenuListProps={{
-                    "aria-labelledby": "long-button",
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: "20ch",
-                    },
-                  }}
-                >
-                  {EditOptions.map((option) => (
-                    <MenuItem
-                      key={option}
-                      selected={option === "Pyxis"}
-                      onClick={handleClose}
-                    >
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </div>
-            </Box>
-            <Divider />
-            <Box>
-              <UserStatus />
-            </Box>
-          </Box>
         </Box>
-        {/*  */}
-        {/* <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            justifyContent: "space-between",
-
-            my: 1,
-            p: 1,
-            gap: "30px",
-          }}
-        >
-          <Box
-            sx={{
-              width: "100%",
-              background: "#fff",
-              padding: "10px",
-              borderRadius: "12px",
-            }}
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-            >
-              <Typography variant="h3">User Status</Typography>
-              <div>
-                <IconButton
-                  aria-label="more"
-                  id="long-button"
-                  aria-controls={open ? "long-menu" : undefined}
-                  aria-expanded={open ? "true" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon color="#FFFFFF" />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  MenuListProps={{
-                    "aria-labelledby": "long-button",
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: "20ch",
-                    },
-                  }}
-                >
-                  {EditOptions.map((option) => (
-                    <MenuItem
-                      key={option}
-                      selected={option === "Pyxis"}
-                      onClick={handleClose}
-                    >
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </div>
-            </Box>
-
-            <UserStatus />
-          </Box>
-        </Box> */}
       </Grid>
     </>
   );

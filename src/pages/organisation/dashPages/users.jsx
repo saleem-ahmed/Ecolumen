@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Grid,
   Box,
@@ -20,15 +20,14 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  TablePagination  // Updated Import
-} from "@mui/material";  // Ensure all components are imported from '@mui/material'
+  TablePagination, // Updated Import
+} from "@mui/material"; // Ensure all components are imported from '@mui/material'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Search } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
-
 
 const ITEM_HEIGHT = 48;
 const Users = () => {
@@ -39,17 +38,17 @@ const Users = () => {
   const [anchorElObj, setAnchorElObj] = useState({});
   const [searchQuery, setSearchQuery] = useState(""); //for search on table
   const [page, setPage] = useState(0); //for paginattion
-  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [removeConfirmation, setRemoveConfirmation] = useState({
     open: false,
     user: null,
   });
-  useEffect(() => {
-    OrgServices.getStaff(user ? user : null).then((res) => {
-      setstaff(res.staffMembers);
-      setloader(false);
-    });
-  }, [user, staff]);
+  // useEffect(() => {
+  OrgServices.getStaff(user ? user : null).then((res) => {
+    setstaff(res.staffMembers);
+    setloader(false);
+  });
+  // }, [user, staff]);
 
   // Filter staff based on the search query
   const filteredStaff = staff.filter(
@@ -215,7 +214,7 @@ const Users = () => {
                         {staffMember.isActive ? (
                           <Button
                             style={{
-                              backgroundColor: "#CDD200",
+                              backgroundColor: "#284259",
                               color: "white",
                               width: "70%",
                               fontSize: "11px",
@@ -293,7 +292,7 @@ const Users = () => {
               count={displayStaff.length}
               rowsPerPage={rowsPerPage}
               page={page}
-              rowsPerPageOptions={[5, 10, 25, 50, 100]}
+              rowsPerPageOptions={[10, 20, 50, 100]}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
