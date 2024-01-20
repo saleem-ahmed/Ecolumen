@@ -5,6 +5,8 @@ import {
   Grid,
   Box,
   Typography,
+  InputAdornment,
+  IconButton,
   Stack,
   TextField,
   Button,
@@ -17,12 +19,21 @@ import { loginSchema } from "../../../components/Validations/validation.js";
 import { useAuth } from "../../../Auth/index";
 import LoginBg from "../../../assets/dashboard/loginbg.png";
 import Loader from "../../../components/loader.jsx";
-
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const login = () => {
   // const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const [activeField, setActiveField] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const handleFieldFocus = (fieldName) => {
     setActiveField(fieldName);
   };
@@ -115,9 +126,10 @@ const login = () => {
               }}
               onFocus={() => handleFieldFocus("email")}
             />
+
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               error={formik.errors.password && activeField === "password"}
               helperText={
                 activeField === "password" ? (
@@ -135,13 +147,28 @@ const login = () => {
               }}
               fullWidth
               onFocus={() => handleFieldFocus("password")}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+
             <Box display={"flex"} justifyContent={"center"} my={2}>
               <FormControlLabel
                 required
                 control={<Checkbox color="success" size="small" />}
                 label={<span style={{ fontSize: "smaller" }}>Remember me</span>}
-                sx={{ width:"100%" }}
+                sx={{ width: "100%" }}
               />
               <Link
                 to="/orgForget"

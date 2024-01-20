@@ -9,27 +9,26 @@ import {
   Tooltip,
   Avatar,
   MenuItem,
-  Divider,
+  // Divider,
 } from "@mui/material";
 
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import PersonAdd from "@mui/icons-material/PersonAdd";
+// import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import SideBar from "../../../components/SideBar";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet ,useNavigate } from "react-router-dom";
 // import { useAuth } from "../../../Auth/index";
-import SetIcon from "../../../assets/dashboard/Setting.svg";
-import NotIcon from "../../../assets/dashboard/notification.svg";
+// import SetIcon from "../../../assets/dashboard/Setting.svg";
+// import NotIcon from "../../../assets/dashboard/notification.svg";
 
 const drawerWidth = 260;
 
-
 const Dashboard = () => {
-  // const auth = useAuth();
+  // const {LogoutUser} = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -38,8 +37,6 @@ const Dashboard = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // const container =
-  //   window !== undefined ? () => window().document.body : undefined;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -49,14 +46,9 @@ const Dashboard = () => {
     setAnchorEl(null);
   };
   const LogoutUser = () => {
-    // state should be here
-    // setLoading(true);
     localStorage.removeItem("token");
-    // set token as global state
-    // setToken(null);
     navigate("/");
   };
-
 
   return (
     <Box height={"100%"} bgcolor={"#E3EAEF"} sx={{ display: "flex" }}>
@@ -170,8 +162,8 @@ const Dashboard = () => {
                   alignItems: "center",
                 }}
               >
-                <img src={SetIcon} alt="" style={{ marginLeft: "10px" }} />
-                <img src={NotIcon} alt="" style={{ marginLeft: "10px" }} />
+                {/* <img src={SetIcon} alt="" style={{ marginLeft: "10px" }} />
+                <img src={NotIcon} alt="" style={{ marginLeft: "10px" }} /> */}
                 <Tooltip title="Account settings">
                   <IconButton
                     onClick={handleClick}
@@ -223,26 +215,19 @@ const Dashboard = () => {
                   <Avatar /> Profile
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
-                  <Avatar /> My account
-                </MenuItem>
-                <Divider />
-                <MenuItem onClick={handleClose}>
-                  <ListItemIcon>
-                    <PersonAdd fontSize="small" />
-                  </ListItemIcon>
-                  Add another account
-                </MenuItem>
-                <MenuItem onClick={handleClose}>
                   <ListItemIcon>
                     <Settings fontSize="small" />
                   </ListItemIcon>
                   Settings
                 </MenuItem>
 
-                <MenuItem onClick={() => {
-                  handleClose();
-                  LogoutUser();
-                }}>
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    LogoutUser();
+                  }}
+                  // onClick={()=>LogoutUser()}
+                >
                   <ListItemIcon>
                     <Logout fontSize="small" />
                   </ListItemIcon>
@@ -269,7 +254,6 @@ const Dashboard = () => {
       </Box>
     </Box>
   );
-}
-
+};
 
 export default Dashboard;

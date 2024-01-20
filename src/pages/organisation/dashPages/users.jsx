@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -20,7 +20,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  TablePagination, // Updated Import
+  TablePagination,
 } from "@mui/material"; // Ensure all components are imported from '@mui/material'
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Search } from "@mui/icons-material";
@@ -28,6 +28,7 @@ import { Link, useNavigate } from "react-router-dom";
 import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
+import Alerts from "../../../components/Customalerts";
 
 const ITEM_HEIGHT = 48;
 const Users = () => {
@@ -39,16 +40,29 @@ const Users = () => {
   const [searchQuery, setSearchQuery] = useState(""); //for search on table
   const [page, setPage] = useState(0); //for paginattion
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be 'error', 'warning', 'info', 'success'
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const [removeConfirmation, setRemoveConfirmation] = useState({
     open: false,
     user: null,
   });
-  // useEffect(() => {
-  OrgServices.getStaff(user ? user : null).then((res) => {
-    setstaff(res.staffMembers);
-    setloader(false);
-  });
-  // }, [user, staff]);
+  useEffect(() => {
+    OrgServices.getStaff(user ? user : null).then((res) => {
+      setstaff(res.staffMembers);
+      setloader(false);
+    });
+  }, [user, staff]);
 
   // Filter staff based on the search query
   const filteredStaff = staff.filter(
@@ -97,9 +111,13 @@ const Users = () => {
 
   const handleRemoveConfirm = async () => {
     setRemoveConfirmation({ open: false, user: null });
-    await OrgServices.deleteStaff(user, removeConfirmation.user).then((res) => {
-      alert(res.message);
-    });
+    await OrgServices.deleteStaff(user, removeConfirmation.user)
+      .then(() => {
+        handleSnackbarOpen("Staff deleted successfully", "success");
+      })
+      .catch(() => {
+        handleSnackbarOpen("Error deleting staff", "error");
+      });
   };
 
   const handleRemoveCancel = () => {
@@ -109,6 +127,13 @@ const Users = () => {
   return (
     <>
       <Loader loaderValue={loader} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
+
       <Grid>
         <Box
           display={"flex"}

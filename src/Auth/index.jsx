@@ -15,6 +15,8 @@ import MuiAlert from "@mui/material/Alert";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
+
+
 const Alert = forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -26,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-// console.log(user, token , "dslkdnnlksnd")
+  // console.log(user, token , "dslkdnnlksnd")
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
@@ -109,9 +111,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const LogoutUser = () => {
+    localStorage.removeItem("token");
+    // setUser("");
+    navigate("/");
+  };
   const isAuthenticated = !!token;
 
-  const value = { token, user, isAuthenticated, login, registerOrg };
+  const value = {
+    token,
+    user,
+    isAuthenticated,
+    login,
+    registerOrg,
+    LogoutUser,
+  };
 
   return (
     <AuthContext.Provider value={value}>

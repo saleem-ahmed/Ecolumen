@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Grid,
@@ -7,18 +7,18 @@ import {
   CardContent,
   Divider,
   TablePagination,
+  IconButton,
+  Menu,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import CardImg1 from "../../../assets/dashboard/card-img1.svg";
 import CardImg2 from "../../../assets/dashboard/card-img2.svg";
 import CardImg3 from "../../../assets/dashboard/card-img3.svg";
@@ -30,6 +30,8 @@ import BgCard4 from "../../../assets/dashboard/bg-card4.svg";
 import MapImg from "../../../assets/dashboard/map.png";
 import OverveiwChart from "../../../components/OverveiwChart";
 import UserStatus from "../../../components/userStatus.jsx";
+import { useAuth } from "../../../Auth/index.jsx";
+import OrgServices from "../../../apis/Organisation";
 
 const labels = [
   "Jan",
@@ -53,80 +55,47 @@ const values = [
   },
 ];
 
-const AddUser = [
-  {
-    name: "Ahmed Saleem",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Kalim Hussain",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Shah Nawaz",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Hussain Ullah",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Arshad",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Sami Ullah",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Arshad",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-  {
-    name: "Sami Ullah",
-    role: "Single license",
-    email: "aaa00@gmail.com",
-  },
-];
 
-const UserCard = [
-  {
-    title: "Number Of Users",
-    value: "50",
-    img: CardImg1,
-    bgimg: BgCard1,
-  },
-  {
-    title: "Active Users",
-    value: "16",
-    img: CardImg2,
-    bgimg: BgCard2,
-  },
-  {
-    title: "Disabled Users",
-    value: "04",
-    img: CardImg3,
-    bgimg: BgCard3,
-  },
-  {
-    title: "Hours Left",
-    value: "19",
-    img: CardImg4,
-    bgimg: BgCard4,
-  },
-];
 const EditOptions = ["Edit", "Remove"];
 
 const Mainpage = () => {
+  const { user } = useAuth();
+  const [AllUsers, setAllUsers] = useState(null);
   const [page, setPage] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+
+  const [staffCount, setStaffCount] =useState({ totalStaffCount: 0, activeStaffCount: 0 });
+
+  useEffect(() => {
+    const fetchStaffCount = async () => {
+      try {
+        const result = await OrgServices.staffCount(user);
+        setStaffCount(result);
+      } catch (error) {
+        console.error("Error fetching staff count:", error);
+        // Optionally, set some state to show an error message to the user
+      }
+    };
+  
+    fetchStaffCount();
+  }, [user]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await OrgServices.getStaff(user);
+
+        console.log("RES =", res);
+
+        setAllUsers(res.staffMembers);
+      } catch (error) {
+        // Handle errors if necessary
+        console.error("Error fetching staff members:", error);
+      }
+    };
+
+    fetchData(); // Call the async function
+  });
 
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -146,8 +115,36 @@ const Mainpage = () => {
   };
   const ITEM_HEIGHT = 48;
 
+  const UserCard = [
+    {
+      title: "Number Of Users",
+      value: staffCount.totalStaffCount,
+      img: CardImg1,
+      bgimg: BgCard1,
+    },
+    {
+      title: "Active Users",
+      value: staffCount.activeStaffCount,
+      img: CardImg2,
+      bgimg: BgCard2,
+    },
+    {
+      title: "Disabled Users",
+      value: "04", // Assuming this is static for now
+      img: CardImg3,
+      bgimg: BgCard3,
+    },
+    {
+      title: "Hours Left",
+      value: "19", // Assuming this is static for now
+      img: CardImg4,
+      bgimg: BgCard4,
+    },
+  ];
+
   return (
     <>
+      {console.log("USERS STATE=", AllUsers)}
       <Grid>
         <Box
           display={"flex"}
@@ -286,11 +283,13 @@ const Mainpage = () => {
           }}
           py={"20px"}
           gap={"23px"}
+          height={"100%"}
           sx={{ boxSizing: "border-box" }}
         >
           <Box
             bgcolor={"#ffffff"}
             width={{ md: "60%", xs: "100%" }}
+            height={"100%"}
             p={"0px"}
             sx={{ borderRadius: "12px" }}
           >
@@ -356,14 +355,30 @@ const Mainpage = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {AddUser.map((e) => (
-                      <TableRow key={e.name}>
-                        <TableCell component="th" scope="row">
-                          {e.name}
+                    {AllUsers?.map((staff) => (
+                      <TableRow key={staff.name} sx={{ py: "10px" }}>
+                        <TableCell
+                          component="th"
+                          scope="row"
+                          sx={{ fontSize: "15px" }}
+                        >
+                          {staff.name}
                         </TableCell>
-                        <TableCell align="left">{e.role}</TableCell>
-                        <TableCell align="left">{e.email}</TableCell>
-                        <TableCell align="left">
+                        <TableCell>
+                          {staff.role == 1 ? (
+                            <span style={{ color: "green", fontSize: "15px" }}>
+                              admin
+                            </span>
+                          ) : staff.role == 2 ? (
+                            <span style={{ color: "blue" }}>Manager</span>
+                          ) : staff.role == 3 ? (
+                            <span style={{ color: "orange" }}>Staff </span>
+                          ) : (
+                            staff.role
+                          )}
+                        </TableCell>
+                        <TableCell align="left">{staff.email}</TableCell>
+                        {/* <TableCell align="left">
                           <div>
                             <IconButton
                               aria-label="more"
@@ -401,7 +416,7 @@ const Mainpage = () => {
                               ))}
                             </Menu>
                           </div>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>
@@ -410,10 +425,11 @@ const Mainpage = () => {
                 <Box px={"10px"}>
                   <TablePagination
                     component="div"
-                    count={100}
-                    page={page}
-                    onPageChange={handleChangePage}
+                    // count={AllUsers.length}
                     rowsPerPage={rowsPerPage}
+                    page={page}
+                    rowsPerPageOptions={[10, 20, 50, 100]}
+                    onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                   />
                 </Box>
@@ -472,7 +488,7 @@ const Mainpage = () => {
               </div>
             </Box>
             <Divider />
-            <Box>
+            <Box display={"flex"} justifyContent={"center"}>
               <UserStatus />
             </Box>
           </Box>

@@ -7,6 +7,11 @@ const OrgServices = {
       `https://eco-lumen.onrender.com/api/organization/${user._id}/getAllStaff`
     );
   },
+  staffCount: async (user) => {
+    return await Service.get(
+      `https://eco-lumen.onrender.com/api/organization/${user._id}/staffCounts`
+    );
+  },
   // update organisation data
   upStaff: async (data, user, staff) => {
     return await Service.update({

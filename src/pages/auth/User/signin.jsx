@@ -5,18 +5,39 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 // import required modules
-import { Pagination } from "swiper/modules";
-import { Grid, Typography, Stack, Button, Box } from "@mui/material";
+import { Autoplay, Pagination } from "swiper/modules";
+import {
+  Grid,
+  Typography,
+  Stack,
+  Button,
+  Box,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../../assets/logo.svg";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
 import { loginSchema } from "../../../components/Validations/validation.js";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 // image
 import SliderImg1 from "../../../assets/usersigin-img1.png";
+import SliderImg2 from "../../../assets/usersigin-img2.png";
+import SliderImg3 from "../../../assets/usersigin-img3.png";
+import SliderImg4 from "../../../assets/usersigin-img4.png";
 const SignIn = () => {
   const navigate = useNavigate();
   const [activeField, setActiveField] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   const formik = useFormik({
     enableReinitialize: true,
     validationSchema: loginSchema,
@@ -95,7 +116,7 @@ const SignIn = () => {
             />
             <TextField
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               error={formik.errors.password && activeField === "password"}
               helperText={
                 activeField === "password" ? (
@@ -112,9 +133,23 @@ const SignIn = () => {
                 formik.setFieldValue("password", e.target.value);
               }}
               fullWidth
-              onBlur={handleFieldBlur}
               onFocus={() => handleFieldFocus("password")}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+
             <Link
               to="/UForget"
               style={{
@@ -139,7 +174,17 @@ const SignIn = () => {
               Log in
             </Button>
             <Typography variant="subtitle1" component="p">
-              Are you an <Link to="/orglogin" style={{ textDecoration:"none", color: "#284259", fontWeight: 500 }} >Organization?</Link>
+              Are you an{" "}
+              <Link
+                to="/orglogin"
+                style={{
+                  textDecoration: "none",
+                  color: "#284259",
+                  fontWeight: 500,
+                }}
+              >
+                Organization?
+              </Link>
             </Typography>
           </Stack>
         </Stack>
@@ -147,7 +192,9 @@ const SignIn = () => {
       <Grid item xs={12} sm={6} height={"100%"}>
         <Swiper
           pagination={true}
-          modules={[Pagination]}
+          autoplay={true}
+          loop={true}
+          modules={[Pagination , Autoplay]}
           className="mySwiper"
           style={{ height: "100%" }}
         >
@@ -163,7 +210,7 @@ const SignIn = () => {
           <SwiperSlide>
             <Box sx={{ background: "red", height: "100%" }}>
               <img
-                src={SliderImg1}
+                src={SliderImg2}
                 alt=""
                 style={{ width: "100%", objectFit: "contain" }}
               />
@@ -172,7 +219,16 @@ const SignIn = () => {
           <SwiperSlide>
             <Box sx={{ background: "yellow", height: "100%" }}>
               <img
-                src={SliderImg1}
+                src={SliderImg3}
+                alt=""
+                style={{ width: "100%", objectFit: "contain" }}
+              />
+            </Box>
+          </SwiperSlide>
+          <SwiperSlide>
+            <Box sx={{ background: "yellow", height: "100%" }}>
+              <img
+                src={SliderImg4}
                 alt=""
                 style={{ width: "100%", objectFit: "contain" }}
               />

@@ -31,12 +31,12 @@ const OverveiwChart = ({ labels, values }) => {
         backgroundColor: "#AA66CC",
         barThickness: 10,
       },
-      {
-        label: "Canceled",
-        data: values[0].b,
-        backgroundColor: "#33B5E5",
-        barThickness: 10,
-      },
+      // {
+      //   label: "Canceled",
+      //   data: values[0].b,
+      //   backgroundColor: "#33B5E5",
+      //   barThickness: 10,
+      // },
       {
         label: "Canceled",
         data: values[0].c,
@@ -51,7 +51,7 @@ const OverveiwChart = ({ labels, values }) => {
       y: {
         beginAtZero: true,
         grid: {
-          display: false,
+          display: true,
         },
       },
       x: {

@@ -26,7 +26,6 @@ import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
 
-
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -51,6 +50,7 @@ const AddUsers = () => {
   const [Permission, setPermission] = useState([]);
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
+
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
@@ -313,7 +313,12 @@ const AddUsers = () => {
                     )}
                   </FormControl>
                 </Box>
-                <Box display={"flex"} gap={"20px"} sx={{ width:"100%" , boxSizing: "border-box" }} my={2}>
+                <Box
+                  display={"flex"}
+                  gap={"20px"}
+                  sx={{ width: "100%", boxSizing: "border-box" }}
+                  my={2}
+                >
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
