@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }) => {
 
   const LogoutUser = () => {
     localStorage.removeItem("token");
-    // setUser("");
+    localStorage.removeItem("user");
     navigate("/");
   };
   const isAuthenticated = !!token;

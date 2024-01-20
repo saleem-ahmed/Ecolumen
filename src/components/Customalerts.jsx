@@ -16,4 +16,6 @@ const Alerts = ({ open, message, severity, handleClose }) => {
   );
 }
 
+
+
 export default Alerts;

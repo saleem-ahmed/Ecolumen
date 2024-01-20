@@ -22,11 +22,9 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CardImg1 from "../../../assets/dashboard/card-img1.svg";
 import CardImg2 from "../../../assets/dashboard/card-img2.svg";
 import CardImg3 from "../../../assets/dashboard/card-img3.svg";
-import CardImg4 from "../../../assets/dashboard/card-img4.svg";
 import BgCard1 from "../../../assets/dashboard/bg-card1.svg";
 import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
-import BgCard4 from "../../../assets/dashboard/bg-card4.svg";
 import MapImg from "../../../assets/dashboard/map.png";
 import OverveiwChart from "../../../components/OverveiwChart";
 import UserStatus from "../../../components/userStatus.jsx";
@@ -55,7 +53,6 @@ const values = [
   },
 ];
 
-
 const EditOptions = ["Edit", "Remove"];
 
 const Mainpage = () => {
@@ -64,38 +61,35 @@ const Mainpage = () => {
   const [page, setPage] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const [staffCount, setStaffCount] =useState({ totalStaffCount: 0, activeStaffCount: 0 });
+  const [staffCount, setStaffCount] = useState({
+    totalStaffCount: 0,
+    activeStaffCount: 0,
+    inactiveStaffCount: 0,
+  });
 
   useEffect(() => {
+    //StaffCount
     const fetchStaffCount = async () => {
       try {
         const result = await OrgServices.staffCount(user);
         setStaffCount(result);
       } catch (error) {
         console.error("Error fetching staff count:", error);
-        // Optionally, set some state to show an error message to the user
       }
     };
-  
     fetchStaffCount();
-  }, [user]);
-
-  useEffect(() => {
+    //getStaff
     const fetchData = async () => {
       try {
         const res = await OrgServices.getStaff(user);
-
-        console.log("RES =", res);
-
         setAllUsers(res.staffMembers);
       } catch (error) {
-        // Handle errors if necessary
         console.error("Error fetching staff members:", error);
       }
     };
 
-    fetchData(); // Call the async function
-  });
+    fetchData();
+  }, [user]);
 
   const handleChangePage = (newPage) => {
     setPage(newPage);
@@ -130,15 +124,9 @@ const Mainpage = () => {
     },
     {
       title: "Disabled Users",
-      value: "04", // Assuming this is static for now
+      value: staffCount.inactiveStaffCount,
       img: CardImg3,
       bgimg: BgCard3,
-    },
-    {
-      title: "Hours Left",
-      value: "19", // Assuming this is static for now
-      img: CardImg4,
-      bgimg: BgCard4,
     },
   ];
 
@@ -351,7 +339,6 @@ const Mainpage = () => {
                       <TableCell>Name</TableCell>
                       <TableCell align="left">Role</TableCell>
                       <TableCell align="left">Email ID</TableCell>
-                      <TableCell align="left">Edit</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
