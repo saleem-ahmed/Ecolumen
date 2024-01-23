@@ -111,7 +111,7 @@ export default function SignIn() {
     onSubmit: async () => {
       alert("hello");
       const data = {
-        orgname: formik1.values.orgname,
+        name: formik1.values.orgname,
         country: Country,
         state: State,
         city: City,
@@ -120,7 +120,6 @@ export default function SignIn() {
         website: formik1.values.website,
         empnumber: formik1.values.numberOfEmployees,
         findus: Find,
-        name: formik1.values.orgname,
         email: formik2.values.email,
         phone: formik2.values.phone,
         password: formik3.values.password,

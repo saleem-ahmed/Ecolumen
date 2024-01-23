@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   Divider,
-  TablePagination,
   IconButton,
   Menu,
   MenuItem,
@@ -25,41 +24,15 @@ import CardImg3 from "../../../assets/dashboard/card-img3.svg";
 import BgCard1 from "../../../assets/dashboard/bg-card1.svg";
 import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
-import MapImg from "../../../assets/dashboard/map.png";
-import OverveiwChart from "../../../components/OverveiwChart";
 import UserStatus from "../../../components/userStatus.jsx";
 import { useAuth } from "../../../Auth/index.jsx";
 import OrgServices from "../../../apis/Organisation";
-
-const labels = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
-const values = [
-  {
-    a: [45, 55, 100, 95, 85, 103, 119, 95, 55, 10, 40, 49],
-    b: [65, 75, 120, 25, 58, 109, 19, 59, 70, 100, 60, 79],
-    c: [19, 59, 70, 100, 60, 79, 45, 55, 100, 95, 85, 103],
-  },
-];
 
 const EditOptions = ["Edit", "Remove"];
 
 const Mainpage = () => {
   const { user } = useAuth();
   const [AllUsers, setAllUsers] = useState(null);
-  const [page, setPage] = useState(2);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [staffCount, setStaffCount] = useState({
     totalStaffCount: 0,
@@ -81,7 +54,7 @@ const Mainpage = () => {
     //getStaff
     const fetchData = async () => {
       try {
-        const res = await OrgServices.getStaff(user);
+        const res = await OrgServices.getStaff(user , 1);
         setAllUsers(res.staffMembers);
       } catch (error) {
         console.error("Error fetching staff members:", error);
@@ -91,14 +64,6 @@ const Mainpage = () => {
     fetchData();
   }, [user]);
 
-  const handleChangePage = (newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -140,22 +105,7 @@ const Mainpage = () => {
           gap={"20px"}
           width={"100%"}
         >
-          <Typography variant="h2">Dashboard</Typography>
-          <Typography
-            variant="p"
-            sx={{
-              "&.MuiTypography-root": {
-                fontFamily: "Poppins, sans-serif",
-                color: "#717171",
-                fontSize: "16px",
-                fontStyle: "normal",
-                fontWeight: 500,
-                lineHeight: "normal",
-              },
-            }}
-          >
-            Welcome to ECO-LUMEN
-          </Typography>
+          <Typography variant="h2">Welcome to {user?.orgname}</Typography>
         </Box>
         <Box
           display={"flex"}
@@ -258,13 +208,21 @@ const Mainpage = () => {
           </Box>
           <Divider />
           <Box>
-            <img src={MapImg} alt="" style={{ width: "100%" }} />
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4265681.060264226!2d75.57622185499409!3d34.85586264404364!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38e5d7ad872d80b5%3A0x9882624d9785f028!2sGilgit-Baltistan!5e0!3m2!1sen!2s!4v1705767602099!5m2!1sen!2s"
+              width="100%"
+              height="600px"
+              style={{ border: "0px" }}
+              allowfullscreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </Box>
         </Box>
 
-        {/*  */}
         <Box
           display={"flex"}
+          alignItems={"stretch"}
           flexDirection={{
             md: "row",
             xs: "column",
@@ -279,7 +237,7 @@ const Mainpage = () => {
             width={{ md: "60%", xs: "100%" }}
             height={"100%"}
             p={"0px"}
-            sx={{ borderRadius: "12px" }}
+            sx={{ borderRadius: "12px", minHeight: "100%" }}
           >
             <Box
               display={"flex"}
@@ -353,13 +311,11 @@ const Mainpage = () => {
                         </TableCell>
                         <TableCell>
                           {staff.role == 1 ? (
-                            <span style={{ color: "green", fontSize: "15px" }}>
-                              admin
-                            </span>
+                            <span style={{ fontSize: "15px" }}>admin</span>
                           ) : staff.role == 2 ? (
-                            <span style={{ color: "blue" }}>Manager</span>
+                            <span style={{ fontSize: "15px" }}>Manager</span>
                           ) : staff.role == 3 ? (
-                            <span style={{ color: "orange" }}>Staff </span>
+                            <span style={{ fontSize: "15px" }}>Staff </span>
                           ) : (
                             staff.role
                           )}
@@ -408,18 +364,6 @@ const Mainpage = () => {
                     ))}
                   </TableBody>
                 </Table>
-
-                <Box px={"10px"}>
-                  <TablePagination
-                    component="div"
-                    // count={AllUsers.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    rowsPerPageOptions={[10, 20, 50, 100]}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                  />
-                </Box>
               </TableContainer>
             </Box>
           </Box>
@@ -427,7 +371,7 @@ const Mainpage = () => {
             bgcolor={"#ffffff"}
             py={"10px"}
             width={{ md: "38%", xs: "100%" }}
-            sx={{ borderRadius: "12px" }}
+            sx={{ borderRadius: "12px", minHeight: "100%" }}
           >
             <Box
               display={"flex"}
@@ -477,75 +421,6 @@ const Mainpage = () => {
             <Divider />
             <Box display={"flex"} justifyContent={"center"}>
               <UserStatus />
-            </Box>
-          </Box>
-        </Box>
-
-        {/*  */}
-        <Box
-          display={"flex"}
-          flexDirection={{
-            md: "row",
-            xs: "column",
-          }}
-          py={"20px"}
-          gap={"23px"}
-          sx={{ boxSizing: "border-box" }}
-        >
-          <Box
-            bgcolor={"#ffffff"}
-            width={"100%"}
-            p={"0px"}
-            sx={{ borderRadius: "12px" }}
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              p={"10px"}
-            >
-              <Typography variant="h3">Work Overveiw</Typography>
-              <div>
-                <IconButton
-                  aria-label="more"
-                  id="long-button"
-                  aria-controls={open ? "long-menu" : undefined}
-                  aria-expanded={open ? "true" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon color="#FFFFFF" />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  MenuListProps={{
-                    "aria-labelledby": "long-button",
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: "20ch",
-                    },
-                  }}
-                >
-                  {EditOptions.map((option) => (
-                    <MenuItem
-                      key={option}
-                      selected={option === "Pyxis"}
-                      onClick={handleClose}
-                    >
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </div>
-            </Box>
-            <Divider />
-            <Box>
-              <OverveiwChart labels={labels} values={values} />
             </Box>
           </Box>
         </Box>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import {
   Grid,
@@ -15,13 +16,14 @@ import {
   TableCell,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   IconButton,
   Menu,
+  Switch,
   MenuItem,
-  TablePagination,
-} from "@mui/material"; // Ensure all components are imported from '@mui/material'
+  Pagination,
+} from "@mui/material";
+
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Search } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
@@ -32,22 +34,36 @@ import Alerts from "../../../components/Customalerts";
 
 const ITEM_HEIGHT = 48;
 const Users = () => {
+const [navigate, setNavigate] = useState(1);
+
+  useEffect(() => {
+    FetchUsers();
+  }, []);
+  
+  useEffect(() => {
+    FetchUsers();
+  }, [navigate]);
+
   const Navigate = useNavigate();
   const { user } = useAuth();
   const [loader, setloader] = useState(true);
   const [staff, setstaff] = useState([]);
   const [anchorElObj, setAnchorElObj] = useState({});
-  const [searchQuery, setSearchQuery] = useState(""); //for search on table
-  const [page, setPage] = useState(0); //for paginattion
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Can be 'error', 'warning', 'info', 'success'
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const handleSnackbarOpen = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
+  const [pageInfo, setPageInfo] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+  });
+
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -57,12 +73,39 @@ const Users = () => {
     open: false,
     user: null,
   });
-  useEffect(() => {
-    OrgServices.getStaff(user ? user : null).then((res) => {
-      setstaff(res.staffMembers);
-      setloader(false);
-    });
-  }, [user, staff]);
+
+  const FetchUsers = async () => {
+    await OrgServices.getStaff(user ? user : null, navigate)
+      .then((res) => {
+        if (res.status === "success") {
+          setstaff(res.staffMembers);
+          // setPageInfo(prevPageInfo => ({ ...prevPageInfo, totalPages: res.pageInfo.totalPages, currentPage: res.pageInfo.currentPage }));
+            setPageInfo({ ...pageInfo, totalPages: res.pageInfo.totalPages });
+            if(navigate!==res.pageInfo.currentPage) setNavigate(res.pageInfo.currentPage);
+          
+          // console.log("1) PAGE INFO STATE=", pageInfo);
+          handleSnackbarOpen(res.message, "success");
+          setloader(false);
+        } else {
+          setloader(false);
+          handleSnackbarOpen(res.message, "error");
+          console.log(res.message);
+        }
+      })
+      .catch((error) => {
+        setloader(false);
+        handleSnackbarOpen(error);
+        console.log(error);
+      });
+  };
+
+ 
+
+
+  // toggle in table
+  const handleToggle = (staff) => {
+    staff.isActive = !staff.isActive;
+  };
 
   // Filter staff based on the search query
   const filteredStaff = staff.filter(
@@ -73,18 +116,7 @@ const Users = () => {
 
   // Determine whether to show the original staff or the filtered staff
   const displayStaff = searchQuery ? filteredStaff : staff;
-  // Calculate the range of displayed staff for the current page
-  const startIndex = page * rowsPerPage;
-  const endIndex = startIndex + rowsPerPage;
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
   const handleMenuClick = (event, index) => {
     setAnchorElObj((prevObj) => ({
       ...prevObj,
@@ -112,11 +144,15 @@ const Users = () => {
   const handleRemoveConfirm = async () => {
     setRemoveConfirmation({ open: false, user: null });
     await OrgServices.deleteStaff(user, removeConfirmation.user)
-      .then(() => {
-        handleSnackbarOpen("Staff deleted successfully", "success");
+      .then((res) => {
+        if (res.status === "success") {
+          handleSnackbarOpen(res.message, "success");
+        } else {
+          handleSnackbarOpen(res.message, "error");
+        }
       })
-      .catch(() => {
-        handleSnackbarOpen("Error deleting staff", "error");
+      .catch((error) => {
+        console.log(error);
       });
   };
 
@@ -124,6 +160,16 @@ const Users = () => {
     setRemoveConfirmation({ open: false, user: null });
   };
 
+  // pagination
+  const handlePageChange = (event, value) => {
+    setNavigate(value);
+    console.log("NAVIGATE VALUE=", navigate);
+    // setPageInfo({...pageInfo, currentPage: value });
+    setNavigate(value);
+    console.log("VALUE FROM PAGINATION=",value);
+    // console.log("2) VALUE OF STATE CURRENT PAGE",pageInfo.currentPage);    
+    FetchUsers();
+  };
   return (
     <>
       <Loader loaderValue={loader} />
@@ -145,12 +191,7 @@ const Users = () => {
             Users
           </Typography>
         </Box>
-        <Box
-          bgcolor={"#ffffff"}
-          height
-          py={"10px"}
-          sx={{ borderRadius: "12px" }}
-        >
+        <Box bgcolor={"#ffffff"} py={"10px"} sx={{ borderRadius: "12px" }}>
           <Box
             component={"div"}
             display={"flex"}
@@ -195,131 +236,106 @@ const Users = () => {
                   <TableCell align="left">Role</TableCell>
                   <TableCell align="left">Phone Number</TableCell>
                   <TableCell align="left">Status</TableCell>
-                  <TableCell align="left">Edit</TableCell>
+                  <TableCell align="left">Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {displayStaff
-                  .slice(startIndex, endIndex)
-                  .map((staffMember, index) => (
-                    <TableRow key={staffMember._id}>
-                      <TableCell
-                        sx={{
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
+                {displayStaff.map((staffMember, index) => (
+                  <TableRow key={staffMember._id}>
+                    <TableCell
+                      sx={{
+                        display: "flex",
+                        gap: "10px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <img
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          borderRadius: "50%",
                         }}
-                      >
-                        <img
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            borderRadius: "50%",
-                          }}
-                          src={staffMember.staffImage}
-                          alt=""
-                        />
+                        src={staffMember.staffImage}
+                        alt=""
+                      />
 
-                        {staffMember.name}
-                      </TableCell>
-                      <TableCell>{staffMember.email}</TableCell>
-                      <TableCell>
-                        {staffMember.role == 1 ? (
-                          <span style={{ color: "green" }}>admin</span>
-                        ) : staffMember.role == 2 ? (
-                          <span style={{ color: "blue" }}>Manager</span>
-                        ) : staffMember.role == 3 ? (
-                          <span style={{ color: "orange" }}>Staff </span>
-                        ) : (
-                          staffMember.role
-                        )}
-                      </TableCell>
-                      <TableCell>{staffMember.phoneNumber}</TableCell>
-                      <TableCell>
-                        {staffMember.isActive ? (
-                          <Button
-                            style={{
-                              backgroundColor: "#284259",
-                              color: "white",
-                              width: "70%",
-                              fontSize: "11px",
-                            }}
-                            variant="contained"
+                      {staffMember.name}
+                    </TableCell>
+                    <TableCell>{staffMember.email}</TableCell>
+                    <TableCell>
+                      {staffMember.role == 1 ? (
+                        <span style={{ color: "green" }}>admin</span>
+                      ) : staffMember.role == 2 ? (
+                        <span style={{ color: "blue" }}>Manager</span>
+                      ) : staffMember.role == 3 ? (
+                        <span style={{ color: "orange" }}>Staff </span>
+                      ) : (
+                        staffMember.role
+                      )}
+                    </TableCell>
+                    <TableCell>{staffMember.phoneNumber}</TableCell>
+                    <TableCell>
+                      <Switch
+                        checked={staffMember.isActive}
+                        onChange={() => handleToggle(staffMember)}
+                        color="primary"
+                        inputProps={{ "aria-label": "toggle staff status" }}
+                      />
+                    </TableCell>
+
+                    <TableCell align="left">
+                      <div>
+                        <IconButton
+                          aria-label="more"
+                          id={`long-button-${index}`}
+                          aria-controls={
+                            open ? `long-menu-${index}` : undefined
+                          }
+                          aria-expanded={open ? "true" : undefined}
+                          aria-haspopup="true"
+                          onClick={(event) => handleMenuClick(event, index)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id={`long-menu-${index}`}
+                          MenuListProps={{
+                            "aria-labelledby": `long-button-${index}`,
+                          }}
+                          anchorEl={anchorElObj[index]}
+                          open={Boolean(anchorElObj[index])}
+                          onClose={() => handleMenuClose(index)}
+                          PaperProps={{
+                            style: {
+                              maxHeight: ITEM_HEIGHT * 4.5,
+                              width: "20ch",
+                            },
+                          }}
+                        >
+                          <MenuItem
+                            onClick={() => handleEditClick(index, staffMember)}
                           >
-                            Active
-                          </Button>
-                        ) : (
-                          <Button
-                            style={{
-                              backgroundColor: "#F44",
-                              color: "white",
-                              width: "70%",
-                              fontSize: "11px",
-                            }}
-                            variant="contained"
-                          >
-                            Inactive
-                          </Button>
-                        )}
-                      </TableCell>
-                      <TableCell align="left">
-                        <div>
-                          <IconButton
-                            aria-label="more"
-                            id={`long-button-${index}`}
-                            aria-controls={
-                              open ? `long-menu-${index}` : undefined
+                            Edit
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() =>
+                              handleRemoveClick(index, staffMember)
                             }
-                            aria-expanded={open ? "true" : undefined}
-                            aria-haspopup="true"
-                            onClick={(event) => handleMenuClick(event, index)}
                           >
-                            <MoreVertIcon />
-                          </IconButton>
-                          <Menu
-                            id={`long-menu-${index}`}
-                            MenuListProps={{
-                              "aria-labelledby": `long-button-${index}`,
-                            }}
-                            anchorEl={anchorElObj[index]}
-                            open={Boolean(anchorElObj[index])}
-                            onClose={() => handleMenuClose(index)}
-                            PaperProps={{
-                              style: {
-                                maxHeight: ITEM_HEIGHT * 4.5,
-                                width: "20ch",
-                              },
-                            }}
-                          >
-                            <MenuItem
-                              onClick={() =>
-                                handleEditClick(index, staffMember)
-                              }
-                            >
-                              Edit
-                            </MenuItem>
-                            <MenuItem
-                              onClick={() =>
-                                handleRemoveClick(index, staffMember)
-                              }
-                            >
-                              Remove
-                            </MenuItem>
-                          </Menu>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                            Remove
+                          </MenuItem>
+                        </Menu>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
-            <TablePagination
-              component="div"
-              count={displayStaff.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              rowsPerPageOptions={[10, 20, 50, 100]}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+            <Pagination
+              count={pageInfo.totalPages}
+              page={navigate}
+              onChange={handlePageChange}
+              color="primary"
             />
           </TableContainer>
         </Box>
@@ -328,14 +344,11 @@ const Users = () => {
         open={removeConfirmation.open}
         onClose={handleRemoveCancel}
         aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Are You Sure?"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Do you want to delete this user?
-          </DialogContentText>
-        </DialogContent>
+        <DialogTitle id="alert-dialog-title">
+          {"Do you want to delete this user?"}
+        </DialogTitle>
+        <DialogContent></DialogContent>
         <DialogActions>
           <Button onClick={handleRemoveCancel}>Cancel</Button>
           <Button onClick={handleRemoveConfirm} autoFocus>

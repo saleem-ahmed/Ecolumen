@@ -14,11 +14,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink } from "react-router-dom";
 import Logout from "@mui/icons-material/Logout";
-// import { useAuth } from "../Auth/index.jsx";
+import { useAuth } from "../Auth/index.jsx";
 
 const SideBar = () => {
   const [open, setOpen] = useState(true);
-  // const auth =  useAuth();
+  const { LogoutUser } = useAuth();
 
   const handleClick = () => {
     setOpen(!open);
@@ -84,7 +84,44 @@ const SideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
+              
             </List>
+            <List component="div" disablePadding>
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+                to="/dashboard/userRole"
+                style={{ textDecoration: "none", color: "#FFFFFF" }}
+              >
+                <ListItemButton>
+                  <IconButton>
+                    <FiberManualRecordIcon
+                      style={{ color: "#FFFFFF", fontSize: "10px" }}
+                    />
+                  </IconButton>
+                  <ListItemText>
+                    <Typography variant="sideBarLink">Role</Typography>
+                  </ListItemText>
+                </ListItemButton>
+              </NavLink>
+              <NavLink
+                className={({ isActive }) => (isActive ? "active-link" : "")}
+                to="/dashboard/userPermission"
+                style={{ textDecoration: "none", color: "#FFFFFF" }}
+              >
+                <ListItemButton>
+                  <IconButton>
+                    <FiberManualRecordIcon
+                      style={{ color: "#FFFFFF", fontSize: "10px" }}
+                    />
+                  </IconButton>
+                  <ListItemText>
+                    <Typography variant="sideBarLink">Permission</Typography>
+                  </ListItemText>
+                </ListItemButton>
+              </NavLink>
+              
+            </List>
+            
           </Collapse>
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
@@ -99,21 +136,19 @@ const SideBar = () => {
           </NavLink>
         </List>
 
-        <List>
-          <NavLink
-            to="/OrgLogin"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-            // onClick={auth.logout()}
-          >
-            <ListItemButton>
-              <Logout />
-              <ListItemText>
-                <Typography variant="sideBarLink" sx={{ fontSize: "16px" }}>
-                  Logout
-                </Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
+        <List
+          onClick={() => {
+            LogoutUser();
+          }}
+        >
+          <ListItemButton>
+            <Logout />
+            <ListItemText>
+              <Typography variant="sideBarLink" sx={{ fontSize: "16px" }}>
+                Logout
+              </Typography>
+            </ListItemText>
+          </ListItemButton>
         </List>
       </Box>
     </>

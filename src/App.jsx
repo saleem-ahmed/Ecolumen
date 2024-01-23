@@ -17,6 +17,8 @@ import Settings from "./pages/organisation/dashPages/Settings";
 import Users from "./pages/organisation/dashPages/users";
 import AddUsers from "./pages/organisation/dashPages/addUser";
 import EditUsers from "./pages/organisation/dashPages/editUser";
+import UserRole from "./pages/organisation/dashPages/userRoles";
+import UserPermission from "./pages/organisation/dashPages/userPermissions";
 import OrgForget from "./pages/auth/Organisation/forget";
 import OrgVerify from "./pages/auth/Organisation/verfication";
 
@@ -47,8 +49,10 @@ const App = () => {
           <Route path="users" element={<Users />} />
           <Route path="addUsers" element={<AddUsers />} />
           <Route path="editUsers" element={<EditUsers />} />
+          <Route path="userRole" element={<UserRole />} />
+          <Route path="userPermission" element={<UserPermission />} />
         </Route>
-
+ 
         {/* User routes */}
         <Route path="/Uverification" element={<UVerification />} />
         <Route path="/UVerify" element={<UVerify />} />

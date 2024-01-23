@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // import React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -11,11 +11,8 @@ import {
   Button,
   Select,
   MenuItem,
-  Checkbox,
   TextField,
   InputLabel,
-  OutlinedInput,
-  ListItemText,
 } from "@mui/material";
 import { useFormik } from "formik";
 import { AddCircleOutline } from "@mui/icons-material";
@@ -25,19 +22,7 @@ import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
-const names = ["update", "read", "create", "delete"];
+// import Alerts from "../../../components/Customalerts";
 
 const AddUsers = () => {
   const navigate = useNavigate();
@@ -47,20 +32,29 @@ const AddUsers = () => {
   const [City, setCity] = useState("");
   const [Gender, setGender] = useState("");
   const [Role, setRole] = useState("");
-  const [Permission, setPermission] = useState([]);
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
-
+  const [roles, setRoles] = useState();
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
+ 
+  useEffect(() => {
+    OrgServices.getRoles(user ? user : null, 1)
+      .then((res) => {
+        if (res.status === "success") {
+          console.log(res.message, "success");
+          setRoles(res.roles);
+          console.log(roles);
+        } else {
+          console.log(res.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPermission(typeof value === "string" ? value.split(",") : value);
-  };
   const formik = useFormik({
     // validationSchema: addUserSchema,
     enableReinitialize: true,
@@ -91,13 +85,23 @@ const AddUsers = () => {
         gender: Gender,
         dob: startDate,
         role: Role,
-        permissions: Permission,
         staffImage: staffImage,
+        permissions: ["read"],
       };
       setloader(true);
-      const result = await OrgServices.AddStaff(data, user ? user : null);
-      console.log(result);
-      navigate("/dashboard/users");
+      await OrgServices.AddStaff(data, user ? user : null)
+        .then((res) => {
+          if (res.status === "success") {
+            console.log(res);
+            console.log(res.message, "success");
+            navigate("/dashboard/users");
+          } else {
+            console.log(res.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   });
 
@@ -118,7 +122,6 @@ const AddUsers = () => {
 
         <Box
           bgcolor={"#ffffff"}
-          heigh
           py={"30px"}
           px={"30px"}
           sx={{ borderRadius: "12px", position: "relative" }}
@@ -391,91 +394,68 @@ const AddUsers = () => {
                   gap={"20px"}
                   my={2}
                 >
-                  <Typography variant="h2">Role</Typography>
+                  <Box width={"100%"}>
+                    <FormControl fullWidth>
+                      <InputLabel>Role</InputLabel>
+                      <Select
+                        defaultValue={formik.values.role}
+                        label="Role"
+                        {...{
+                          formik,
+                          checkValidation: true,
+                        }}
+                        onChange={(e) => {
+                          setRole(e.target.value);
+
+                          formik.setFieldValue("role", e.target.value);
+                        }}
+                        error={
+                          formik.touched.role && Boolean(formik.errors.role)
+                        }
+                        // country
+                      >
+                        {roles?.map((role ,index) => (
+                          <MenuItem key={role.roleName} value={index} >
+                            {role.roleName}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {formik.errors.role && (
+                        <Typography
+                          sx={{
+                            fontSize: 10,
+                            color: "red",
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          {formik.errors.role}
+                        </Typography>
+                      )}
+                    </FormControl>
+                  </Box>
                   <Button
                     color="success"
                     variant="contained"
                     startIcon={<AddCircleOutline />}
                     onClick={() => {
-                      // formik.handleSubmit();
+                      navigate("/dashboard/userRole");
                     }}
+                    sx={{ fontSize: "12px", width: "100%", maxWidth: "150px" }}
                   >
                     Add role
                   </Button>
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
-                  <FormControl fullWidth>
-                    <InputLabel>Role</InputLabel>
-                    <Select
-                      defaultValue={formik.values.role}
-                      label="Role"
-                      {...{
-                        formik,
-                        checkValidation: true,
-                      }}
-                      onChange={(e) => {
-                        setRole(e.target.value);
 
-                        formik.setFieldValue("role", e.target.value);
-                      }}
-                      error={formik.touched.role && Boolean(formik.errors.role)}
-                      // country
-                    >
-                      <MenuItem value="admin">admin</MenuItem>
-                      <MenuItem value="staff">staff</MenuItem>
-                      <MenuItem value="manager">manager</MenuItem>
-                    </Select>
-                    {formik.errors.role && (
-                      <Typography
-                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
-                      >
-                        {formik.errors.role}
-                      </Typography>
-                    )}
-                  </FormControl>
-                </Box>
-
-                <Box
-                  display={"flex"}
-                  justifyContent={"space-between"}
-                  gap={"20px"}
-                  my={2}
-                >
-                  <Typography variant="h2">Permission</Typography>
+                <Box display={"flex"} justifyContent={"center"} gap={"20px"}>
                   <Button
                     color="success"
-                    variant="contained"
+                    variant="outlined"
                     onClick={() => {
-                      // formik.handleSubmit();
+                      navigate("/dashboard/users");
                     }}
                   >
-                    <AddCircleOutline />
+                    Back
                   </Button>
-                </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
-                  <FormControl fullWidth>
-                    <InputLabel id="Permission">Permission</InputLabel>
-                    <Select
-                      labelId="Permission"
-                      id="demo-multiple-checkbox"
-                      multiple
-                      value={Permission}
-                      onChange={handleChange}
-                      input={<OutlinedInput label="Permission" />}
-                      renderValue={(selected) => selected.join(", ")}
-                      MenuProps={MenuProps}
-                    >
-                      {names.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          <Checkbox checked={Permission.indexOf(name) > -1} />
-                          <ListItemText primary={name} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Box>
-
-                <Box display={"flex"} justifyContent={"center"}>
                   <Button
                     color="success"
                     variant="contained"

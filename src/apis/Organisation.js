@@ -2,11 +2,22 @@ import Service from "./services";
 
 const OrgServices = {
   // for get organisation data
-  getStaff: async (user) => {
+  getStaff: async (user , currentPage) => {
+    console.log("CURRENT PAGE IN API=",currentPage);
     return await Service.get(
-      `https://eco-lumen.onrender.com/api/organization/${user._id}/getAllStaff`
+      `https://eco-lumen.onrender.com/api/organization/${user._id}/getAllStaff?page=${currentPage}`
+    );
+    
+  },
+  
+  //get roles
+  getRoles: async (user,currentPage) => {
+    return await Service.get(
+      `https://eco-lumen.onrender.com/api/organization/${user._id}/getAllRoles?page=${currentPage}`
     );
   },
+  
+//staffcount
   staffCount: async (user) => {
     return await Service.get(
       `https://eco-lumen.onrender.com/api/organization/${user._id}/staffCounts`
@@ -19,6 +30,13 @@ const OrgServices = {
       data,
     });
   },
+  // update organisation data
+  upRole: async (data, user, role) => {
+    return await Service.update({
+      url: `https://eco-lumen.onrender.com/api/organization/${user._id}/${role._id}/editRole`,
+      data,
+    });
+  },
   // add staff
   AddStaff: async (data, user) => {
     return Service.post({
@@ -26,12 +44,29 @@ const OrgServices = {
       data,
     });
   },
+  //Add Role
+  AddRole: async (data, user) => {
+    return Service.post({
+      url: `https://eco-lumen.onrender.com/api/organization/${user._id}/addRole`,
+      data,
+    });
+  },
+
     // delete staff
   deleteStaff: async (user , staff) => {
     return await Service.remove({
       url: `https://eco-lumen.onrender.com/api/organization/${user._id}/${staff._id}/deleteStaff`,
     });
   },
+
+    // delete staff
+  deleteRole: async (user , role) => {
+    return await Service.remove({
+      url: `https://eco-lumen.onrender.com/api/organization/${user._id}/${role._id}/deleteRole`,
+    });
+  },
+
+
 };
 
 export default OrgServices;

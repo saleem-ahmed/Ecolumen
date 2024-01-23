@@ -9,29 +9,23 @@ import {
   Tooltip,
   Avatar,
   MenuItem,
-  // Divider,
 } from "@mui/material";
 
 import Menu from "@mui/material/Menu";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import ListItemIcon from "@mui/material/ListItemIcon";
-// import PersonAdd from "@mui/icons-material/PersonAdd";
 import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import SideBar from "../../../components/SideBar";
-import { Outlet ,useNavigate } from "react-router-dom";
-// import { useAuth } from "../../../Auth/index";
-// import SetIcon from "../../../assets/dashboard/Setting.svg";
-// import NotIcon from "../../../assets/dashboard/notification.svg";
+import { Outlet } from "react-router-dom";
+import { useAuth } from "../../../Auth/index";
 
 const drawerWidth = 260;
 
 const Dashboard = () => {
-  // const {LogoutUser} = useAuth();
+  const { LogoutUser, user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -44,10 +38,6 @@ const Dashboard = () => {
   };
   const handleClose = () => {
     setAnchorEl(null);
-  };
-  const LogoutUser = () => {
-    localStorage.removeItem("token");
-    navigate("/");
   };
 
   return (
@@ -162,8 +152,6 @@ const Dashboard = () => {
                   alignItems: "center",
                 }}
               >
-                {/* <img src={SetIcon} alt="" style={{ marginLeft: "10px" }} />
-                <img src={NotIcon} alt="" style={{ marginLeft: "10px" }} /> */}
                 <Tooltip title="Account settings">
                   <IconButton
                     onClick={handleClick}
@@ -172,7 +160,9 @@ const Dashboard = () => {
                     aria-haspopup="true"
                     aria-expanded={open ? "true" : undefined}
                   >
-                    <Avatar sx={{ width: 32, height: 32 }}>M</Avatar>
+                    <Avatar sx={{ width: 32, height: 32 }}>
+                      {user && user.name ? user.name[0] : "U"}
+                    </Avatar>
                   </IconButton>
                 </Tooltip>
               </Box>
@@ -212,7 +202,10 @@ const Dashboard = () => {
                 anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
               >
                 <MenuItem onClick={handleClose}>
-                  <Avatar /> Profile
+                  <Avatar sx={{ width: 32, height: 32 }}>
+                    {user && user.name ? user.name[0] : "U"}
+                  </Avatar>{" "}
+                  {user && user.name ? user.name : "unkown"}
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
@@ -226,7 +219,6 @@ const Dashboard = () => {
                     handleClose();
                     LogoutUser();
                   }}
-                  // onClick={()=>LogoutUser()}
                 >
                   <ListItemIcon>
                     <Logout fontSize="small" />

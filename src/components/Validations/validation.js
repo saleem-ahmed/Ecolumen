@@ -62,6 +62,12 @@ export const stepOneValidationSchema = yup.object().shape({
   find: yup.string().required("How did you find us is required"),
 });
 
+export const AddRoleSchema = yup.object().shape({
+  name: yup.string().required("Country is required"),
+});
+export const EditRoleSchema = yup.object().shape({
+  name: yup.string().required("Country is required"),
+});
 export const stepTwoValidationSchema = yup.object().shape({
   email: yup
     .string()
