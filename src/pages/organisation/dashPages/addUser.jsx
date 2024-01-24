@@ -22,6 +22,7 @@ import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
+import { addUserSchema } from "../../../components/Validations/validation";
 // import Alerts from "../../../components/Customalerts";
 
 const AddUsers = () => {
@@ -38,7 +39,7 @@ const AddUsers = () => {
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
- 
+
   useEffect(() => {
     OrgServices.getRoles(user ? user : null, 1)
       .then((res) => {
@@ -56,7 +57,7 @@ const AddUsers = () => {
   }, []);
 
   const formik = useFormik({
-    // validationSchema: addUserSchema,
+    validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
       firstName: "",
@@ -70,7 +71,6 @@ const AddUsers = () => {
       gender: "",
       dateOfBrith: "",
       role: "",
-      permission: "",
     },
 
     onSubmit: async () => {
@@ -86,7 +86,6 @@ const AddUsers = () => {
         dob: startDate,
         role: Role,
         staffImage: staffImage,
-        permissions: ["read"],
       };
       setloader(true);
       await OrgServices.AddStaff(data, user ? user : null)
@@ -97,10 +96,12 @@ const AddUsers = () => {
             navigate("/dashboard/users");
           } else {
             console.log(res.message, "error");
+            setloader(false);
           }
         })
         .catch((error) => {
           console.log(error);
+          setloader(false);
         });
     },
   });
@@ -414,8 +415,8 @@ const AddUsers = () => {
                         }
                         // country
                       >
-                        {roles?.map((role ,index) => (
-                          <MenuItem key={role.roleName} value={index} >
+                        {roles?.map((role) => (
+                          <MenuItem key={role.roleName} value={role.roleName}>
                             {role.roleName}
                           </MenuItem>
                         ))}

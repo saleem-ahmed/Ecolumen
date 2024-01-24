@@ -34,15 +34,14 @@ import Alerts from "../../../components/Customalerts";
 
 const ITEM_HEIGHT = 48;
 const Users = () => {
-const [navigate, setNavigate] = useState(1);
-
+  const [pageInfo, setPageInfo] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+  });
   useEffect(() => {
     FetchUsers();
-  }, []);
-  
-  useEffect(() => {
-    FetchUsers();
-  }, [navigate]);
+  }, [pageInfo.currentPage]);
 
   const Navigate = useNavigate();
   const { user } = useAuth();
@@ -58,12 +57,6 @@ const [navigate, setNavigate] = useState(1);
     setSnackbarSeverity(severity);
     setSnackbarOpen(true);
   };
-  const [pageInfo, setPageInfo] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    pageSize: 10,
-  });
-
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -75,15 +68,15 @@ const [navigate, setNavigate] = useState(1);
   });
 
   const FetchUsers = async () => {
-    await OrgServices.getStaff(user ? user : null, navigate)
+    await OrgServices.getStaff(user ? user : null, pageInfo.currentPage)
       .then((res) => {
         if (res.status === "success") {
           setstaff(res.staffMembers);
-          // setPageInfo(prevPageInfo => ({ ...prevPageInfo, totalPages: res.pageInfo.totalPages, currentPage: res.pageInfo.currentPage }));
-            setPageInfo({ ...pageInfo, totalPages: res.pageInfo.totalPages });
-            if(navigate!==res.pageInfo.currentPage) setNavigate(res.pageInfo.currentPage);
-          
-          // console.log("1) PAGE INFO STATE=", pageInfo);
+          setPageInfo({ ...pageInfo, totalPages: res.pageInfo.totalPages });
+          if (pageInfo.currentPage !== res.pageInfo.currentPage){
+            setPageInfo({ ...pageInfo, currentPage: res.pageInfo.currentPage});
+          }
+            
           handleSnackbarOpen(res.message, "success");
           setloader(false);
         } else {
@@ -98,9 +91,6 @@ const [navigate, setNavigate] = useState(1);
         console.log(error);
       });
   };
-
- 
-
 
   // toggle in table
   const handleToggle = (staff) => {
@@ -162,13 +152,7 @@ const [navigate, setNavigate] = useState(1);
 
   // pagination
   const handlePageChange = (event, value) => {
-    setNavigate(value);
-    console.log("NAVIGATE VALUE=", navigate);
-    // setPageInfo({...pageInfo, currentPage: value });
-    setNavigate(value);
-    console.log("VALUE FROM PAGINATION=",value);
-    // console.log("2) VALUE OF STATE CURRENT PAGE",pageInfo.currentPage);    
-    FetchUsers();
+    setPageInfo({ ...pageInfo, currentPage: value });
   };
   return (
     <>
@@ -333,7 +317,7 @@ const [navigate, setNavigate] = useState(1);
             </Table>
             <Pagination
               count={pageInfo.totalPages}
-              page={navigate}
+              page={pageInfo.currentPage}
               onChange={handlePageChange}
               color="primary"
             />

@@ -14,7 +14,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import Logo from "../../../assets/icons/login-icon.png";
+import Logo from "../../../assets/logo.svg";
 import { loginSchema } from "../../../components/Validations/validation.js";
 import { useAuth } from "../../../Auth/index";
 import LoginBg from "../../../assets/dashboard/loginbg.png";
@@ -103,7 +103,7 @@ const login = () => {
               },
             }}
           >
-            Welcome to Eco Lumen
+            Welcome to Back!
           </Typography>
           <Stack direction="column" spacing={2} width={"100%"}>
             <TextField

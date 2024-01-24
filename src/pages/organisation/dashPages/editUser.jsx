@@ -1,3 +1,4 @@
+import {useEffect} from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -19,7 +20,7 @@ import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import UploadImage from "../../../components/ImageUpload/imageupload";
 import "../../../styles/globals/variables.scss";
-
+import { addUserSchema } from "../../../components/Validations/validation";
 
 const EditUser = () => {
   const location = useLocation();
@@ -33,25 +34,42 @@ const EditUser = () => {
   const [Role, setRole] = useState("");
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
+  const [roles, setRoles] = useState();
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
 
+  useEffect(() => {
+    OrgServices.getRoles(user ? user : null, 1)
+      .then((res) => {
+        if (res.status === "success") {
+          console.log(res.message, "success");
+          setRoles(res.roles);
+          console.log(roles);
+        } else {
+          console.log(res.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const formik = useFormik({
-    // validationSchema: addUserSchema,
+    validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
-      firstName: "",
+      firstName: location.state.name,
       lastName: "",
-      email: "",
-      phone: "",
-      address: "",
-      state: "",
-      country: "",
-      city: "",
-      gender: "",
-      dateOfBrith: "",
-      role: "", 
+      email: location.state.email,
+      phone: location.state.phoneNumber,
+      address: location.state.address,
+      state: location.state.state,
+      country: location.state.country,
+      city: location.state.city,
+      gender: location.state.gender,
+      dateOfBrith: location.state.dob,
+      role: location.state.role, 
     },
 
     onSubmit: async () => {
@@ -369,7 +387,7 @@ const EditUser = () => {
                   my={2}
                 >
                   <Box width={"100%"}>
-                    <FormControl fullWidth>
+                  <FormControl fullWidth>
                       <InputLabel>Role</InputLabel>
                       <Select
                         defaultValue={formik.values.role}
@@ -388,9 +406,11 @@ const EditUser = () => {
                         }
                         // country
                       >
-                        <MenuItem value="admin">admin</MenuItem>
-                        <MenuItem value="staff">staff</MenuItem>
-                        <MenuItem value="manager">manager</MenuItem>
+                        {roles?.map((role) => (
+                          <MenuItem key={role.roleName} value={role.roleName}>
+                            {role.roleName}
+                          </MenuItem>
+                        ))}
                       </Select>
                       {formik.errors.role && (
                         <Typography

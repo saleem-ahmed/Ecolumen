@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 // import required modules
-import { Autoplay, Pagination } from "swiper/modules";
+import { EffectFade, Autoplay, Pagination } from "swiper/modules";
 import {
   Grid,
   Typography,
@@ -23,7 +23,7 @@ import { loginSchema } from "../../../components/Validations/validation.js";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 // image
-import SliderImg1 from "../../../assets/usersigin-img1.png";
+// import SliderImg1 from "../../../assets/usersigin-img1.png";
 import SliderImg2 from "../../../assets/usersigin-img2.png";
 import SliderImg3 from "../../../assets/usersigin-img3.png";
 import SliderImg4 from "../../../assets/usersigin-img4.png";
@@ -90,7 +90,7 @@ const SignIn = () => {
               },
             }}
           >
-            Welcome to Eco Lumen
+            Welcome Back!
           </Typography>
           <Stack direction="column" spacing={2} width={"100%"}>
             <TextField
@@ -192,23 +192,18 @@ const SignIn = () => {
       <Grid item xs={12} sm={6} height={"100%"}>
         <Swiper
           pagination={true}
-          autoplay={true}
+          autoplay={{
+            delay: 5500,
+            disableOnInteraction: false,
+          }}
+          effect={"fade"}
           loop={true}
-          modules={[Pagination , Autoplay]}
+          modules={[EffectFade, Pagination, Autoplay]}
           className="mySwiper"
           style={{ height: "100%" }}
         >
           <SwiperSlide>
-            <Box sx={{ background: "#000000", height: "100%" }}>
-              <img
-                src={SliderImg1}
-                alt=""
-                style={{ width: "100%", objectFit: "contain" }}
-              />
-            </Box>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Box sx={{ background: "red", height: "100%" }}>
+            <Box sx={{ height: "100%" }}>
               <img
                 src={SliderImg2}
                 alt=""
@@ -217,7 +212,7 @@ const SignIn = () => {
             </Box>
           </SwiperSlide>
           <SwiperSlide>
-            <Box sx={{ background: "yellow", height: "100%" }}>
+            <Box sx={{ height: "100%" }}>
               <img
                 src={SliderImg3}
                 alt=""
@@ -226,7 +221,7 @@ const SignIn = () => {
             </Box>
           </SwiperSlide>
           <SwiperSlide>
-            <Box sx={{ background: "yellow", height: "100%" }}>
+            <Box sx={{ height: "100%" }}>
               <img
                 src={SliderImg4}
                 alt=""

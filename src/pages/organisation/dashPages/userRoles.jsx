@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from "react";
 import {
@@ -18,6 +19,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Pagination,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loader from "../../../components/loader";
@@ -29,12 +31,51 @@ import {
   AddRoleSchema,
   EditRoleSchema,
 } from "../../../components/Validations/validation.js";
-// import { useNavigate } from "react-router-dom";
 const ITEM_HEIGHT = 48;
 const userRoles = () => {
-  // const Navigate = useNavigate();
   const { user } = useAuth();
+  const [pageInfo, setPageInfo] = useState({
+    totalRoles: 1,
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10,
+  });
   const [orgRoles, setOrgRoles] = useState();
+  useEffect(() => {
+    FetchRoles()
+  }, [pageInfo.currentPage, pageInfo.totalRoles]);
+
+  const FetchRoles = async () => {
+    await OrgServices.getRoles(user ? user : null, pageInfo.currentPage)
+      .then((res) => {
+        console.log(res, "role res");
+        setOrgRoles(res.roles);
+        if (res.status === "success") {
+          setPageInfo({ ...pageInfo, totalPages: res.pageInfo.totalPages });
+          console.log(pageInfo, "useffect pageinfo");
+          if (
+            pageInfo.currentPage !== res.pageInfo.currentPage ||
+            pageInfo.totalRoles !== res.pageInfo.totalRoles
+          ) {
+            setPageInfo({
+              ...pageInfo,
+              currentPage: res.pageInfo.currentPage,
+              totalRoles: res.pageInfo.totalRoles,
+            });
+          }
+          setloader(false);
+          handleSnackbarOpen(res.message, "success");
+        } else {
+          setloader(false);
+          handleSnackbarOpen(res.message, "error");
+        }
+      })
+      .catch((error) => {
+        setloader(false);
+        handleSnackbarOpen(error);
+      });
+  };
+
   const [loader, setloader] = useState(true);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -47,8 +88,6 @@ const userRoles = () => {
   });
   // Add new state variables
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  // eslint-disable-next-line no-unused-vars
-  const [editingRole, setEditingRole] = useState(null);
 
   const formik = useFormik({
     validationSchema: AddRoleSchema,
@@ -68,6 +107,7 @@ const userRoles = () => {
           if (res.status === "success") {
             setloader(false);
             handleSnackbarOpen(res.message, "success");
+            FetchRoles();
           } else {
             setloader(false);
             handleSnackbarOpen(res.message, "error");
@@ -75,56 +115,19 @@ const userRoles = () => {
         })
         .catch((error) => {
           setloader(false);
-          console.log(error);
+          handleSnackbarOpen(error);
         });
     },
   });
+
   const formik1 = useFormik({
     validationSchema: EditRoleSchema,
     enableReinitialize: true,
     initialValues: {
-      // name: editingRohle ? editingRole.roleName : "",
+      name: "",
     },
-    onSubmit: async () => {
-      // const data = {
-      //   roleName: values.name,
-      // };
-
-      // Assuming the role's ID is stored in editingRole._id
-      // await OrgServices.updateRole(user ? user : null, data, editingRole)
-      //   .then((res) => {
-      //     handleCloseEditModal();
-      //     if (res.message === "success") {
-      //       handleSnackbarOpen(res.message, "success");
-      //     } else {
-      //       handleSnackbarOpen(res.message, "error");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //     handleCloseEditModal();
-      //   });
-    },
+    onSubmit: async () => {},
   });
-
-  useEffect(() => {
-    OrgServices.getRoles(user ? user : null)
-      .then((res) => {
-        console.log(res, "role res");
-        setOrgRoles(res.roles);
-        if (res.status === "success") {
-          setloader(false);
-          handleSnackbarOpen(res.message, "success");
-        } else {
-          setloader(false);
-          handleSnackbarOpen(res.message, "error");
-        }
-      })
-      .catch((error) => {
-        setloader(false);
-        console.log(error);
-      });
-  }, [user]);
 
   // add roles model
   const handleOpenModal = () => {
@@ -171,6 +174,7 @@ const userRoles = () => {
       .then((res) => {
         if (res.status === "success") {
           handleSnackbarOpen(res.message, "success");
+          FetchRoles();
         } else {
           handleSnackbarOpen(res.message, "error");
         }
@@ -186,14 +190,14 @@ const userRoles = () => {
 
   //edit modal
   const handleOpenEditModal = (role) => {
-    setEditingRole(role);
+    // setEditingRole(role);
     formik1.setValues({ name: role.roleName });
     setIsEditModalOpen(true);
   };
 
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
-    setEditingRole(null);
+    // setEditingRole(null);
   };
   const handleEditClick = (index, role) => {
     handleMenuClose(index);
@@ -222,9 +226,13 @@ const userRoles = () => {
       </DialogActions>
     </Dialog>
   );
+
+  // pagination
+  const handlePageChange = (event, value) => {
+    setPageInfo({ ...pageInfo, currentPage: value });
+  };
   return (
     <>
-      <Loader loaderValue={loader} />
       <Alerts
         open={snackbarOpen}
         message={snackbarMessage}
@@ -355,6 +363,12 @@ const userRoles = () => {
               ))}
             </TableBody>
           </Table>
+          <Pagination
+            count={pageInfo.totalPages}
+            page={pageInfo.currentPage}
+            onChange={handlePageChange}
+            color="primary"
+          />
         </TableContainer>
       </Box>
       <Dialog

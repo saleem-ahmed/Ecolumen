@@ -77,7 +77,6 @@ export const AuthProvider = ({ children }) => {
       setSnackbarMessage("Login successful!");
       setOpenSnackbar(true);
       navigate("/dashboard/main");
-
       return response;
     } catch (error) {
       setLoading(false);

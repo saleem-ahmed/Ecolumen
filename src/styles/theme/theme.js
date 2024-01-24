@@ -29,15 +29,15 @@ const theme = createTheme({
     },
     span: {
       fontFamily: "Poppins, sans-serif",
-      color: "#A1A1A1",
+      color: "#284259",
       fontSize: "12px",
       fontStyle: "normal",
-      fontWeight: "300",
+      fontWeight: "600",
       lineHeight: "normal",
     },
     subtitle1: {
       fontFamily: "Poppins, sans-serif",
-      color: "#A1A1A1",
+      color: "#284259",
       fontSize: "14px",
       fontStyle: "normal",
       fontWeight: "400",

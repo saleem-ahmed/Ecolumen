@@ -24,7 +24,7 @@ const UserStatus = () => {
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
+    <Box width={"400px"}>
       <Doughnut data={data} />
     </Box>
   );

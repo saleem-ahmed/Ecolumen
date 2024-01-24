@@ -28,7 +28,7 @@ import UserStatus from "../../../components/userStatus.jsx";
 import { useAuth } from "../../../Auth/index.jsx";
 import OrgServices from "../../../apis/Organisation";
 
-const EditOptions = ["Edit", "Remove"];
+const EditOptions = ["Refresh"];
 
 const Mainpage = () => {
   const { user } = useAuth();
@@ -54,7 +54,7 @@ const Mainpage = () => {
     //getStaff
     const fetchData = async () => {
       try {
-        const res = await OrgServices.getStaff(user , 1);
+        const res = await OrgServices.getStaff(user, 1);
         setAllUsers(res.staffMembers);
       } catch (error) {
         console.error("Error fetching staff members:", error);
@@ -76,19 +76,19 @@ const Mainpage = () => {
 
   const UserCard = [
     {
-      title: "Number Of Users",
+      title: "Number Of Staff",
       value: staffCount.totalStaffCount,
       img: CardImg1,
       bgimg: BgCard1,
     },
     {
-      title: "Active Users",
+      title: "Active Staff",
       value: staffCount.activeStaffCount,
       img: CardImg2,
       bgimg: BgCard2,
     },
     {
-      title: "Disabled Users",
+      title: "Disabled Staff",
       value: staffCount.inactiveStaffCount,
       img: CardImg3,
       bgimg: BgCard3,
@@ -97,7 +97,6 @@ const Mainpage = () => {
 
   return (
     <>
-      {console.log("USERS STATE=", AllUsers)}
       <Grid>
         <Box
           display={"flex"}
@@ -167,7 +166,7 @@ const Mainpage = () => {
             justifyContent={"space-between"}
             alignItems={"center"}
           >
-            <Typography variant="h3">Real-Time</Typography>
+            <Typography variant="h3">Map</Typography>
             <div>
               <IconButton
                 aria-label="more"
@@ -234,7 +233,7 @@ const Mainpage = () => {
         >
           <Box
             bgcolor={"#ffffff"}
-            width={{ md: "60%", xs: "100%" }}
+            width={{ md: "100%", xs: "100%" }}
             height={"100%"}
             p={"0px"}
             sx={{ borderRadius: "12px", minHeight: "100%" }}
@@ -245,7 +244,7 @@ const Mainpage = () => {
               alignItems={"center"}
               p={"10px"}
             >
-              <Typography variant="h3">Recently Added Users</Typography>
+              <Typography variant="h3">Recently Added Staffs</Typography>
               <div>
                 <IconButton
                   aria-label="more"
@@ -297,6 +296,8 @@ const Mainpage = () => {
                       <TableCell>Name</TableCell>
                       <TableCell align="left">Role</TableCell>
                       <TableCell align="left">Email ID</TableCell>
+                      <TableCell align="left">phoneNumber</TableCell>
+                      <TableCell align="left">created At</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -309,7 +310,7 @@ const Mainpage = () => {
                         >
                           {staff.name}
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ color: "#e58206" }}>
                           {staff.role == 1 ? (
                             <span style={{ fontSize: "15px" }}>admin</span>
                           ) : staff.role == 2 ? (
@@ -321,45 +322,8 @@ const Mainpage = () => {
                           )}
                         </TableCell>
                         <TableCell align="left">{staff.email}</TableCell>
-                        {/* <TableCell align="left">
-                          <div>
-                            <IconButton
-                              aria-label="more"
-                              id="long-button"
-                              aria-controls={open ? "long-menu" : undefined}
-                              aria-expanded={open ? "true" : undefined}
-                              aria-haspopup="true"
-                              onClick={handleClick}
-                            >
-                              <MoreHorizIcon color="#FFFFFF" />
-                            </IconButton>
-                            <Menu
-                              id="long-menu"
-                              MenuListProps={{
-                                "aria-labelledby": "long-button",
-                              }}
-                              anchorEl={anchorEl}
-                              open={open}
-                              onClose={handleClose}
-                              PaperProps={{
-                                style: {
-                                  maxHeight: ITEM_HEIGHT * 4.5,
-                                  width: "20ch",
-                                },
-                              }}
-                            >
-                              {EditOptions.map((option) => (
-                                <MenuItem
-                                  key={option}
-                                  selected={option === "Pyxis"}
-                                  onClick={handleClose}
-                                >
-                                  {option}
-                                </MenuItem>
-                              ))}
-                            </Menu>
-                          </div>
-                        </TableCell> */}
+                        <TableCell align="left">{staff.phoneNumber}</TableCell>
+                        <TableCell align="left">{staff.createdAt}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -367,10 +331,24 @@ const Mainpage = () => {
               </TableContainer>
             </Box>
           </Box>
+          
+        </Box>
+        <Box
+          display={"flex"}
+          alignItems={"stretch"}
+          flexDirection={{
+            md: "row",
+            xs: "column",
+          }}
+          py={"20px"}
+          gap={"23px"}
+          height={"100%"}
+          sx={{ boxSizing: "border-box" }}
+        >
           <Box
             bgcolor={"#ffffff"}
             py={"10px"}
-            width={{ md: "38%", xs: "100%" }}
+            width={{ md: "100%", xs: "100%" }}
             sx={{ borderRadius: "12px", minHeight: "100%" }}
           >
             <Box
