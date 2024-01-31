@@ -109,31 +109,33 @@ export default function SignIn() {
       code: "",
     },
     onSubmit: async () => {
-      alert("hello");
-      const data = {
-        name: formik1.values.orgname,
-        country: Country,
-        state: State,
-        city: City,
-        postalcode: formik1.values.postalCode,
-        orgtype: formik1.values.type,
-        website: formik1.values.website,
-        empnumber: formik1.values.numberOfEmployees,
-        findus: Find,
-        email: formik2.values.email,
-        phone: formik2.values.phone,
-        password: formik3.values.password,
-      };
-      const response = await registerOrg(data)
-        .then(() => {
-          console.log(response, "RegisterOrg");
-        })
-        .catch((error) => {
-          console.log(error, "err");
-        });
       handleNext();
     },
   });
+
+  const apiCall = async () => {
+    const data = {
+      name: formik1.values.orgname,
+      country: Country,
+      state: State,
+      city: City,
+      postalcode: formik1.values.postalCode,
+      orgtype: formik1.values.type,
+      website: formik1.values.website,
+      empnumber: formik1.values.numberOfEmployees,
+      findus: Find,
+      email: formik2.values.email,
+      phone: formik2.values.phone,
+      password: formik3.values.password,
+    };
+    const response = await registerOrg(data)
+      .then(() => {
+        console.log(response, "RegisterOrg");
+      })
+      .catch((error) => {
+        console.log(error, "err");
+      });
+  };
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -874,11 +876,12 @@ export default function SignIn() {
                     spacing={2}
                     width={"100%"}
                   >
-                    <Link href="/dashboard" style={{ width:"100%" }}>
+                    <Link href="/dashboard" style={{ width: "100%" }}>
                       <Button
                         color="success"
                         variant="contained"
                         sx={{ width: "100%" }}
+                        onClick={() => apiCall()}
                       >
                         Register
                       </Button>

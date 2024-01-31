@@ -22,7 +22,7 @@ import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
-import { addUserSchema } from "../../../components/Validations/validation";
+// import { addUserSchema } from "../../../components/Validations/validation";
 // import Alerts from "../../../components/Customalerts";
 
 const AddUsers = () => {
@@ -41,7 +41,7 @@ const AddUsers = () => {
   };
 
   useEffect(() => {
-    OrgServices.getRoles(user ? user : null, 1)
+    OrgServices.getAllRoles(user ? user : null)
       .then((res) => {
         if (res.status === "success") {
           console.log(res.message, "success");
@@ -57,7 +57,7 @@ const AddUsers = () => {
   }, []);
 
   const formik = useFormik({
-    validationSchema: addUserSchema,
+    // validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
       firstName: "",

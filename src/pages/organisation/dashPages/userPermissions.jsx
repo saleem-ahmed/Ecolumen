@@ -13,12 +13,29 @@ import {
 import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import { useFormik } from "formik";
+import Loader from "../../../components/loader";
+import Alerts from "../../../components/Customalerts";
+
 // import { addUserSchema } from "../../../components/Validations/validation";
 const UserPermissions = () => {
   const { user } = useAuth();
-  const [roles, setRoles] = useState();
-  const [Role, setRole] = useState();
+  const [roles, setRoles] = useState(); ///roles are set from severs
+  const [Role, setRole] = useState(); //Role which is set from org
   const [Permission, setPermission] = useState([]);
+  const [loader, setloader] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   console.log(Role);
 
   useEffect(() => {
@@ -42,7 +59,7 @@ const UserPermissions = () => {
   ];
 
   const FetchRoles = async () => {
-    await OrgServices.getRoles(user ? user : null, 1)
+    await OrgServices.getAllRoles(user ? user : null)
       .then((res) => {
         if (res.status === "success") {
           console.log(res.message, "success");
@@ -67,10 +84,24 @@ const UserPermissions = () => {
 
     onSubmit: async () => {
       const data = {
-        roleName: Role,
         permissions: Permission,
       };
       console.log(data);
+      setloader(true);
+      OrgServices.setPermission(data, user, Role).then((res) => {
+        console.log(Role , "role Send to api")
+        if (res.message === "success") {
+          setloader(false);
+          handleSnackbarOpen(res.message, "success");
+        } else {
+          setloader(false);
+          handleSnackbarOpen(res.message, "error");
+        }
+      }).catch((error)=>{
+        setloader(false)
+        handleSnackbarOpen(error);
+
+      });
     },
   });
 
@@ -85,6 +116,13 @@ const UserPermissions = () => {
   };
   return (
     <>
+      <Loader loaderValue={loader} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Box>
         <Typography variant="h2">Set Permission</Typography>
       </Box>
@@ -120,7 +158,7 @@ const UserPermissions = () => {
                 // country
               >
                 {roles?.map((role) => (
-                  <MenuItem key={role.roleName} value={role.roleName}>
+                  <MenuItem key={role.roleName} value={role._id}>
                     {role.roleName}
                   </MenuItem>
                 ))}

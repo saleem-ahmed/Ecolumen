@@ -73,12 +73,12 @@ const Users = () => {
         if (res.status === "success") {
           setstaff(res.staffMembers);
           setPageInfo({ ...pageInfo, totalPages: res.pageInfo.totalPages });
-          if (pageInfo.currentPage !== res.pageInfo.currentPage){
-            setPageInfo({ ...pageInfo, currentPage: res.pageInfo.currentPage});
+          if (pageInfo.currentPage !== res.pageInfo.currentPage) {
+            setPageInfo({ ...pageInfo, currentPage: res.pageInfo.currentPage });
           }
-            
-          handleSnackbarOpen(res.message, "success");
+
           setloader(false);
+          handleSnackbarOpen(res.message, "success");
         } else {
           setloader(false);
           handleSnackbarOpen(res.message, "error");
@@ -93,8 +93,24 @@ const Users = () => {
   };
 
   // toggle in table
-  const handleToggle = (staff) => {
-    staff.isActive = !staff.isActive;
+  const handleToggle = async (staff) => {
+    setloader(true);
+    await OrgServices.toggleStaff(user ? user : null, staff)
+      .then((res) => {
+        if (res.status === "success") {
+          setloader(false);
+          handleSnackbarOpen(res.message, "success");
+          FetchUsers();
+        } else {
+          setloader(false);
+          handleSnackbarOpen(res.message, "error");
+          FetchUsers();
+        }
+      })
+      .catch((error) => {
+        setloader(false);
+        handleSnackbarOpen(error);
+      });
   };
 
   // Filter staff based on the search query
