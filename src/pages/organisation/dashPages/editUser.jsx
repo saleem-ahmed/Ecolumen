@@ -1,4 +1,4 @@
-import {useEffect} from "react"
+import { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -20,7 +20,7 @@ import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import UploadImage from "../../../components/ImageUpload/imageupload";
 import "../../../styles/globals/variables.scss";
-import { addUserSchema } from "../../../components/Validations/validation";
+// import { addUserSchema } from "../../../components/Validations/validation";
 
 const EditUser = () => {
   const location = useLocation();
@@ -28,9 +28,9 @@ const EditUser = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loader, setloader] = useState(false);
-  const [Country, setCountry] = useState("");
-  const [City, setCity] = useState("");
-  const [Gender, setGender] = useState("");
+  // const [Country, setCountry] = useState("");
+  // const [City, setCity] = useState("");
+  // const [Gender, setGender] = useState("");
   const [Role, setRole] = useState("");
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
@@ -40,7 +40,7 @@ const EditUser = () => {
   };
 
   useEffect(() => {
-    OrgServices.getRoles(user ? user : null, 1)
+    OrgServices.getAllRoles(user ? user : null)
       .then((res) => {
         if (res.status === "success") {
           console.log(res.message, "success");
@@ -56,20 +56,21 @@ const EditUser = () => {
   }, []);
 
   const formik = useFormik({
-    validationSchema: addUserSchema,
+    // validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
-      firstName: location.state.name,
+      firstName: location.state?.name || "",
       lastName: "",
-      email: location.state.email,
-      phone: location.state.phoneNumber,
-      address: location.state.address,
-      state: location.state.state,
-      country: location.state.country,
-      city: location.state.city,
-      gender: location.state.gender,
-      dateOfBrith: location.state.dob,
-      role: location.state.role, 
+      email: location.state?.email || "",
+      phone: location.state?.phoneNumber || "",
+      address: location.state?.address || "",
+      state: location.state?.state || "",
+      country: location.state?.country || "",
+      city: location.state?.city || "",
+      gender: location.state?.gender || "",
+      dateOfBirth: location.state?.dob || new Date(),
+      role: location.state?.roleName || "",
+      staffImage: {},
     },
 
     onSubmit: async () => {
@@ -79,21 +80,30 @@ const EditUser = () => {
         phoneNumber: formik.values.phone,
         address: formik.values.address,
         state: formik.values.state,
-        country: Country,
-        city: City,
-        gender: Gender,
+        country: formik.values.country,
+        city: formik.values.city,
+        gender: formik.values.gender,
         dob: startDate,
         role: Role,
         staffImage: staffImage,
       };
       setloader(true);
-      const result = await OrgServices.upStaff(
-        data,
-        user ? user : null,
-        location.state
-      );
-      console.log(result);
-      navigate("/dashboard/users");
+      
+
+      OrgServices.upStaff(data, user ? user : null, location.state)
+        .then((res) => {
+          if (res.status === "success") {
+            navigate("/dashboard/users");
+            console.log(res.message);
+          } else {
+            console.log(res.message);
+            setloader(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setloader(false);
+        });
     },
   });
 
@@ -281,7 +291,7 @@ const EditUser = () => {
                         checkValidation: true,
                       }}
                       onChange={(e) => {
-                        setCountry(e.target.value);
+                        // setCountry(e.target.value);
                         formik.setFieldValue("country", e.target.value);
                       }}
                       error={
@@ -314,7 +324,7 @@ const EditUser = () => {
                         checkValidation: true,
                       }}
                       onChange={(e) => {
-                        setCity(e.target.value);
+                        // setCity(e.target.value);
                         formik.setFieldValue("city", e.target.value);
                       }}
                       error={formik.touched.city && Boolean(formik.errors.city)}
@@ -342,7 +352,7 @@ const EditUser = () => {
                   sx={{ width: "100%", boxSizing: "border-box" }}
                   my={2}
                 >
-                  <FormControl fullWidth>
+                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
                       defaultValue={formik.values.gender}
@@ -352,7 +362,7 @@ const EditUser = () => {
                         checkValidation: true,
                       }}
                       onChange={(e) => {
-                        setGender(e.target.value);
+                        // setGender(e.target.value);
                         formik.setFieldValue("gender", e.target.value);
                       }}
                       error={
@@ -387,10 +397,10 @@ const EditUser = () => {
                   my={2}
                 >
                   <Box width={"100%"}>
-                  <FormControl fullWidth>
+                    <FormControl fullWidth>
                       <InputLabel>Role</InputLabel>
                       <Select
-                        defaultValue={formik.values.role}
+                        value={formik.values.role}
                         label="Role"
                         {...{
                           formik,

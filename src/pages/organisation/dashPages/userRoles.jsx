@@ -42,7 +42,7 @@ const userRoles = () => {
   });
   const [orgRoles, setOrgRoles] = useState();
   useEffect(() => {
-    FetchRoles()
+    FetchRoles();
   }, [pageInfo.currentPage, pageInfo.totalRoles]);
 
   const FetchRoles = async () => {
@@ -125,8 +125,34 @@ const userRoles = () => {
     enableReinitialize: true,
     initialValues: {
       name: "",
+      id: "",
     },
-    onSubmit: async () => {},
+    onSubmit: async () => {
+      console.log("ID=", formik1.values.id);
+      const data = {
+        roleName: formik1.values.name,
+      };
+      const updatedRole = {
+        _id: formik1.values.id, // Ensure you have the role ID here
+      };
+      setloader(true);
+      await OrgServices.upRole(data, user, updatedRole) 
+        .then((res) => {
+          if (res.status === "success") {
+            handleCloseEditModal();
+            setloader(false);
+            handleSnackbarOpen(res.message, "success");
+            FetchRoles(); // Refresh the roles list
+          } else {
+            setloader(false);
+            handleSnackbarOpen(res.message, "error");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setloader(false);
+        });
+    },
   });
 
   // add roles model
@@ -191,10 +217,9 @@ const userRoles = () => {
   //edit modal
   const handleOpenEditModal = (role) => {
     // setEditingRole(role);
-    formik1.setValues({ name: role.roleName });
+    formik1.setValues({ name: role.roleName, id: role._id });
     setIsEditModalOpen(true);
   };
-
   const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     // setEditingRole(null);
