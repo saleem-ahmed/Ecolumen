@@ -20,7 +20,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 // import IntlTelInput from "react-intl-tel-input";
 import "react-intl-tel-input/dist/main.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 // import OrgServices from "../../../apis/Organisation"
 import { useAuth } from "../../../Auth/index";
@@ -52,6 +52,7 @@ const steps = [
 
 export default function SignIn() {
   const { registerOrg } = useAuth();
+  const Navigate = useNavigate();
   const [Country, setCountry] = useState("");
   const [State, setState] = useState("");
   const [City, setCity] = useState("");
@@ -131,6 +132,12 @@ export default function SignIn() {
     const response = await registerOrg(data)
       .then(() => {
         console.log(response, "RegisterOrg");
+        if (response.status === "success") {
+          console.log(response.message);
+          Navigate("/orglogin");
+        } else {
+          console.log(response.message);
+        }
       })
       .catch((error) => {
         console.log(error, "err");
