@@ -97,18 +97,27 @@ const Users = () => {
     setloader(true);
     await OrgServices.toggleStaff(user ? user : null, staff)
       .then((res) => {
-        if (res.status === "success") {
+        if (res) {
+          setstaff((prevStaff)=>{
+            const updatedStaff = prevStaff.map((staff)=>{
+              console.log(staff._id , "id")
+               if(staff._id === res.staffDetails.id ){
+                return {...staff, isActive : res.staffDetails.isActive}
+               }
+               return staff;
+            })
+            return updatedStaff;
+          });
+
           setloader(false);
           handleSnackbarOpen(res.message, "success");
-          FetchUsers();
         } else {
           setloader(false);
           handleSnackbarOpen(res.message, "error");
-          FetchUsers();
         }
       })
       .catch((error) => {
-        setloader(false);
+        // setloader(false);
         handleSnackbarOpen(error);
       });
   };

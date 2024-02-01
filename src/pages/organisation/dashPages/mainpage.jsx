@@ -104,7 +104,7 @@ const Mainpage = () => {
           gap={"20px"}
           width={"100%"}
         >
-          <Typography variant="h2">Welcome to {user?.orgname}</Typography>
+          <Typography variant="h2">{user?.orgname} Dashboard</Typography>
         </Box>
         <Box
           display={"flex"}
@@ -244,7 +244,7 @@ const Mainpage = () => {
               alignItems={"center"}
               p={"10px"}
             >
-              <Typography variant="h3">Recently Added Staffs</Typography>
+              <Typography variant="h3">Recently Added Staff</Typography>
               <div>
                 <IconButton
                   aria-label="more"
@@ -296,8 +296,7 @@ const Mainpage = () => {
                       <TableCell>Name</TableCell>
                       <TableCell align="left">Role</TableCell>
                       <TableCell align="left">Email ID</TableCell>
-                      <TableCell align="left">phoneNumber</TableCell>
-                      <TableCell align="left">created At</TableCell>
+                      <TableCell align="left">Number</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -323,7 +322,6 @@ const Mainpage = () => {
                         </TableCell>
                         <TableCell align="left">{staff.email}</TableCell>
                         <TableCell align="left">{staff.phoneNumber}</TableCell>
-                        <TableCell align="left">{staff.createdAt}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -357,7 +355,7 @@ const Mainpage = () => {
               alignItems={"center"}
               px={"20px"}
             >
-              <Typography variant="h3">Users Status</Typography>
+              <Typography variant="h3">Staff Status</Typography>
               <div>
                 <IconButton
                   aria-label="more"
