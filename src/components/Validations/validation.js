@@ -12,7 +12,7 @@ export const loginSchema = yup.object().shape({
       "Invalid email address format"
     ),
   password: yup.string().required("password is reuried"),
- 
+
 });
 
 export const ForgetSchema = yup.object().shape({
@@ -94,7 +94,6 @@ export const stepThreeValidationSchema = yup.object().shape({
 export const addUserSchema = yup.object().shape({
   firstName: yup.string().required("Required field *"),
   lastName: yup.string().required("Required field *"),
-  phone: yup.string().required("Required field *"),
   email: yup
     .string()
     .email("Invalid email address")
@@ -103,11 +102,17 @@ export const addUserSchema = yup.object().shape({
       /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
       "Invalid email address format"
     ),
+  phone: yup.number().required("Required field *"),
   address: yup.string().required("Required field *"),
   state: yup.string().required("Required field *"),
   country: yup.string().required("Required field *"),
   city: yup.string().required("Required field *"),
   gender: yup.string().required("Required field *"),
-  Role: yup.string().required("Required field *"),
-  dateOfBrith: yup.string().required("Required field *"),
+  dateOfBrith: yup.object().required("Required field *"),
+  Role: yup.array().required("Required field *"),
+});
+
+export const permissionSchema = yup.object().shape({
+  role: yup.string().required("Required field *"),
+  permission: yup.array().of(yup.string()).required("Required field *"),
 });

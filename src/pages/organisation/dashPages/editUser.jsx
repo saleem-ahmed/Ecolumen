@@ -118,7 +118,7 @@ const EditUser = () => {
           width={"100%"}
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
-            Edit Users {location.state.name}
+            Edit Staff {location.state.name}
           </Typography>
         </Box>
         <Box

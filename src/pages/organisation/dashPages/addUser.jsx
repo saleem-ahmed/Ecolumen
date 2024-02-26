@@ -22,31 +22,26 @@ import OrgServices from "../../../apis/Organisation";
 import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
-// import { addUserSchema } from "../../../components/Validations/validation";
-// import Alerts from "../../../components/Customalerts";
+import { addUserSchema } from "../../../components/Validations/validation";
+import Alerts from "../../../components/Customalerts";
 
 const AddUsers = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [loader, setloader] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [Country, setCountry] = useState("");
   const [City, setCity] = useState("");
   const [Gender, setGender] = useState("");
   const [Role, setRole] = useState("");
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
-  const [roles, setRoles] = useState();
-  const handleImageUpdate = (newImage) => {
-    setStaffImage(newImage);
-  };
+  const [roles, setRoles] = useState([]);
 
   useEffect(() => {
     OrgServices.getAllRoles(user ? user : null)
       .then((res) => {
         if (res.status === "success") {
-          console.log(res.message, "success");
           setRoles(res.roles);
-          console.log(roles);
         } else {
           console.log(res.message, "error");
         }
@@ -56,8 +51,28 @@ const AddUsers = () => {
       });
   }, []);
 
+  const handleImageUpdate = (newImage) => {
+    setStaffImage(newImage);
+  };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+
+
+
   const formik = useFormik({
-    // validationSchema: addUserSchema,
+    validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
       firstName: "",
@@ -85,39 +100,67 @@ const AddUsers = () => {
         gender: Gender,
         dob: startDate,
         role: Role,
-        staffImage: staffImage,
+        staffImage: "staffImage",
       };
-      setloader(true);
-      await OrgServices.AddStaff(data, user ? user : null)
-        .then((res) => {
-          if (res.status === "success") {
-            console.log(res);
-            console.log(res.message, "success");
-            navigate("/dashboard/users");
-          } else {
-            console.log(res.message, "error");
-            setloader(false);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setloader(false);
-        });
+      console.log(data, "values after submit")
+      setLoader(true);
+      try {
+        const res = await OrgServices.AddStaff(data, user ? user : null);
+        if (res.status === "success") {
+          console.log(res);
+          handleSnackbarOpen(res.message, "success");
+          navigate("/dashboard/users");
+        } else {
+          handleSnackbarOpen(res.message, "error");
+          setLoader(false);
+        }
+      } catch (error) {
+        handleSnackbarOpen(error.message, "error");
+        setLoader(false);
+      } finally {
+        setLoader(false);
+      }
+      // await OrgServices.AddStaff(data, user ? user : null)
+      //   .then((res) => {
+      //     if (res.status === "success") {
+      //       console.log(res);
+      //       handleSnackbarOpen(res.message, "success");
+      //       navigate("/dashboard/users");
+      //     } else {
+      //       handleSnackbarOpen(res.message, "error");
+      //       setLoader(false);
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     handleSnackbarOpen(error, "error");
+      //     setLoader(false);
+      //   });
     },
   });
 
   return (
     <>
       <Loader loaderValue={loader} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Grid>
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          my={"20px"}
-          width={"100%"}
+
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            my: "20px",
+            width: "100%"
+          }}
+
+
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
-            AddUsers
+            Add Staff
           </Typography>
         </Box>
 
@@ -283,7 +326,7 @@ const AddUsers = () => {
                   <FormControl fullWidth>
                     <InputLabel>Country</InputLabel>
                     <Select
-                      defaultValue={formik.values.country}
+                      value={formik.values.country}
                       label="Country"
                       {...{
                         formik,
@@ -296,7 +339,7 @@ const AddUsers = () => {
                       error={
                         formik.touched.country && Boolean(formik.errors.country)
                       }
-                      // country
+                    // country
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -316,7 +359,7 @@ const AddUsers = () => {
                   <FormControl fullWidth>
                     <InputLabel>City</InputLabel>
                     <Select
-                      defaultValue={formik.values.city}
+                      value={formik.values.city}
                       label="City"
                       {...{
                         formik,
@@ -327,7 +370,7 @@ const AddUsers = () => {
                         formik.setFieldValue("city", e.target.value);
                       }}
                       error={formik.touched.city && Boolean(formik.errors.city)}
-                      // city
+                    // city
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -354,7 +397,7 @@ const AddUsers = () => {
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
-                      defaultValue={formik.values.gender}
+                      value={formik.values.gender}
                       label="Gender"
                       {...{
                         formik,
@@ -367,7 +410,7 @@ const AddUsers = () => {
                       error={
                         formik.touched.gender && Boolean(formik.errors.gender)
                       }
-                      // country
+                    // country
                     >
                       <MenuItem value="Pakistan">Male</MenuItem>
                       <MenuItem value="China">Female</MenuItem>
@@ -399,7 +442,7 @@ const AddUsers = () => {
                     <FormControl fullWidth>
                       <InputLabel>Role</InputLabel>
                       <Select
-                        defaultValue={formik.values.role}
+                        value={formik.values.role}
                         label="Role"
                         {...{
                           formik,
@@ -413,7 +456,7 @@ const AddUsers = () => {
                         error={
                           formik.touched.role && Boolean(formik.errors.role)
                         }
-                        // country
+                      // country
                       >
                         {roles?.map((role) => (
                           <MenuItem key={role.roleName} value={role.roleName}>

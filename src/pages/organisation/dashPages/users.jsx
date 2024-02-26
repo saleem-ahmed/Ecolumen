@@ -197,7 +197,7 @@ const Users = () => {
           width={"100%"}
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
-            Users
+            Staff
           </Typography>
         </Box>
         <Box bgcolor={"#ffffff"} py={"10px"} sx={{ borderRadius: "12px" }}>
@@ -232,7 +232,7 @@ const Users = () => {
                 to="/dashboard/addUsers"
                 style={{ textDecoration: "none", color: "#ffffff" }}
               >
-                Add User
+                Add Staff
               </Link>
             </Button>
           </Box>

@@ -15,17 +15,18 @@ import { useAuth } from "../../../Auth";
 import { useFormik } from "formik";
 import Loader from "../../../components/loader";
 import Alerts from "../../../components/Customalerts";
+import { permissionSchema } from "../../../components/Validations/validation";
 
-// import { addUserSchema } from "../../../components/Validations/validation";
 const UserPermissions = () => {
   const { user } = useAuth();
-  const [roles, setRoles] = useState(); ///roles are set from severs
-  const [Role, setRole] = useState(); //Role which is set from org
+  const [roles, setRoles] = useState();
+  const [Role, setRole] = useState();
   const [Permission, setPermission] = useState([]);
   const [loader, setloader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
   const handleSnackbarOpen = (message, severity) => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -36,11 +37,24 @@ const UserPermissions = () => {
     setSnackbarOpen(false);
   };
 
-  console.log(Role);
-
   useEffect(() => {
     FetchRoles();
   }, []);
+
+  const FetchRoles = async () => {
+    await OrgServices.getAllRoles(user ? user : null)
+      .then((res) => {
+        if (res.status === "success") {
+          console.log(res.message, "success");
+          setRoles(res.roles);
+        } else {
+          console.log(res.message, "error");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const RolesPermission = [
     "value1",
@@ -58,24 +72,8 @@ const UserPermissions = () => {
     "value13",
   ];
 
-  const FetchRoles = async () => {
-    await OrgServices.getAllRoles(user ? user : null)
-      .then((res) => {
-        if (res.status === "success") {
-          console.log(res.message, "success");
-          setRoles(res.roles);
-          // console.log(roles);
-        } else {
-          console.log(res.message, "error");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const formik = useFormik({
-    // validationSchema: addUserSchema,
+    validationSchema: permissionSchema,
     enableReinitialize: true,
     initialValues: {
       role: "",
@@ -89,25 +87,26 @@ const UserPermissions = () => {
       console.log(data);
       setloader(true);
       OrgServices.setPermission(data, user, Role).then((res) => {
-        console.log(Role , "role Send to api")
-        if (res.message === "success") {
+        console.log(Role, "role Send to api")
+        if (res.status === "success") {
           setloader(false);
           handleSnackbarOpen(res.message, "success");
         } else {
+          console.log("error: ", res.status)
           setloader(false);
           handleSnackbarOpen(res.message, "error");
         }
-      }).catch((error)=>{
+      }).catch((error) => {
         setloader(false)
         handleSnackbarOpen(error);
 
       });
+      resetForm();
     },
   });
 
   const handlePermissionChange = (event) => {
     const value = event.target.value;
-    // Ensure it's an array even when a single value is selected
     setPermission(typeof value === "string" ? value.split(",") : value);
     formik.setFieldValue(
       "permission",
@@ -143,7 +142,7 @@ const UserPermissions = () => {
             >
               <InputLabel>Role</InputLabel>
               <Select
-                defaultValue={formik.values.role}
+                value={formik.values.role}
                 label="Role"
                 {...{
                   formik,
@@ -151,11 +150,10 @@ const UserPermissions = () => {
                 }}
                 onChange={(e) => {
                   setRole(e.target.value);
-
                   formik.setFieldValue("role", e.target.value);
                 }}
                 error={formik.touched.role && Boolean(formik.errors.role)}
-                // country
+
               >
                 {roles?.map((role) => (
                   <MenuItem key={role.roleName} value={role._id}>
@@ -185,9 +183,8 @@ const UserPermissions = () => {
                 value={Permission}
                 onChange={handlePermissionChange}
                 renderValue={(selected) => selected.join(", ")}
-                error={
-                  formik.touched.permission && Boolean(formik.errors.permission)
-                }
+                error={formik.touched.permission && Boolean(formik.errors.permission)}
+                
                 MenuProps={{
                   PaperProps: {
                     style: {
@@ -204,15 +201,24 @@ const UserPermissions = () => {
                   </MenuItem>
                 ))}
               </Select>
+              {formik.errors.permission && (
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                    color: "red",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  {formik.errors.permission}
+                </Typography>
+              )}
             </FormControl>
           </Box>
           <Box>
             <Button
               color="success"
               variant="contained"
-              onClick={() => {
-                formik.handleSubmit();
-              }}
+              onClick={() => formik.handleSubmit()}
             >
               Save
             </Button>

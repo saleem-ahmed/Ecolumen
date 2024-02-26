@@ -62,7 +62,7 @@ const SideBar = () => {
 
           <ListItemButton onClick={handleClick}>
             <ListItemText>
-              <Typography variant="sideBarLink">User Management</Typography>
+              <Typography variant="sideBarLink">Staff Management</Typography>
             </ListItemText>
             {open ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
@@ -80,7 +80,7 @@ const SideBar = () => {
                     />
                   </IconButton>
                   <ListItemText>
-                    <Typography variant="sideBarLink">Users</Typography>
+                    <Typography variant="sideBarLink">Staff</Typography>
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
