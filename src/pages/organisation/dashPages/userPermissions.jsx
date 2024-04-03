@@ -8,6 +8,8 @@ import {
   MenuItem,
   Checkbox,
   ListItemText,
+  FormGroup,
+  FormControlLabel,
   Button,
 } from "@mui/material";
 import OrgServices from "../../../apis/Organisation";
@@ -77,42 +79,33 @@ const UserPermissions = () => {
     enableReinitialize: true,
     initialValues: {
       role: "",
-      permission: "",
+      permissions: [],
     },
 
-    onSubmit: async () => {
+    onSubmit: async (values) => {
       const data = {
-        permissions: Permission,
+        permissions: values.permissions,
       };
       console.log(data);
       setloader(true);
       OrgServices.setPermission(data, user, Role).then((res) => {
-        console.log(Role, "role Send to api")
+        console.log(Role, "role Send to api");
         if (res.status === "success") {
           setloader(false);
           handleSnackbarOpen(res.message, "success");
         } else {
-          console.log("error: ", res.status)
+          console.log("error: ", res.status);
           setloader(false);
           handleSnackbarOpen(res.message, "error");
         }
       }).catch((error) => {
-        setloader(false)
+        setloader(false);
         handleSnackbarOpen(error);
-
       });
-      resetForm();
+      formik.resetForm();
     },
   });
 
-  const handlePermissionChange = (event) => {
-    const value = event.target.value;
-    setPermission(typeof value === "string" ? value.split(",") : value);
-    formik.setFieldValue(
-      "permission",
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
   return (
     <>
       <Loader loaderValue={loader} />
@@ -144,16 +137,11 @@ const UserPermissions = () => {
               <Select
                 value={formik.values.role}
                 label="Role"
-                {...{
-                  formik,
-                  checkValidation: true,
-                }}
                 onChange={(e) => {
                   setRole(e.target.value);
                   formik.setFieldValue("role", e.target.value);
                 }}
                 error={formik.touched.role && Boolean(formik.errors.role)}
-
               >
                 {roles?.map((role) => (
                   <MenuItem key={role.roleName} value={role._id}>
@@ -174,7 +162,56 @@ const UserPermissions = () => {
               )}
             </FormControl>
           </Box>
+
           <Box width={"100%"}>
+            <Box display={"content"} sx={{ display: "content" }}>
+              {RolesPermission.map((permission) => (
+
+                <FormControlLabel
+                  key={permission}
+                  control={
+                    <Checkbox
+                      checked={formik.values.permissions.includes(permission)}
+                      onChange={(e) => {
+                        const permissions = [...formik.values.permissions];
+                        if (e.target.checked) {
+                          permissions.push(permission);
+                        } else {
+                          const index = permissions.indexOf(permission);
+                          permissions.splice(index, 1);
+                        }
+                        formik.setFieldValue("permissions", permissions);
+                      }}
+                      value={permission}
+                    />
+                  }
+                  label={permission}
+                  sx={{ width: "100%", maxWidth: "200px" }}
+
+                />
+              ))}
+            </Box>
+          </Box>
+
+          <Box>
+            <Button
+              color="success"
+              variant="contained"
+              onClick={() => formik.handleSubmit()}
+            >
+              Save
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+export default UserPermissions;
+
+
+{/* <Box width={"100%"}>
             <FormControl fullWidth>
               <InputLabel>Permissions</InputLabel>
               <Select
@@ -213,20 +250,4 @@ const UserPermissions = () => {
                 </Typography>
               )}
             </FormControl>
-          </Box>
-          <Box>
-            <Button
-              color="success"
-              variant="contained"
-              onClick={() => formik.handleSubmit()}
-            >
-              Save
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    </>
-  );
-};
-
-export default UserPermissions;
+          </Box> */}

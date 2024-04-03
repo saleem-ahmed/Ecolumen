@@ -46,7 +46,6 @@ const login = () => {
       password: "",
     },
     onSubmit: async () => {
-      setLoading(true);
       await login(formik.values.email, formik.values.password);
     },
   });
@@ -117,10 +116,10 @@ const login = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+              // {...{
+              //   formik,
+              //   checkvalidation: true,
+              // }}
               onChange={(e) => {
                 formik.setFieldValue("email", e.target.value);
               }}
@@ -138,10 +137,10 @@ const login = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+              // {...{
+              //   formik,
+              //   checkvalidation: true,
+              // }}
               onChange={(e) => {
                 formik.setFieldValue("password", e.target.value);
               }}

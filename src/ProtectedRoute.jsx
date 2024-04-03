@@ -7,11 +7,10 @@ export function ProtectedRoute({ children }) {
   const { user } = useAuth();
   // global redux store
   const isLoggedIn = localStorage.getItem('token');
-  // const location = useLocation();
-console.log("User:", user)
+  console.log("User:", user)
   if (!isLoggedIn) {
     return <Navigate to="/orglogin" replace />;
-  } 
+  }
 
   return children;
 }

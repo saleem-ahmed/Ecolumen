@@ -66,10 +66,10 @@ const Verify = () => {
                         {formik.errors.code}
                       </Typography>
                     }
-                    {...{
-                      formik,
-                      checkValidation: true,
-                    }}
+                    // {...{
+                    //   formik,
+                    //   checkvalidation: true,
+                    // }}
                     onChange={(e) => {
                       formik.setFieldValue("code", e.target.value);
                     }}

@@ -18,7 +18,7 @@ const UploadImage = ({ imageProp, onImageChange }) => {
   };
 
   return (
-    <Stack alignItems="center" spacing={2}>
+    <Stack sx={{ alignItems:"center", spacing : 2 }}>
       <Avatar
         alt="Uploaded image"
         src={image}

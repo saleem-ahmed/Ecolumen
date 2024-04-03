@@ -2,16 +2,30 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import { Grid, Box, Typography, Stack, TextField, Button } from "@mui/material";
-import { Link , useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../../assets/logo.svg";
 import { VerifySchema } from "../../../components/Validations/validation.js";
 import LoginBg from "../../../assets/dashboard/loginbg.png";
-
+import Alerts from "../../../components/Customalerts";
 const OrgVerify = () => {
+  const location = useLocation();
   const navigate = useNavigate();
   const [activeField, setActiveField] = useState(null);
   const handleFieldFocus = (fieldName) => {
     setActiveField(fieldName);
+  };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const formik = useFormik({
@@ -21,15 +35,21 @@ const OrgVerify = () => {
       code: "",
     },
     onSubmit: async () => {
-      navigate("/orgLogin");
-      alert("You have Verified the Code");
-     // await login(formik.values.email, formik.values.password);
-  
+      if (formik.values.code == location.state.resetToken) {
+        navigate("/orgLogin");
+        handleSnackbarOpen("You have Verified the Code", "success");
+      }
     },
   });
 
   return (
-    <Grid container height={"100vh"} sx={{ overflow: "hidden" , position: "relative" }}>
+    <Grid container height={"100vh"} sx={{ overflow: "hidden", position: "relative" }}>
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Box
         bgcolor={"#ffffff"}
         p={"5px"}
@@ -123,10 +143,10 @@ const OrgVerify = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+              // {...{
+              //   formik,
+              //   checkvalidation: true,
+              // }}
               onChange={(e) => {
                 formik.setFieldValue("code", e.target.value);
               }}
@@ -143,7 +163,7 @@ const OrgVerify = () => {
             >
               Confirm
             </Button>
-            
+
           </Stack>
         </Stack>
       </Grid>

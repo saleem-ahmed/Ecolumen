@@ -104,10 +104,10 @@ const SignIn = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+              // {...{
+              //   formik,
+              //   checkvalidation: true,
+              // }}
               onChange={(e) => {
                 formik.setFieldValue("email", e.target.value);
               }}
@@ -125,10 +125,10 @@ const SignIn = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+              // {...{
+              //   formik,
+              //   checkvalidation: true,
+              // }}
               onChange={(e) => {
                 formik.setFieldValue("password", e.target.value);
               }}
@@ -167,7 +167,7 @@ const SignIn = () => {
               type="submit"
               variant="contained"
               onClick={() => {
-                formik.handleSubmit();
+                // formik.handleSubmit();
               }}
               sx={{ marginTop: "20px", width: "100%" }}
             >

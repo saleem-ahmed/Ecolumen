@@ -6,12 +6,26 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../../assets/logo.svg";
 import { ForgetSchema } from "../../../components/Validations/validation.js";
 import LoginBg from "../../../assets/dashboard/loginbg.png";
-
+import OrgServices from "../../../apis/Organisation.js";
+import Loader from "../../../components/loader";
+import Alerts from "../../../components/Customalerts";
 const OrgForget = () => {
   const navigate = useNavigate();
   const [activeField, setActiveField] = useState(null);
   const handleFieldFocus = (fieldName) => {
     setActiveField(fieldName);
+  };
+  const [loader, setLoader] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   const formik = useFormik({
@@ -21,27 +35,49 @@ const OrgForget = () => {
       email: "",
     },
     onSubmit: async () => {
-      navigate("/orgVerify");
-      //   await login(formik.values.email, formik.values.password);
+      const data = {
+        email: formik.values.email,
+      }
+      setLoader(true)
+      console.log(data)
+      await OrgServices.forgetPass(data).then((res) => {
+        console.log(res);
+        setLoader(false)
+        handleSnackbarOpen(res.message);
+        navigate("/orgVerify" , { state: res } );
+      }).catch((err) => {
+        console.log(err);
+        setLoader(false)
+        handleSnackbarOpen(err.data.message, "error");
+      });
+
+
+
     },
   });
 
   return (
     <Grid
       container
-      height={"100vh"}
-      sx={{ overflow: "hidden", position: "relative" }}
+      sx={{ overflow: "hidden", position: "relative", height: "100vh" }}
     >
+      <Loader loaderValue={loader} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Box
-        bgcolor={"#ffffff"}
-        p={"5px"}
-        width={"30px"}
-        height={"30px"}
         sx={{
           position: "absolute",
           top: "10px",
           left: "10px",
+          bgcolor: "#ffffff",
           borderRadius: "50%",
+          p: "5px",
+          width: "30px",
+          height: "30px"
         }}
       >
         <Link to="/orgLogin">
@@ -60,7 +96,12 @@ const OrgForget = () => {
         </Link>
       </Box>
       <Grid item md={12} xs={12}>
-        <Box bgcolor={"#284259"} height={"70vh"}>
+        <Box
+          sx={{
+            bgcolor: "#284259",
+            height: "70vh"
+          }}
+        >
           <img
             src={LoginBg}
             alt=""
@@ -72,15 +113,16 @@ const OrgForget = () => {
         item
         md={12}
         xs={12}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-        bgcolor={"#FFF"}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#fff"
+        }}
       >
         <Stack
           direction="column"
           alignItems="center"
-          justifyContent="center"
           gap={"20px"}
           px={{ md: "30px", xs: "10px" }}
           py={{ md: "30px", xs: "10px" }}
@@ -116,7 +158,7 @@ const OrgForget = () => {
             <TextField
               label="Email Address"
               fullWidth
-              error={formik.errors.email && activeField === "email"}
+              // error={formik.errors.email && activeField === "email"}
               helperText={
                 activeField === "email" ? (
                   <Typography sx={{ fontSize: 10, color: "red" }}>
@@ -124,26 +166,13 @@ const OrgForget = () => {
                   </Typography>
                 ) : null
               }
-              {...{
-                formik,
-                checkValidation: true,
-              }}
+
               onChange={(e) => {
                 formik.setFieldValue("email", e.target.value);
               }}
               onFocus={() => handleFieldFocus("email")}
             />
 
-            {/* <Link
-              to="/UForget"
-              style={{
-                width: "100%",
-                textAlign: "end",
-                textDecoration: "none",
-              }}
-            >
-              <Typography variant="span">Forget Password</Typography>
-            </Link> */}
             <Button
               color="success"
               type="submit"
@@ -155,19 +184,7 @@ const OrgForget = () => {
             >
               Send
             </Button>
-            {/* <Typography variant="subtitle1">
-              If you don{"'"}t have an account{" "}
-              <Link
-                to="/orgRegister"
-                style={{
-                  textDecoration: "none",
-                  color: "#284259",
-                  fontWeight: "500",
-                }}
-              >
-                Register
-              </Link>
-            </Typography> */}
+
           </Stack>
         </Stack>
       </Grid>

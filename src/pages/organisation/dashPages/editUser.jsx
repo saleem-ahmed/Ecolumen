@@ -20,17 +20,15 @@ import { useAuth } from "../../../Auth";
 import Loader from "../../../components/loader";
 import UploadImage from "../../../components/ImageUpload/imageupload";
 import "../../../styles/globals/variables.scss";
-// import { addUserSchema } from "../../../components/Validations/validation";
+import { addUserSchema } from "../../../components/Validations/validation";
+import Alerts from "../../../components/Customalerts";
 
 const EditUser = () => {
   const location = useLocation();
-  console.log(location);
+  // console.log(location);
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loader, setloader] = useState(false);
-  // const [Country, setCountry] = useState("");
-  // const [City, setCity] = useState("");
-  // const [Gender, setGender] = useState("");
   const [Role, setRole] = useState("");
   const [staffImage, setStaffImage] = useState({});
   const [startDate, setStartDate] = useState(new Date());
@@ -38,6 +36,74 @@ const EditUser = () => {
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  const formik = useFormik({
+    // validationSchema: addUserSchema,
+    enableReinitialize: true,
+    initialValues: {
+      firstName: location.state?.name || "",
+      lastName: "",
+      email: location.state?.email || "",
+      phone: location.state?.phoneNumber || "",
+      address: location.state?.address || "",
+      state: location.state?.state || "",
+      country: location.state?.country || "",
+      city: location.state?.city || "",
+      gender: location.state?.gender || "",
+      dateOfBirth: location.state?.dob || {},
+      role: location.state?.roleName || ""
+    },
+
+    onSubmit: async () => {
+      const data = {
+        name: formik.values.firstName + " " + formik.values.lastName,
+        email: formik.values.email,
+        phoneNumber: formik.values.phone,
+        address: formik.values.address,
+        state: formik.values.state,
+        country: formik.values.country,
+        city: formik.values.city,
+        gender: formik.values.gender,
+        dob: startDate,
+        role: Role,
+        staffImage: "staffImage",
+      };
+
+      setloader(true);
+
+      await OrgServices.upStaff(data, user ? user : null, location.state)
+        .then((res) => {
+          if (res.status === "success") {
+            console.log(res.message);
+            handleSnackbarOpen(res.message, "success");
+            navigate("/dashboard/users");
+          } else {
+            console.log(res.message);
+            handleSnackbarOpen(res.message, "error");
+            setloader(false);
+          }
+        })
+        .catch((error) => {
+          console.log(error,"yttfytf");
+          handleSnackbarOpen(error.data.message, "error");
+          setloader(false);
+        });
+    },
+
+  });
 
   useEffect(() => {
     OrgServices.getAllRoles(user ? user : null)
@@ -55,61 +121,15 @@ const EditUser = () => {
       });
   }, []);
 
-  const formik = useFormik({
-    // validationSchema: addUserSchema,
-    enableReinitialize: true,
-    initialValues: {
-      firstName: location.state?.name || "",
-      lastName: "",
-      email: location.state?.email || "",
-      phone: location.state?.phoneNumber || "",
-      address: location.state?.address || "",
-      state: location.state?.state || "",
-      country: location.state?.country || "",
-      city: location.state?.city || "",
-      gender: location.state?.gender || "",
-      dateOfBirth: location.state?.dob || new Date(),
-      role: location.state?.roleName || "",
-      staffImage: {},
-    },
-
-    onSubmit: async () => {
-      const data = {
-        name: formik.values.firstName + " " + formik.values.lastName,
-        email: formik.values.email,
-        phoneNumber: formik.values.phone,
-        address: formik.values.address,
-        state: formik.values.state,
-        country: formik.values.country,
-        city: formik.values.city,
-        gender: formik.values.gender,
-        dob: startDate,
-        role: Role,
-        staffImage: staffImage,
-      };
-      setloader(true);
-      
-
-      OrgServices.upStaff(data, user ? user : null, location.state)
-        .then((res) => {
-          if (res.status === "success") {
-            navigate("/dashboard/users");
-            console.log(res.message);
-          } else {
-            console.log(res.message);
-            setloader(false);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          setloader(false);
-        });
-    },
-  });
-
   return (
     <>
       <Loader loaderValue={loader} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Grid>
         <Box
           display={"flex"}
@@ -286,10 +306,10 @@ const EditUser = () => {
                     <Select
                       defaultValue={formik.values.country}
                       label="Country"
-                      {...{
-                        formik,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         // setCountry(e.target.value);
                         formik.setFieldValue("country", e.target.value);
@@ -297,7 +317,7 @@ const EditUser = () => {
                       error={
                         formik.touched.country && Boolean(formik.errors.country)
                       }
-                      // country
+                    // country
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -319,16 +339,16 @@ const EditUser = () => {
                     <Select
                       defaultValue={formik.values.city}
                       label="City"
-                      {...{
-                        formik,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         // setCity(e.target.value);
                         formik.setFieldValue("city", e.target.value);
                       }}
                       error={formik.touched.city && Boolean(formik.errors.city)}
-                      // city
+                    // city
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -352,15 +372,15 @@ const EditUser = () => {
                   sx={{ width: "100%", boxSizing: "border-box" }}
                   my={2}
                 >
-                   <FormControl fullWidth>
+                  <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
                       defaultValue={formik.values.gender}
                       label="Gender"
-                      {...{
-                        formik,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         // setGender(e.target.value);
                         formik.setFieldValue("gender", e.target.value);
@@ -368,7 +388,7 @@ const EditUser = () => {
                       error={
                         formik.touched.gender && Boolean(formik.errors.gender)
                       }
-                      // country
+                    // country
                     >
                       <MenuItem value="Pakistan">Male</MenuItem>
                       <MenuItem value="China">Female</MenuItem>
@@ -402,10 +422,10 @@ const EditUser = () => {
                       <Select
                         value={formik.values.role}
                         label="Role"
-                        {...{
-                          formik,
-                          checkValidation: true,
-                        }}
+                        // {...{
+                        //   formik,
+                        //   checkvalidation: true,
+                        // }}
                         onChange={(e) => {
                           setRole(e.target.value);
 
@@ -414,7 +434,7 @@ const EditUser = () => {
                         error={
                           formik.touched.role && Boolean(formik.errors.role)
                         }
-                        // country
+                      // country
                       >
                         {roles?.map((role) => (
                           <MenuItem key={role.roleName} value={role.roleName}>
@@ -461,9 +481,7 @@ const EditUser = () => {
                   <Button
                     color="success"
                     variant="contained"
-                    onClick={() => {
-                      formik.handleSubmit();
-                    }}
+                    onClick={() => formik.handleSubmit()}
                   >
                     Submit
                   </Button>

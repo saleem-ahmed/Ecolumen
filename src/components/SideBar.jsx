@@ -26,10 +26,13 @@ const SideBar = () => {
   return (
     <>
       <Box
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"space-between"}
+        // display={"flex"}
+        // flexDirection={"column"}
+        // justifyContent={"space-between"}
         sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
           width: "100%",
           maxWidth: 360,
           bgcolor: "#284259",
@@ -38,14 +41,23 @@ const SideBar = () => {
         }}
       >
         <List
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"center"}
+          // display={"flex"}
+          // flexDirection={"column"}
+          // alignItems={"center"}
           sx={{
+            display: "flex",
+            flexDirection: "column",
             width: "100%",
           }}
         >
-          <Box display={"flex"} justifyContent={"center"} my={"26px"}>
+          <Box 
+          // display={"flex"} justifyContent={"center"} my={"26px"}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            my: "26px"
+          }}
+          >
             <img src={Logo} alt="" />
           </Box>
           <NavLink
@@ -84,7 +96,7 @@ const SideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-              
+
             </List>
             <List component="div" disablePadding>
               <NavLink
@@ -119,21 +131,11 @@ const SideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-              
+
             </List>
-            
+
           </Collapse>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="/dashboard/setting"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-          >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">Settings</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
+         
         </List>
 
         <List

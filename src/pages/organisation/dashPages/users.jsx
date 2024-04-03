@@ -97,7 +97,7 @@ const Users = () => {
     setloader(true);
     await OrgServices.toggleStaff(user ? user : null, staff)
       .then((res) => {
-        if (res) {
+        if (res.status === "success") {
           setstaff((prevStaff)=>{
             const updatedStaff = prevStaff.map((staff)=>{
               console.log(staff._id , "id")
@@ -106,19 +106,23 @@ const Users = () => {
                }
                return staff;
             })
+           
             return updatedStaff;
           });
-
+          console.log(res, "success")
           setloader(false);
+          
           handleSnackbarOpen(res.message, "success");
         } else {
           setloader(false);
           handleSnackbarOpen(res.message, "error");
+          console.log(res, "error")
         }
       })
       .catch((error) => {
-        // setloader(false);
-        handleSnackbarOpen(error);
+        setloader(false);
+        handleSnackbarOpen(error.data.message , "error");
+        console.log(error.data, "error")
       });
   };
 

@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import React from "react";
 import { Snackbar, Alert } from "@mui/material";
 
 const Alerts = ({ open, message, severity, handleClose }) => {
@@ -15,7 +15,5 @@ const Alerts = ({ open, message, severity, handleClose }) => {
     </Snackbar>
   );
 }
-
-
 
 export default Alerts;

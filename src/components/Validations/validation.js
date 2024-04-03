@@ -29,7 +29,7 @@ export const ForgetSchema = yup.object().shape({
 export const VerifySchema = yup.object().shape({
   code: yup
     .string()
-    .matches(/^[0-9]{6}$/, "Invalid code, it should be a 6-digit number")
+    .matches(/^[0-9]{4}$/, "Invalid code, it should be a 6-digit number")
     .required("Required field *"),
 });
 
@@ -109,10 +109,13 @@ export const addUserSchema = yup.object().shape({
   city: yup.string().required("Required field *"),
   gender: yup.string().required("Required field *"),
   dateOfBrith: yup.object().required("Required field *"),
-  Role: yup.array().required("Required field *"),
+  role: yup.string().required("Required field *"),
 });
 
 export const permissionSchema = yup.object().shape({
-  role: yup.string().required("Required field *"),
-  permission: yup.array().of(yup.string()).required("Required field *"),
+  role: yup.string().required('Role is required'),
+  permissions: yup.array()
+    .of(yup.string()) 
+    .required('Permissions are required') 
+    .min(1, 'Please select at least one permission'),
 });

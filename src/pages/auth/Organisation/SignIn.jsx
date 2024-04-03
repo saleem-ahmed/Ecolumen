@@ -18,19 +18,19 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-// import IntlTelInput from "react-intl-tel-input";
 import "react-intl-tel-input/dist/main.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-// import OrgServices from "../../../apis/Organisation"
+import Alerts from "../../../components/Customalerts";
 import { useAuth } from "../../../Auth/index";
-// import * as Yup from "yup";
+import Loader from "../../../components/loader";
 import {
   stepOneValidationSchema,
   stepTwoValidationSchema,
   stepThreeValidationSchema,
   VerifySchema,
 } from "../../../components/Validations/validation";
+import OrgServices from "../../../apis/Organisation"
 
 const steps = [
   {
@@ -53,11 +53,24 @@ const steps = [
 export default function SignIn() {
   const { registerOrg } = useAuth();
   const Navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [Country, setCountry] = useState("");
   const [State, setState] = useState("");
   const [City, setCity] = useState("");
   const [Type, setType] = useState("");
   const [Find, setFind] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const handleSnackbarOpen = (message, severity = "success") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const formik1 = useFormik({
     validationSchema: stepOneValidationSchema,
@@ -75,7 +88,6 @@ export default function SignIn() {
     },
     onSubmit: async () => {
       handleNext();
-      console.log("Submitted form 1");
     },
   });
 
@@ -87,7 +99,6 @@ export default function SignIn() {
       phone: "",
     },
     onSubmit: async () => {
-      // alert("hello");
       handleNext();
     },
   });
@@ -100,7 +111,22 @@ export default function SignIn() {
       confirmPassword: "",
     },
     onSubmit: async () => {
-      handleNext();
+      setLoading(true);
+      const data = {
+        email: formik2.values.email,
+      }
+      await OrgServices.verifyEmail(data)
+        .then((res) => {
+          setLoading(false);
+          handleNext();
+          console.log(res.data)
+          handleSnackbarOpen(res.message, "success")
+          console.log(res);
+        }).catch((error) => {
+          setLoading(false);
+          console.log('Error:', error.data)
+          handleSnackbarOpen( error.data.message , "error");
+        });
     },
   });
   const formik4 = useFormik({
@@ -156,6 +182,13 @@ export default function SignIn() {
 
   return (
     <Grid container>
+      <Loader loaderValue={loading} />
+      <Alerts
+        open={snackbarOpen}
+        message={snackbarMessage}
+        severity={snackbarSeverity}
+        handleClose={handleSnackbarClose}
+      />
       <Grid
         item
         xs={12}
@@ -251,10 +284,10 @@ export default function SignIn() {
                     <Select
                       defaultValue={formik1.values.country}
                       label="Country"
-                      {...{
-                        formik1,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik1,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         setCountry(e.target.value);
                         formik1.setFieldValue("country", e.target.value);
@@ -263,7 +296,7 @@ export default function SignIn() {
                         formik1.touched.country &&
                         Boolean(formik1.errors.country)
                       }
-                      // country
+                    // country
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -313,10 +346,10 @@ export default function SignIn() {
                     <Select
                       defaultValue={formik1.values.city}
                       label="City"
-                      {...{
-                        formik1,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik1,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         formik1.setFieldValue("city", e.target.value);
                         setCity(e.target.value);
@@ -376,10 +409,10 @@ export default function SignIn() {
                     <Select
                       defaultValue={Type}
                       label="Type"
-                      {...{
-                        formik1,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik1,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         formik1.setFieldValue("type", e.target.value);
                         setType(e.target.value);
@@ -452,10 +485,10 @@ export default function SignIn() {
                     <Select
                       defaultValue={formik1.values.find}
                       label="Find"
-                      {...{
-                        formik1,
-                        checkValidation: true,
-                      }}
+                      // {...{
+                      //   formik1,
+                      //   checkvalidation: true,
+                      // }}
                       onChange={(e) => {
                         formik1.setFieldValue("find", e.target.value);
                         setFind(e.target.value);
@@ -868,7 +901,7 @@ export default function SignIn() {
                       control={<Checkbox defaultChecked />}
                       label=""
                       size="small"
-                      // sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                    // sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
                     />
                     <Typography variant="subtitle1">
                       By clicking Register, you agree to our Terms of Use and
