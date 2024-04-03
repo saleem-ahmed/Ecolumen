@@ -67,6 +67,7 @@ const OrgServices = {
     });
   },
 
+  // set permission
   setPermission: async (data, user, id) => {
     return Service.post({
       url: `${URL}/organization/${user._id}/${id}/permissions`,
@@ -74,6 +75,21 @@ const OrgServices = {
     });
   },
 
+  // forget password
+  forgetPass: async (data) => {
+    return Service.post({
+      url: `${URL}/organization/forgot-password`,
+      data,
+    });
+  },
+
+  // verify email
+  verifyEmail: async (data) => {
+    return Service.post({
+      url: `${URL}/organization/Verify-email`,
+      data,
+    });
+  },
   // delete staff
   deleteStaff: async (user, staff) => {
     return await Service.remove({

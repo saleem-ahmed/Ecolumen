@@ -64,10 +64,10 @@ const Signin = () => {
                     {formik.errors.email}
                   </Typography>
                 }
-                {...{
-                  formik,
-                  checkValidation: true,
-                }}
+                // {...{
+                //   formik,
+                //   checkvalidation: true,
+                // }}
                 onChange={(e) => {
                   formik.setFieldValue("email", e.target.value);
                 }}
@@ -81,10 +81,10 @@ const Signin = () => {
                     {formik.errors.password}
                   </Typography>
                 }
-                {...{
-                  formik,
-                  checkValidation: true,
-                }}
+                // {...{
+                //   formik,
+                //   checkvalidation: true,
+                // }}
                 onChange={(e) => {
                   formik.setFieldValue("password", e.target.value);
                 }}

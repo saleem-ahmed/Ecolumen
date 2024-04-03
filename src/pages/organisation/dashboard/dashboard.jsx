@@ -26,13 +26,13 @@ const drawerWidth = 260;
 const Dashboard = () => {
   const { LogoutUser, user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -64,6 +64,7 @@ const Dashboard = () => {
           }}
         >
           <SideBar />
+          
         </Drawer>
         <Drawer
           variant="permanent"
@@ -118,9 +119,11 @@ const Dashboard = () => {
               <Menu color="#444" sx={{ fontSize: "16px" }} />
             </IconButton>
             <Box
-              width={"100%"}
-              display={"flex"}
-              justifyContent={"space-between"}
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between"
+              }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
                 <TextField
@@ -169,7 +172,7 @@ const Dashboard = () => {
               <Menu
                 anchorEl={anchorEl}
                 id="account-menu"
-                open={open}
+                open={open} // Use the open state variable here
                 onClose={handleClose}
                 onClick={handleClose}
                 PaperProps={{

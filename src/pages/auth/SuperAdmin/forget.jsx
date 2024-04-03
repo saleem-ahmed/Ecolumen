@@ -82,10 +82,10 @@ const Forget = () => {
                         {formik.errors.email}
                       </Typography>
                     }
-                    {...{
-                      formik,
-                      checkValidation: true,
-                    }}
+                    // {...{
+                    //   formik,
+                    //   : true,
+                    // }}
                     onChange={(e) => {
                       formik.setFieldValue("email", e.target.value);
                     }}

@@ -37,19 +37,28 @@ const Mainpage = () => {
   const [staffCount, setStaffCount] = useState({
     totalStaffCount: 0,
     activeStaffCount: 0,
-    inactiveStaffCount: 0,
+    inactiveStaffCount: 0
   });
 
   useEffect(() => {
     //StaffCount
     const fetchStaffCount = async () => {
-      try {
-        const result = await OrgServices.staffCount(user);
-        setStaffCount(result);
-      } catch (error) {
-        console.error("Error fetching staff count:", error);
-      }
+
+      await OrgServices.staffCount(user).then((res) => {
+        console.log(res, "staff count in APi")
+        if (res.status === 'success') {
+
+          setStaffCount(res);
+          console.log(res, "staff count in APi")
+        } else {
+          console.log("error")
+        }
+      }).catch((error) => {
+        console.log("error", error)
+      });
+
     };
+
     fetchStaffCount();
     //getStaff
     const fetchData = async () => {
@@ -57,7 +66,7 @@ const Mainpage = () => {
         const res = await OrgServices.getStaff(user, 1);
         setAllUsers(res.staffMembers);
       } catch (error) {
-        console.error("Error fetching staff members:", error);
+        console.log("Error fetching staff members:", error);
       }
     };
 
@@ -212,7 +221,6 @@ const Mainpage = () => {
               width="100%"
               height="600px"
               style={{ border: "0px" }}
-              allowfullscreen=""
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
@@ -329,7 +337,7 @@ const Mainpage = () => {
               </TableContainer>
             </Box>
           </Box>
-          
+
         </Box>
         <Box
           display={"flex"}
