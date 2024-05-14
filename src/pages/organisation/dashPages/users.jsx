@@ -98,20 +98,20 @@ const Users = () => {
     await OrgServices.toggleStaff(user ? user : null, staff)
       .then((res) => {
         if (res.status === "success") {
-          setstaff((prevStaff)=>{
-            const updatedStaff = prevStaff.map((staff)=>{
-              console.log(staff._id , "id")
-               if(staff._id === res.staffDetails.id ){
-                return {...staff, isActive : res.staffDetails.isActive}
-               }
-               return staff;
+          setstaff((prevStaff) => {
+            const updatedStaff = prevStaff.map((staff) => {
+              console.log(staff._id, "id")
+              if (staff._id === res.staffDetails.id) {
+                return { ...staff, isActive: res.staffDetails.isActive }
+              }
+              return staff;
             })
-           
+
             return updatedStaff;
           });
           console.log(res, "success")
           setloader(false);
-          
+
           handleSnackbarOpen(res.message, "success");
         } else {
           setloader(false);
@@ -121,7 +121,7 @@ const Users = () => {
       })
       .catch((error) => {
         setloader(false);
-        handleSnackbarOpen(error.data.message , "error");
+        handleSnackbarOpen(error.data.message, "error");
         console.log(error.data, "error")
       });
   };
@@ -253,95 +253,101 @@ const Users = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {displayStaff.map((staffMember, index) => (
-                  <TableRow key={staffMember._id}>
-                    <TableCell
-                      sx={{
-                        display: "flex",
-                        gap: "10px",
-                        alignItems: "center",
-                      }}
-                    >
-                      <img
-                        style={{
-                          width: "30px",
-                          height: "30px",
-                          borderRadius: "50%",
-                        }}
-                        src={staffMember.staffImage}
-                        alt=""
-                      />
-
-                      {staffMember.name}
-                    </TableCell>
-                    <TableCell>{staffMember.email}</TableCell>
-                    <TableCell>
-                      {staffMember.role == 1 ? (
-                        <span style={{ color: "green" }}>admin</span>
-                      ) : staffMember.role == 2 ? (
-                        <span style={{ color: "blue" }}>Manager</span>
-                      ) : staffMember.role == 3 ? (
-                        <span style={{ color: "orange" }}>Staff </span>
-                      ) : (
-                        staffMember.role
-                      )}
-                    </TableCell>
-                    <TableCell>{staffMember.phoneNumber}</TableCell>
-                    <TableCell>
-                      <Switch
-                        checked={staffMember.isActive}
-                        onChange={() => handleToggle(staffMember)}
-                        color="primary"
-                        inputProps={{ "aria-label": "toggle staff status" }}
-                      />
-                    </TableCell>
-
-                    <TableCell align="left">
-                      <div>
-                        <IconButton
-                          aria-label="more"
-                          id={`long-button-${index}`}
-                          aria-controls={
-                            open ? `long-menu-${index}` : undefined
-                          }
-                          aria-expanded={open ? "true" : undefined}
-                          aria-haspopup="true"
-                          onClick={(event) => handleMenuClick(event, index)}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                          id={`long-menu-${index}`}
-                          MenuListProps={{
-                            "aria-labelledby": `long-button-${index}`,
-                          }}
-                          anchorEl={anchorElObj[index]}
-                          open={Boolean(anchorElObj[index])}
-                          onClose={() => handleMenuClose(index)}
-                          PaperProps={{
-                            style: {
-                              maxHeight: ITEM_HEIGHT * 4.5,
-                              width: "20ch",
-                            },
-                          }}
-                        >
-                          <MenuItem
-                            onClick={() => handleEditClick(index, staffMember)}
-                          >
-                            Edit
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() =>
-                              handleRemoveClick(index, staffMember)
-                            }
-                          >
-                            Remove
-                          </MenuItem>
-                        </Menu>
-                      </div>
+                {displayStaff === null ? (
+                  <TableRow>
+                    <TableCell colSpan={6} align="center" sx={{ height: "10vh" }}>
+                      <Typography variant="p">No staff available</Typography>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  
+                  displayStaff.map((staffMember, index) => (
+                    <TableRow key={staffMember._id}>
+                      <TableCell
+                        sx={{
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <img
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            borderRadius: "50%",
+                          }}
+                          src={staffMember.staffImage}
+                          alt=""
+                        />
+
+                        {staffMember.name}
+                      </TableCell>
+                      <TableCell>{staffMember.email}</TableCell>
+                      <TableCell>
+                        {staffMember.role === 1 ? (
+                          <span style={{ color: "green" }}>admin</span>
+                        ) : staffMember.role === 2 ? (
+                          <span style={{ color: "blue" }}>Manager</span>
+                        ) : staffMember.role === 3 ? (
+                          <span style={{ color: "orange" }}>Staff</span>
+                        ) : (
+                          staffMember.role
+                        )}
+                      </TableCell>
+                      <TableCell>{staffMember.phoneNumber}</TableCell>
+                      <TableCell>
+                        <Switch
+                          checked={staffMember.isActive}
+                          onChange={() => handleToggle(staffMember)}
+                          color="primary"
+                          inputProps={{ "aria-label": "toggle staff status" }}
+                        />
+                      </TableCell>
+                      <TableCell align="left">
+                        <div>
+                          <IconButton
+                            aria-label="more"
+                            id={`long-button-${index}`}
+                            aria-controls={open ? `long-menu-${index}` : undefined}
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={(event) => handleMenuClick(event, index)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id={`long-menu-${index}`}
+                            MenuListProps={{
+                              "aria-labelledby": `long-button-${index}`,
+                            }}
+                            anchorEl={anchorElObj[index]}
+                            open={Boolean(anchorElObj[index])}
+                            onClose={() => handleMenuClose(index)}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: "20ch",
+                              },
+                            }}
+                          >
+                            <MenuItem onClick={() => handleEditClick(index, staffMember)}>
+                              Edit
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() => handleRemoveClick(index, staffMember)}
+                            >
+                              Remove
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )
+                  )
+                )
+
+                }
+
               </TableBody>
             </Table>
             <Pagination

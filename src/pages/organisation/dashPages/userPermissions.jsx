@@ -23,7 +23,7 @@ const UserPermissions = () => {
   const { user } = useAuth();
   const [roles, setRoles] = useState();
   const [Role, setRole] = useState();
-  const [Permission, setPermission] = useState([]);
+  // const [Permission, setPermission] = useState([]);
   const [loader, setloader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -186,10 +186,23 @@ const UserPermissions = () => {
                     />
                   }
                   label={permission}
+                  error={formik.touched.permissions && Boolean(formik.errors.permissions)}
                   sx={{ width: "100%", maxWidth: "200px" }}
 
                 />
+
               ))}
+              {formik.errors.permissions && (
+                <Typography
+                  sx={{
+                    fontSize: 10,
+                    color: "red",
+                    paddingLeft: "10px",
+                  }}
+                >
+                  {formik.errors.permissions}
+                </Typography>
+              )}
             </Box>
           </Box>
 
@@ -209,45 +222,3 @@ const UserPermissions = () => {
 };
 
 export default UserPermissions;
-
-
-{/* <Box width={"100%"}>
-            <FormControl fullWidth>
-              <InputLabel>Permissions</InputLabel>
-              <Select
-                label="Permission"
-                multiple
-                value={Permission}
-                onChange={handlePermissionChange}
-                renderValue={(selected) => selected.join(", ")}
-                error={formik.touched.permission && Boolean(formik.errors.permission)}
-                
-                MenuProps={{
-                  PaperProps: {
-                    style: {
-                      maxHeight: 48 * 4.5 + 8,
-                      width: 500,
-                    },
-                  },
-                }}
-              >
-                {RolesPermission.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    <Checkbox checked={Permission.includes(value)} />
-                    <ListItemText primary={value} />
-                  </MenuItem>
-                ))}
-              </Select>
-              {formik.errors.permission && (
-                <Typography
-                  sx={{
-                    fontSize: 10,
-                    color: "red",
-                    paddingLeft: "10px",
-                  }}
-                >
-                  {formik.errors.permission}
-                </Typography>
-              )}
-            </FormControl>
-          </Box> */}
