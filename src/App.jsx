@@ -21,6 +21,7 @@ import UserRole from "./pages/organisation/dashPages/userRoles";
 import UserPermission from "./pages/organisation/dashPages/userPermissions";
 import OrgForget from "./pages/auth/Organisation/forget";
 import OrgVerify from "./pages/auth/Organisation/verfication";
+import Confirmation from "./pages/test";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/orgVerify" element={<OrgVerify />} />
         <Route path="/Sforget" element={<Forget />} />
         <Route path="/SVerify" element={<OrgVerify />} />
+        <Route path="/Confirmation" element={<Confirmation />} />
 
         {/* Dashboard routes */}
         <Route

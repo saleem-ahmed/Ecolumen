@@ -136,7 +136,7 @@ const userRoles = () => {
         _id: formik1.values.id, // Ensure you have the role ID here
       };
       setloader(true);
-      await OrgServices.upRole(data, user, updatedRole) 
+      await OrgServices.upRole(data, user, updatedRole)
         .then((res) => {
           if (res.status === "success") {
             handleCloseEditModal();
@@ -340,52 +340,62 @@ const userRoles = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orgRoles?.map((roles, index) => (
-                <TableRow key={roles._id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{roles.roleName}</TableCell>
-                  <TableCell>{roles.createdAt}</TableCell>
-                  <TableCell>
-                    <div>
-                      <IconButton
-                        aria-label="more"
-                        id={`long-button-${index}`}
-                        aria-controls={open ? `long-menu-${index}` : undefined}
-                        aria-expanded={open ? "true" : undefined}
-                        aria-haspopup="true"
-                        onClick={(event) => handleMenuClick(event, index)}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        id={`long-menu-${index}`}
-                        MenuListProps={{
-                          "aria-labelledby": `long-button-${index}`,
-                        }}
-                        anchorEl={anchorElObj[index]}
-                        open={Boolean(anchorElObj[index])}
-                        onClose={() => handleMenuClose(index)}
-                        PaperProps={{
-                          style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: "20ch",
-                          },
-                        }}
-                      >
-                        <MenuItem onClick={() => handleEditClick(index, roles)}>
-                          Edit
-                        </MenuItem>
+              {
+                orgRoles === null ? (
+                  <TableRow>
+                    <TableCell colSpan={4} align="center" sx={{ height: "10vh" }}>
+                      <Typography variant="p">no roles added</Typography>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  orgRoles?.map((roles, index) => (
+                    <TableRow key={roles._id}>
+                      <TableCell>{index + 1}</TableCell>
+                      <TableCell>{roles.roleName}</TableCell>
+                      <TableCell>{roles.createdAt}</TableCell>
+                      <TableCell>
+                        <div>
+                          <IconButton
+                            aria-label="more"
+                            id={`long-button-${index}`}
+                            aria-controls={open ? `long-menu-${index}` : undefined}
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={(event) => handleMenuClick(event, index)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id={`long-menu-${index}`}
+                            MenuListProps={{
+                              "aria-labelledby": `long-button-${index}`,
+                            }}
+                            anchorEl={anchorElObj[index]}
+                            open={Boolean(anchorElObj[index])}
+                            onClose={() => handleMenuClose(index)}
+                            PaperProps={{
+                              style: {
+                                maxHeight: ITEM_HEIGHT * 4.5,
+                                width: "20ch",
+                              },
+                            }}
+                          >
+                            <MenuItem onClick={() => handleEditClick(index, roles)}>
+                              Edit
+                            </MenuItem>
 
-                        <MenuItem
-                          onClick={() => handleRemoveClick(index, roles)}
-                        >
-                          Remove
-                        </MenuItem>
-                      </Menu>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                            <MenuItem
+                              onClick={() => handleRemoveClick(index, roles)}
+                            >
+                              Remove
+                            </MenuItem>
+                          </Menu>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )
+              }
             </TableBody>
           </Table>
           <Pagination

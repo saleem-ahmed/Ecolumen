@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -24,6 +24,7 @@ import { useFormik } from "formik";
 import Alerts from "../../../components/Customalerts";
 import { useAuth } from "../../../Auth/index";
 import Loader from "../../../components/loader";
+import Service from "../../../apis/services"
 import {
   stepOneValidationSchema,
   stepTwoValidationSchema,
@@ -42,9 +43,9 @@ const steps = [
   {
     label: "Privacy",
   },
-  {
-    label: "Verification",
-  },
+  // {
+  //   label: "Verification",
+  // },
   {
     label: "Confirmation",
   },
@@ -62,6 +63,13 @@ export default function SignIn() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [countries, setCountries] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [states, setStates] = useState([]);
+  const [selectedState, setSelectedState] = useState('');
+  const [cities, setCities] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+
   const handleSnackbarOpen = (message, severity = "success") => {
     setSnackbarMessage(message);
     setSnackbarSeverity(severity);
@@ -70,6 +78,62 @@ export default function SignIn() {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+
+  //selects country / state / city
+  useEffect(() => {
+    fetchCountries();
+  }, []);
+
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch('http://api.geonames.org/countryInfoJSON?username=ahmedsaleem');
+      const data = await response.json();
+      setCountries(data.geonames);
+    } catch (error) {
+      console.error('Error fetching countries:', error);
+    }
+  };
+
+  const fetchStates = async (countryCode) => {
+    try {
+      const response = await fetch(`http://api.geonames.org/childrenJSON?geonameId=${countryCode}&username=ahmedsaleem`);
+      const data = await response.json();
+      setStates(data.geonames);
+    } catch (error) {
+      console.error('Error fetching states:', error);
+    }
+  };
+
+  const fetchCities = async (stateCode) => {
+    try {
+      const response = await fetch(`http://api.geonames.org/childrenJSON?geonameId=${stateCode}&username=ahmedsaleem`);
+      const data = await response.json();
+      setCities(data.geonames);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  };
+
+  const handleCountryChange = (event) => {
+    const countryCode = event.target.value;
+    setSelectedCountry(countryCode);
+    setSelectedState('');
+    setSelectedCity('');
+    fetchStates(countryCode);
+  };
+
+  const handleStateChange = (event) => {
+    const stateCode = event.target.value;
+    setSelectedState(stateCode);
+    setSelectedCity('');
+    fetchCities(stateCode);
+  };
+
+  const handleCityChange = (event) => {
+    const city = event.target.value;
+    setSelectedCity(city);
   };
 
   const formik1 = useFormik({
@@ -87,7 +151,19 @@ export default function SignIn() {
       find: "",
     },
     onSubmit: async () => {
+      const data = {
+        orgname: formik1.values.orgname,
+        country: selectedCountry,
+        state: selectedState,
+        city: selectedCity,
+        postalcode: formik1.values.postalCode,
+        orgtype: formik1.values.type,
+        website: formik1.values.website,
+        empnumber: formik1.values.numberOfEmployees,
+        find: Find,
+      }
       handleNext();
+      console.log(data)
     },
   });
 
@@ -110,35 +186,40 @@ export default function SignIn() {
       password: "",
       confirmPassword: "",
     },
+
     onSubmit: async () => {
-      setLoading(true);
-      const data = {
-        email: formik2.values.email,
-      }
-      await OrgServices.verifyEmail(data)
-        .then((res) => {
-          setLoading(false);
-          handleNext();
-          console.log(res.data)
-          handleSnackbarOpen(res.message, "success")
-          console.log(res);
-        }).catch((error) => {
-          setLoading(false);
-          console.log('Error:', error.data)
-          handleSnackbarOpen( error.data.message , "error");
-        });
-    },
-  });
-  const formik4 = useFormik({
-    enableReinitialize: true,
-    validationSchema: VerifySchema,
-    initialValues: {
-      code: "",
-    },
-    onSubmit: async () => {
+      // setLoading(true);
+      // const data = {
+      //   email: formik2.values.email,
+      // }
+      // await OrgServices.verifyEmail(data)
+      //   .then((res) => {
+      //     setLoading(false);
+      //     handleNext();
+      //     console.log(res.data)
+      //     handleSnackbarOpen(res.message, "success")
+      //     console.log(res);
+      //   }).catch((error) => {
+      //     setLoading(false);
+      //     console.log('Error:', error.data)
+      //     handleSnackbarOpen(error.data.message, "error");
+      //   });
       handleNext();
     },
   });
+
+  // const formik4 = useFormik({
+  //   enableReinitialize: true,
+  //   validationSchema: VerifySchema,
+  //   initialValues: {
+  //     code: "",
+  //   },
+  //   onSubmit: async () => {
+
+
+  //     handleNext();
+  //   },
+  // });
 
   const apiCall = async () => {
     const data = {
@@ -155,14 +236,14 @@ export default function SignIn() {
       phone: formik2.values.phone,
       password: formik3.values.password,
     };
-    const response = await registerOrg(data)
-      .then(() => {
-        console.log(response, "RegisterOrg");
-        if (response.status === "success") {
-          console.log(response.message);
+    await registerOrg(data)
+      .then((res) => {
+        if (res.status === "success") {
+          console.log(res, "RegisterOrg");
+          handleSnackbarOpen(res.message);
           Navigate("/orglogin");
         } else {
-          console.log(response.message);
+          console.log(res.message);
         }
       })
       .catch((error) => {
@@ -240,8 +321,9 @@ export default function SignIn() {
         {activeStep === 0 ? (
           <Container
             maxWidth="md"
-            style={{ width: "100%", maxWidth: "400px", height: "100%" }}
+            style={{ width: "100%", maxWidth: "513px", height: "100%" }}
           >
+
             <Box
               display={"flex"}
               flexDirection={"column"}
@@ -282,33 +364,34 @@ export default function SignIn() {
                   <FormControl fullWidth>
                     <InputLabel>Country</InputLabel>
                     <Select
-                      defaultValue={formik1.values.country}
                       label="Country"
-                      // {...{
-                      //   formik1,
-                      //   checkvalidation: true,
-                      // }}
+                      value={Country}
                       onChange={(e) => {
+                        handleCountryChange(e);
                         setCountry(e.target.value);
                         formik1.setFieldValue("country", e.target.value);
                       }}
-                      error={
-                        formik1.touched.country &&
-                        Boolean(formik1.errors.country)
-                      }
-                    // country
+                      error={formik1.touched.country && Boolean(formik1.errors.country)}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            width: 100,
+                            maxHeight: 200,
+                          },
+                        },
+                      }}
                     >
-                      <MenuItem value="Pakistan">Pakistan</MenuItem>
-                      <MenuItem value="China">China</MenuItem>
-                      <MenuItem value="Afghanistan">Afghanistan</MenuItem>
-                      <MenuItem value="Iran">Iran</MenuItem>
-                      <MenuItem value="India">India</MenuItem>
-                      <MenuItem value="Russia">Russia</MenuItem>
+                      <MenuItem value="">
+                        <em>Select Country</em>
+                      </MenuItem>
+                      {countries?.map((country) => (
+                        <MenuItem key={country.geonameId} value={country.geonameId}>
+                          {country.countryName}
+                        </MenuItem>
+                      ))}
                     </Select>
-                    {formik1.errors.country && (
-                      <Typography
-                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
-                      >
+                    {formik1.touched.country && formik1.errors.country && (
+                      <Typography sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}>
                         {formik1.errors.country}
                       </Typography>
                     )}
@@ -316,41 +399,41 @@ export default function SignIn() {
                   <FormControl fullWidth>
                     <InputLabel>State</InputLabel>
                     <Select
-                      value={formik1.values.state}
+                      value={selectedState}
                       label="State"
                       onChange={(e) => {
+                        handleStateChange(e);
                         setState(e.target.value);
                         formik1.setFieldValue("state", e.target.value);
                       }}
+                      error={formik1.touched.state && Boolean(formik1.errors.state)}
                     >
-                      <MenuItem value="Pakistan">Pakistan</MenuItem>
-                      <MenuItem value="China">China</MenuItem>
-                      <MenuItem value="Afghanistan">Afghanistan</MenuItem>
-                      <MenuItem value="Iran">Iran</MenuItem>
-                      <MenuItem value="India">India</MenuItem>
-                      <MenuItem value="Russia">Russia</MenuItem>
+                      <MenuItem value="">
+                        <em>Select State</em>
+                      </MenuItem>
+                      {states?.map((state) => (
+                        <MenuItem key={state.geonameId} value={state.geonameId}>
+                          {state.name}
+                        </MenuItem>
+                      ))}
                     </Select>
-                    {formik1.errors.state && (
-                      <Typography
-                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
-                      >
+                    {formik1.touched.state && formik1.errors.state && (
+                      <Typography sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}>
                         {formik1.errors.state}
                       </Typography>
                     )}
                   </FormControl>
                 </Grid>
+
                 <Grid item display={"flex"} flexDirection={"row"} gap={"30px"}>
                   <FormControl fullWidth>
                     <InputLabel>City</InputLabel>
 
                     <Select
-                      defaultValue={formik1.values.city}
+                      value={selectedCity}
                       label="City"
-                      // {...{
-                      //   formik1,
-                      //   checkvalidation: true,
-                      // }}
                       onChange={(e) => {
+                        handleCityChange(e);
                         formik1.setFieldValue("city", e.target.value);
                         setCity(e.target.value);
                       }}
@@ -358,21 +441,12 @@ export default function SignIn() {
                         formik1.touched.city && Boolean(formik1.errors.city)
                       }
                     >
-                      <MenuItem value="Karachi">Karachi</MenuItem>
-                      <MenuItem value="Hyderabad">Hyderabad</MenuItem>
-                      <MenuItem value="Tatta">Tatta</MenuItem>
-                      <MenuItem value="islamabad">islamabad</MenuItem>
-                      <MenuItem value="Faisalabad">Faisalabad</MenuItem>
-                      <MenuItem value="Multan">Multan</MenuItem>
-                      <MenuItem value="Rawalpindi">Rawalpindi</MenuItem>
-                      <MenuItem value="Quetta">Quetta</MenuItem>
-                      <MenuItem value="Peshawar">Peshawar</MenuItem>
-                      <MenuItem value="Dir">Dir</MenuItem>
-                      <MenuItem value="Gilgit">Gilgit</MenuItem>
-                      <MenuItem value="Karimabad">Karimabad</MenuItem>
-                      <MenuItem value="Aliabad">Aliabad</MenuItem>
-                      <MenuItem value="Minapin">Minapin</MenuItem>
-                      <MenuItem value="skardu">skardu</MenuItem>
+                      {cities?.map((city) => (
+                        <MenuItem key={city.geonameId} value={city.name}>
+                          {city.name}
+                        </MenuItem>
+                      ))}
+
                     </Select>
                     {formik1.errors.city && (
                       <Typography
@@ -409,10 +483,7 @@ export default function SignIn() {
                     <Select
                       defaultValue={Type}
                       label="Type"
-                      // {...{
-                      //   formik1,
-                      //   checkvalidation: true,
-                      // }}
+
                       onChange={(e) => {
                         formik1.setFieldValue("type", e.target.value);
                         setType(e.target.value);
@@ -752,119 +823,6 @@ export default function SignIn() {
           </Box>
         ) : null}
         {activeStep === 3 ? (
-          <Box height={"100%"} position={"relative"}>
-            <Container
-              maxWidth="md"
-              style={{ width: "100%", maxWidth: "503px", height: "100%" }}
-            >
-              <Grid container spacing={0} height={"100%"}>
-                <Grid
-                  item
-                  xs={12}
-                  p={"10px"}
-                  display={"flex"}
-                  flexDirection={"column"}
-                  alignItems="center"
-                  justifyContent="center"
-                  height={"100%"}
-                  gap={"20px"}
-                  position={"relative"}
-                >
-                  <Typography
-                    variant="h2"
-                    sx={{
-                      fontSize: {
-                        xs: 18,
-                        sm: 20,
-                        md: 25,
-                        lg: 27,
-                        xl: 28,
-                      },
-                    }}
-                  >
-                    Verify your email address
-                  </Typography>
-
-                  <Typography variant="subtitle1" sx={{ textAlign: "center" }}>
-                    The verification code has been sent to your
-                    hussainkalim@gmail.com. Enter the code to verify your email
-                  </Typography>
-                  <Stack direction="column" spacing={2} width={"100%"}>
-                    <TextField
-                      label="Code"
-                      fullWidth
-                      name="code"
-                      onChange={(e) => {
-                        formik4.setFieldValue("code", e.target.value);
-                      }}
-                      value={formik4.values.code}
-                      error={
-                        formik4.touched.code && Boolean(formik4.errors.code)
-                      }
-                      helperText={
-                        <Typography sx={{ fontSize: 10, color: "red" }}>
-                          {formik4.touched.code && formik4.errors.code}
-                        </Typography>
-                      }
-                    />
-                    <Button
-                      color="success"
-                      variant="contained"
-                      sx={{ marginTop: "20px", width: "100%" }}
-                      onClick={() => {
-                        formik4.handleSubmit();
-                      }}
-                    >
-                      Verify
-                    </Button>
-
-                    <Typography variant="subtitle1" textAlign={"center"}>
-                      Didn’t received the code.{" "}
-                      <Typography
-                        variant="a"
-                        sx={{
-                          px: "5px",
-                          fontWeight: "400px",
-                          color: "#121111",
-                        }}
-                      ></Typography>
-                      <Typography
-                        variant="a"
-                        sx={{
-                          px: "5px",
-                          fontWeight: "400px",
-                          color: "#284259",
-                        }}
-                      >
-                        Resend
-                      </Typography>
-                    </Typography>
-                  </Stack>
-                </Grid>
-              </Grid>
-            </Container>
-            <Button
-              sx={{ position: "absolute", top: "10px", left: "0" }}
-              onClick={() => {
-                formik4.handleSubmit();
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="30"
-                height="30"
-                viewBox="0 0 30 30"
-                fill="none"
-              >
-                <path
-                  d="M15.0001 0L15.0004 0.0043945C19.1444 0.0043945 22.8946 1.68212 25.6065 4.39401C28.3184 7.1059 29.9961 10.8556 29.9961 14.9996H30.0005V15.0001H29.9961C29.9961 19.1446 28.3181 22.8943 25.6065 25.6062C22.8943 28.3179 19.1449 29.9956 15.0006 29.9956V30H15.0001V29.9956C10.8559 29.9956 7.1059 28.3179 4.39401 25.606C1.68212 22.8941 0.0043945 19.1446 0.0043945 15.0004H0V14.9999H0.0043945C0.0043945 10.8556 1.68212 7.1059 4.39401 4.39376C7.1059 1.68212 10.8556 0.0043945 14.9999 0.0043945L15.0001 0ZM17.505 10.371C17.9708 9.89201 17.9598 9.12566 17.4811 8.65984C17.0018 8.19378 16.2355 8.20452 15.7696 8.68352L10.4381 14.1815L11.3056 15.0253L10.4345 14.1805C9.96794 14.6617 9.97966 15.43 10.4609 15.8966C10.475 15.9103 10.4892 15.9232 10.5036 15.9362L15.7699 21.3211C16.2357 21.8001 17.0021 21.8109 17.4813 21.3448C17.9601 20.879 17.971 20.1126 17.5052 19.6334L12.9948 15.0216L17.505 10.371Z"
-                  fill="#284259"
-                />
-              </svg>
-            </Button>
-          </Box>
-        ) : null}
-        {activeStep === 4 ? (
           <Box height={"100%"} position={"relative"}>
             <Container
               maxWidth="md"
