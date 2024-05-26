@@ -260,7 +260,7 @@ const Users = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  
+
                   displayStaff.map((staffMember, index) => (
                     <TableRow key={staffMember._id}>
                       <TableCell
@@ -350,15 +350,31 @@ const Users = () => {
 
               </TableBody>
             </Table>
-            <Pagination
+            {/* <Pagination
               count={pageInfo.totalPages}
               page={pageInfo.currentPage}
               onChange={handlePageChange}
               color="primary"
             />
+             */}
+            <Pagination
+              count={pageInfo.totalPages} // Total number of pages
+              page={pageInfo.currentPage} // Current active page
+              onChange={handlePageChange} // Event handler for page change
+              color="primary" // Color of pagination
+              size="small" // Size of pagination
+              variant="outlined" // Variant of pagination
+              shape="rounded" // Shape of pagination buttons
+              showFirstButton // Whether to show the "First Page" button
+              showLastButton // Whether to show the "Last Page" button
+              siblingCount={1} 
+            />
           </TableContainer>
         </Box>
       </Grid>
+
+
+
       <Dialog
         open={removeConfirmation.open}
         onClose={handleRemoveCancel}

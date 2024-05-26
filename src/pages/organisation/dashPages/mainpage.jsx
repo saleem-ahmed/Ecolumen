@@ -38,6 +38,136 @@ import "leaflet-side-by-side";
 
 
 const EditOptions = ["Refresh"];
+// Sample GeoJSON data for forests and water bodies
+const forestGeoJSON = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Forest Area 1" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [74.305, 35.921],
+            [74.306, 35.922],
+            [74.307, 35.921],
+            [74.306, 35.920],
+            [74.305, 35.921]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Forest Area 2" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [74.300, 35.918],
+            [74.301, 35.919],
+            [74.302, 35.918],
+            [74.301, 35.917],
+            [74.300, 35.918]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Forest Area 3" },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [74.315, 35.920],
+              [74.316, 35.921],
+              [74.317, 35.920],
+              [74.316, 35.919],
+              [74.315, 35.920]
+            ]
+          ],
+          [
+            [
+              [74.320, 35.923],
+              [74.321, 35.924],
+              [74.322, 35.923],
+              [74.321, 35.922],
+              [74.320, 35.923]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+};
+
+const waterGeoJSON = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "Water Body 1" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [74.310, 35.925],
+            [74.311, 35.926],
+            [74.312, 35.925],
+            [74.311, 35.924],
+            [74.310, 35.925]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Water Body 2" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [74.308, 35.927],
+            [74.309, 35.928],
+            [74.310, 35.927],
+            [74.309, 35.926],
+            [74.308, 35.927]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Water Body 3" },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [74.313, 35.929],
+              [74.314, 35.930],
+              [74.315, 35.929],
+              [74.314, 35.928],
+              [74.313, 35.929]
+            ]
+          ],
+          [
+            [
+              [74.317, 35.931],
+              [74.318, 35.932],
+              [74.319, 35.931],
+              [74.318, 35.930],
+              [74.317, 35.931]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+};
 
 const Mainpage = () => {
   const { user } = useAuth();
@@ -48,8 +178,9 @@ const Mainpage = () => {
     activeStaffCount: 0,
     inactiveStaffCount: 0
   });
+
   useEffect(() => {
-    const map = L.map("map").setView([35.920834, 74.308334], 30);
+    const map = L.map("map").setView([35.920834, 74.308334], 14);
 
     const osmLayer = L.tileLayer(
       "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
@@ -58,7 +189,7 @@ const Mainpage = () => {
           '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       }).addTo(map);
 
-    var stamenLayer = L.tileLayer(
+    const stamenLayer = L.tileLayer(
       "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
       {
         attribution:
@@ -71,32 +202,17 @@ const Mainpage = () => {
     ).addTo(map);
 
     L.control.sideBySide(stamenLayer, osmLayer).addTo(map);
+
     // Add custom marker
     const myMarker = L.marker([35.920834, 74.308334]).addTo(map);
 
     // Add popup to the marker
     myMarker.bindPopup("<b>Hello world!</b><br>this is office.").openPopup();
 
-    const redCircle = L.circle([35.920834, 74.308334], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 500
-    }).addTo(map);
-    const gilgitAirport = [35.919711, 74.333847];
-
-    // Add rectangle around Gilgit Airport
-    const rectangle = L.rectangle([
-      [gilgitAirport[0] - 0.009, gilgitAirport[1] - 0.009], // Southwestern coordinate
-      [gilgitAirport[0] + 0.009, gilgitAirport[1] + 0.009]  // Northeastern coordinate
-    ], {
-      color: 'blue',
-      weight: 2,
-      fillColor: 'blue',
-      fillOpacity: 0.2
-    }).addTo(map);
 
 
+
+    // Add legend
     const legend = L.control({ position: 'bottomleft' });
 
     legend.onAdd = function (map) {
@@ -105,16 +221,46 @@ const Mainpage = () => {
       div.style.padding = '10px 10px';
       div.style.borderRadius = '10px';
       div.style.width = '100px';
-      div.innerHTML = '<h4>Legend</h4>' +
-        '<p>Put your legend content here.</p>';
+      div.innerHTML = `
+        <h4>Legend</h4>
+        <i style="background: green; width: 18px; height: 18px; display: inline-block;"></i> Forest Area<br>
+        <i style="background: blue; width: 18px; height: 18px; display: inline-block;"></i> Water Body<br>
+      `;
       return div;
     };
 
     legend.addTo(map);
 
+    // Add GeoJSON data for forests
+    L.geoJSON(forestGeoJSON, {
+      style: (feature) => {
+        switch (feature.geometry.type) {
+          case 'Polygon': return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+          case 'LineString': return { color: "green", weight: 2 };
+          case 'Point': return { color: "green", radius: 8 };
+        }
+      },
+      pointToLayer: (feature, latlng) => {
+        return L.circleMarker(latlng);
+      }
+    }).addTo(map);
+
+    // Add GeoJSON data for water bodies
+    L.geoJSON(waterGeoJSON, {
+      style: (feature) => {
+        switch (feature.geometry.type) {
+          case 'Polygon': return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+          case 'LineString': return { color: "blue", weight: 2 };
+          case 'Point': return { color: "blue", radius: 8 };
+        }
+      },
+      pointToLayer: (feature, latlng) => {
+        return L.circleMarker(latlng);
+      }
+    }).addTo(map);
+
 
   }, []);
-
   useEffect(() => {
     //StaffCount
     const fetchStaffCount = async () => {
@@ -428,75 +574,7 @@ const Mainpage = () => {
           </Box>
 
         </Box>
-        {/* <Box
-          display={"flex"}
-          alignItems={"stretch"}
-          flexDirection={{
-            md: "row",
-            xs: "column",
-          }}
-          py={"20px"}
-          gap={"23px"}
-          height={"100%"}
-          sx={{ boxSizing: "border-box" }}
-        >
-          <Box
-            bgcolor={"#ffffff"}
-            py={"10px"}
-            width={{ md: "100%", xs: "100%" }}
-            sx={{ borderRadius: "12px", minHeight: "100%" }}
-          >
-            <Box
-              display={"flex"}
-              justifyContent={"space-between"}
-              alignItems={"center"}
-              px={"20px"}
-            >
-              <Typography variant="h3">Staff Status</Typography>
-              <div>
-                <IconButton
-                  aria-label="more"
-                  id="long-button"
-                  aria-controls={open ? "long-menu" : undefined}
-                  aria-expanded={open ? "true" : undefined}
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon color="#FFFFFF" />
-                </IconButton>
-                <Menu
-                  id="long-menu"
-                  MenuListProps={{
-                    "aria-labelledby": "long-button",
-                  }}
-                  anchorEl={anchorEl}
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: ITEM_HEIGHT * 4.5,
-                      width: "20ch",
-                    },
-                  }}
-                >
-                  {EditOptions.map((option) => (
-                    <MenuItem
-                      key={option}
-                      selected={option === "Pyxis"}
-                      onClick={handleClose}
-                    >
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </div>
-            </Box>
-            <Divider />
-            <Box display={"flex"} justifyContent={"center"}>
-              <UserStatus />
-            </Box>
-          </Box>
-        </Box> */}
+
       </Grid>
     </>
   );
