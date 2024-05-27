@@ -190,7 +190,7 @@ const Mainpage = () => {
       }).addTo(map);
 
     const stamenLayer = L.tileLayer(
-      "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+      "https://api.stadiamaps.com/tz/lookup/v1/?api_key=c2d0163f-db38-4efd-a161-9b1c8799170e",
       {
         attribution:
           'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
