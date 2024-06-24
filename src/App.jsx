@@ -5,6 +5,8 @@ import USignIn from "./pages/auth/User/signin";
 import UForget from "./pages/auth/User/forget";
 import UVerification from "./pages/auth/User/Verification";
 import UVerify from "./pages/auth/User/verify";
+import StaffDashboard from "./pages/Staff/dashboard/dashboard";
+import Mainpage2 from "./pages/Staff/dashPages/mainpage";
 // superAdmin
 
 import Forget from "./pages/auth/SuperAdmin/forget";
@@ -22,6 +24,9 @@ import UserPermission from "./pages/organisation/dashPages/userPermissions";
 import OrgForget from "./pages/auth/Organisation/forget";
 import OrgVerify from "./pages/auth/Organisation/verfication";
 import Confirmation from "./pages/test";
+import Reports from "./pages/Staff/dashPages/reports";
+import Upload from "./pages/Staff/dashPages/upload";
+import Management from "./pages/Staff/dashPages/managment";
 
 const App = () => {
   return (
@@ -55,10 +60,23 @@ const App = () => {
           <Route path="userPermission" element={<UserPermission />} />
         </Route>
  
-        {/* User routes */}
+        {/* staff routes */}
         <Route path="/Uverification" element={<UVerification />} />
         <Route path="/UVerify" element={<UVerify />} />
         <Route path="/UForget" element={<UForget />} />
+        <Route
+          path="/staffDashboard"
+          element={
+              <StaffDashboard />
+          }
+        >
+          <Route index element={<Mainpage2 />} />
+          <Route path="main" element={<Mainpage2 /> } />
+          <Route path="reports" element={<Reports /> } />
+          <Route path="Upload" element={<Upload /> } />
+          <Route path="Management" element={<Management /> } />
+        </Route>
+
 
         {/* Default route */}
         <Route path="/" element={<USignIn />}>

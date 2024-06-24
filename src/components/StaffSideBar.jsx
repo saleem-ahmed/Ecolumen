@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 import Logout from "@mui/icons-material/Logout";
 import { useAuth } from "../Auth/index.jsx";
 
-const SideBar = () => {
+const StaffSideBar = () => {
   const [open, setOpen] = useState(true);
   const { LogoutUser } = useAuth();
 
@@ -26,9 +26,6 @@ const SideBar = () => {
   return (
     <>
       <Box
-        // display={"flex"}
-        // flexDirection={"column"}
-        // justifyContent={"space-between"}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -40,28 +37,24 @@ const SideBar = () => {
         }}
       >
         <List
-          // display={"flex"}
-          // flexDirection={"column"}
-          // alignItems={"center"}
           sx={{
             display: "flex",
             flexDirection: "column",
             width: "100%",
           }}
         >
-          <Box 
-          // display={"flex"} justifyContent={"center"} my={"26px"}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            my: "26px"
-          }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              my: "26px",
+            }}
           >
             <img src={Logo} alt="" />
           </Box>
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="/dashboard/main"
+            to="main"
             style={{ textDecoration: "none", color: "#FFFFFF" }}
           >
             <ListItemButton>
@@ -70,8 +63,7 @@ const SideBar = () => {
               </ListItemText>
             </ListItemButton>
           </NavLink>
-
-          <ListItemButton onClick={handleClick}>
+          {/* <ListItemButton onClick={handleClick}>
             <ListItemText>
               <Typography variant="sideBarLink">Staff Management</Typography>
             </ListItemText>
@@ -133,8 +125,40 @@ const SideBar = () => {
 
             </List>
 
-          </Collapse>
-         
+          </Collapse> */}
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="reports"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Reports</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="Management"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Managment</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="Upload"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Uploads</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
         </List>
 
         <List
@@ -156,4 +180,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default StaffSideBar;

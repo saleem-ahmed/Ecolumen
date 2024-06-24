@@ -83,16 +83,12 @@ const Forget = () => {
                         {formik.errors.email}
                       </Typography>
                     }
-                    // {...{
-                    //   formik,
-                    //   checkvalidation: true,
-                    // }}
+                    
                     onChange={(e) => {
                       formik.setFieldValue("email", e.target.value);
                     }}
                     style={{ height: "40px" }}
                   />
-                  {/* <Link to="/SVerify"> */}
                   <Button
                     color="success"
                     variant="contained"
@@ -104,7 +100,6 @@ const Forget = () => {
                   >
                     Send
                   </Button>
-                  {/* </Link> */}
                   <Link
                     to="/"
                     style={{ textDecoration: "none", marginTop: "20px" }}

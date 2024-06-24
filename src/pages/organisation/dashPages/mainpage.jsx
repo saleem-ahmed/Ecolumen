@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Box,
   Grid,
@@ -26,148 +26,14 @@ import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
 import { useAuth } from "../../../Auth/index.jsx";
 import OrgServices from "../../../apis/Organisation";
-// maps
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import L from 'leaflet';
+import L from "leaflet";
 import "leaflet-side-by-side";
-
-
-
-
-
+import lulc_2010 from "../GeoJSON/LULC_2010_GeoJSON.json"; 
+import lulc_2021 from "../GeoJSON/LULC_2021_GeoJSON.json";// Update the path accordingly
 
 const EditOptions = ["Refresh"];
 // Sample GeoJSON data for forests and water bodies
-const forestGeoJSON = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "name": "Forest Area 1" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [74.305, 35.921],
-            [74.306, 35.922],
-            [74.307, 35.921],
-            [74.306, 35.920],
-            [74.305, 35.921]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Forest Area 2" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [74.300, 35.918],
-            [74.301, 35.919],
-            [74.302, 35.918],
-            [74.301, 35.917],
-            [74.300, 35.918]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Forest Area 3" },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [74.315, 35.920],
-              [74.316, 35.921],
-              [74.317, 35.920],
-              [74.316, 35.919],
-              [74.315, 35.920]
-            ]
-          ],
-          [
-            [
-              [74.320, 35.923],
-              [74.321, 35.924],
-              [74.322, 35.923],
-              [74.321, 35.922],
-              [74.320, 35.923]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-};
-
-const waterGeoJSON = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "properties": { "name": "Water Body 1" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [74.310, 35.925],
-            [74.311, 35.926],
-            [74.312, 35.925],
-            [74.311, 35.924],
-            [74.310, 35.925]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Water Body 2" },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [
-            [74.308, 35.927],
-            [74.309, 35.928],
-            [74.310, 35.927],
-            [74.309, 35.926],
-            [74.308, 35.927]
-          ]
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": { "name": "Water Body 3" },
-      "geometry": {
-        "type": "MultiPolygon",
-        "coordinates": [
-          [
-            [
-              [74.313, 35.929],
-              [74.314, 35.930],
-              [74.315, 35.929],
-              [74.314, 35.928],
-              [74.313, 35.929]
-            ]
-          ],
-          [
-            [
-              [74.317, 35.931],
-              [74.318, 35.932],
-              [74.319, 35.931],
-              [74.318, 35.930],
-              [74.317, 35.931]
-            ]
-          ]
-        ]
-      }
-    }
-  ]
-};
 
 const Mainpage = () => {
   const { user } = useAuth();
@@ -176,108 +42,129 @@ const Mainpage = () => {
   const [staffCount, setStaffCount] = useState({
     totalStaffCount: 0,
     activeStaffCount: 0,
-    inactiveStaffCount: 0
+    inactiveStaffCount: 0,
   });
 
-  useEffect(() => {
-    const map = L.map("map").setView([35.920834, 74.308334], 14);
+  const mapRef = useRef(null);
 
-    const osmLayer = L.tileLayer(
-      "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
-      {
-        attribution:
-          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  useEffect(() => {
+    if (!mapRef.current) {
+      // Initialize the map only once
+      const map = L.map("map").setView([35.920834, 74.308334], 14);
+      mapRef.current = map;
+
+      // Add OpenStreetMap layer
+      L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-    const stamenLayer = L.tileLayer(
-      "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
-      {
-        attribution:
-          'Map tiles by <a href="http://stamen.com">Stamen Design</a>, ' +
-          '<a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; ' +
-          "Map data {attribution.OpenStreetMap}",
-        minZoom: 1,
-        maxZoom: 16
-      }
-    ).addTo(map);
+      // Add marker
+      const myMarker = L.marker([35.920834, 74.308334]).addTo(map);
+      myMarker.bindPopup("<b>Hello world!</b><br>This is office.").openPopup();
 
-    L.control.sideBySide(stamenLayer, osmLayer).addTo(map);
+      // Add legend
+      const legend = L.control({ position: "bottomleft" });
 
-    // Add custom marker
-    const myMarker = L.marker([35.920834, 74.308334]).addTo(map);
+      legend.onAdd = function (map) {
+        const div = L.DomUtil.create("div", "info legend");
+        div.style.backgroundColor = "white";
+        div.style.padding = "10px 10px";
+        div.style.borderRadius = "10px";
+        div.style.width = "100px";
+        div.innerHTML = `
+          <h4>Legend</h4>
+          <i style="background: green; width: 18px; height: 18px; display: inline-block;"></i> Forest Area<br>
+          <i style="background: blue; width: 18px; height: 18px; display: inline-block;"></i> Water Body<br>
+          <i style="background: orange; width: 18px; height: 18px; display: inline-block;"></i> Agriculture<br>
+          <i style="background: gray; width: 18px; height: 18px; display: inline-block;"></i> Urban<br>
+          <i style="background: yellow; width: 18px; height: 18px; display: inline-block;"></i> Barren<br>
+          <i style="background: lightgreen; width: 18px; height: 18px; display: inline-block;"></i> Grassland<br>
+          <i style="background: purple; width: 18px; height: 18px; display: inline-block;"></i> Wetlands<br>
+          <i style="background: red; width: 18px; height: 18px; display: inline-block;"></i> Industrial<br>
+        `;
+        return div;
+      };
 
-    // Add popup to the marker
-    myMarker.bindPopup("<b>Hello world!</b><br>this is office.").openPopup();
+      legend.addTo(map);
 
+      // LULC 2010 Layer
+      const lulc2010Layer = L.geoJSON(lulc_2010, {
+        style: (feature) => {
+          switch (feature.properties.land_use_category) {
+            case "Forest":
+              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+            case "Water":
+              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+            case "Agriculture":
+              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+            case "Urban":
+              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+            case "Barren":
+              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+            case "Grassland":
+              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+            case "Wetlands":
+              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+            default:
+              return { color: "black", weight: 2 };
+          }
+        },
+        pointToLayer: (feature, latlng) => L.circleMarker(latlng),
+      });
 
+      // LULC 2021 Layer
+      const lulc2021Layer = L.geoJSON(lulc_2021, {
+        style: (feature) => {
+          switch (feature.properties.land_use_category) {
+            case "Forest":
+              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+            case "Water":
+              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+            case "Agriculture":
+              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+            case "Urban":
+              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+            case "Barren":
+              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+            case "Grassland":
+              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+            case "Wetlands":
+              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+            case "Industrial":
+              return { color: "red", weight: 2, fillColor: "red", fillOpacity: 0.5 };
+            default:
+              return { color: "black", weight: 2 };
+          }
+        },
+        pointToLayer: (feature, latlng) => L.circleMarker(latlng),
+      });
 
+      // Control to toggle layers
+      const overlays = {
+        "LULC 2010": lulc2010Layer,
+        "LULC 2021": lulc2021Layer,
+      };
 
-    // Add legend
-    const legend = L.control({ position: 'bottomleft' });
-
-    legend.onAdd = function (map) {
-      const div = L.DomUtil.create('div', 'info legend');
-      div.style.backgroundColor = 'white';
-      div.style.padding = '10px 10px';
-      div.style.borderRadius = '10px';
-      div.style.width = '100px';
-      div.innerHTML = `
-        <h4>Legend</h4>
-        <i style="background: green; width: 18px; height: 18px; display: inline-block;"></i> Forest Area<br>
-        <i style="background: blue; width: 18px; height: 18px; display: inline-block;"></i> Water Body<br>
-      `;
-      return div;
-    };
-
-    legend.addTo(map);
-
-    // Add GeoJSON data for forests
-    L.geoJSON(forestGeoJSON, {
-      style: (feature) => {
-        switch (feature.geometry.type) {
-          case 'Polygon': return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
-          case 'LineString': return { color: "green", weight: 2 };
-          case 'Point': return { color: "green", radius: 8 };
-        }
-      },
-      pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng);
-      }
-    }).addTo(map);
-
-    // Add GeoJSON data for water bodies
-    L.geoJSON(waterGeoJSON, {
-      style: (feature) => {
-        switch (feature.geometry.type) {
-          case 'Polygon': return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
-          case 'LineString': return { color: "blue", weight: 2 };
-          case 'Point': return { color: "blue", radius: 8 };
-        }
-      },
-      pointToLayer: (feature, latlng) => {
-        return L.circleMarker(latlng);
-      }
-    }).addTo(map);
-
-
+      L.control.layers(null, overlays).addTo(map);
+    }
   }, []);
+
   useEffect(() => {
     //StaffCount
     const fetchStaffCount = async () => {
-
-      await OrgServices.staffCount(user).then((res) => {
-        console.log(res, "staff count in APi")
-        if (res.status === 'success') {
-
-          setStaffCount(res);
-          console.log(res, "staff count in APi")
-        } else {
-          console.log("error")
-        }
-      }).catch((error) => {
-        console.log("error", error)
-      });
-
+      await OrgServices.staffCount(user)
+        .then((res) => {
+          console.log(res, "staff count in APi");
+          if (res.status === "success") {
+            setStaffCount(res);
+            console.log(res, "staff count in APi");
+          } else {
+            console.log("error");
+          }
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
     };
 
     fetchStaffCount();
@@ -286,9 +173,8 @@ const Mainpage = () => {
       try {
         const res = await OrgServices.getStaff(user, 1);
         setAllUsers(res.staffMembers);
-        console.log(AllUsers, "all user")
-        console.log(res.staffMembers, "all user response")
-
+        console.log(AllUsers, "all user");
+        console.log(res.staffMembers, "all user response");
       } catch (error) {
         console.log("Error fetching staff members:", error);
       }
@@ -440,9 +326,7 @@ const Mainpage = () => {
           </Box>
           <Divider />
           <Box sx={{ height: "70vh" }}>
-            <div id="map" style={{ width: '100%', height: '100%' }}>
-
-            </div>
+            <div id="map" style={{ width: "100%", height: "100%" }}></div>
           </Box>
         </Box>
 
@@ -529,14 +413,17 @@ const Mainpage = () => {
                   <TableBody>
                     {AllUsers === null ? (
                       <TableRow>
-                        <TableCell colSpan={4} align="center" sx={{ height: "10vh" }}>
-                          <Typography variant="p">No staff available</Typography>
+                        <TableCell
+                          colSpan={4}
+                          align="center"
+                          sx={{ height: "10vh" }}
+                        >
+                          <Typography variant="p">
+                            No staff available
+                          </Typography>
                         </TableCell>
                       </TableRow>
-
-
                     ) : (
-
                       AllUsers.map((staff) => (
                         <TableRow key={staff.name} sx={{ py: "10px" }}>
                           <TableCell
@@ -557,24 +444,17 @@ const Mainpage = () => {
                               staff.role
                             )}
                           </TableCell>
-                          <TableCell>
-                            {staff.email}
-                          </TableCell>
-                          <TableCell>
-                            {staff.phoneNumber}
-                          </TableCell>
+                          <TableCell>{staff.email}</TableCell>
+                          <TableCell>{staff.phoneNumber}</TableCell>
                         </TableRow>
                       ))
                     )}
                   </TableBody>
-
                 </Table>
               </TableContainer>
             </Box>
           </Box>
-
         </Box>
-
       </Grid>
     </>
   );
