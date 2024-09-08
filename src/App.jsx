@@ -15,7 +15,7 @@ import OrgDashboard from "./pages/organisation/dashboard/dashboard";
 import SignIn from "./pages/auth/Organisation/SignIn";
 import Login from "./pages/auth/Organisation/login";
 import Mainpage from "./pages/organisation/dashPages/mainpage";
-import Settings from "./pages/organisation/dashPages/Settings";
+import OrgUpload from "./pages/organisation/dashPages/dataUpload";
 import Users from "./pages/organisation/dashPages/users";
 import AddUsers from "./pages/organisation/dashPages/addUser";
 import EditUsers from "./pages/organisation/dashPages/editUser";
@@ -52,7 +52,7 @@ const App = () => {
         >
           <Route index element={<Mainpage />} />
           <Route path="main" element={<Mainpage />} />
-          <Route path="setting" element={<Settings />} />
+          <Route path="upload" element={<OrgUpload />} />
           <Route path="users" element={<Users />} />
           <Route path="addUsers" element={<AddUsers />} />
           <Route path="editUsers" element={<EditUsers />} />

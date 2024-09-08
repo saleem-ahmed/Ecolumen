@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , useContext  } from "react";
 import AppBar from "@mui/material/AppBar";
 import {
   Box,
@@ -19,12 +19,12 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import SideBar from "../../../components/SideBar";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../../../Auth/index";
+import { AuthContext } from "../../../Auth/index";
 
 const drawerWidth = 260;
 
 const Dashboard = () => {
-  const { LogoutUser, user } = useAuth();
+  const { LogoutOrg, org } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -116,7 +116,7 @@ const Dashboard = () => {
                 display: { sm: "none" },
               }}
             >
-              <Menu color="#444" sx={{ fontSize: "16px" }} />
+              {/* <Menu color="#444" sx={{ fontSize: "16px" }} /> */}
             </IconButton>
             <Box
               sx={{
@@ -164,7 +164,7 @@ const Dashboard = () => {
                     aria-expanded={open ? "true" : undefined}
                   >
                     <Avatar sx={{ width: 32, height: 32 }}>
-                      {user && user.name ? user.name[0] : "U"}
+                      {org && org.name ? org.name[0] : "U"}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -206,9 +206,9 @@ const Dashboard = () => {
               >
                 <MenuItem onClick={handleClose}>
                   <Avatar sx={{ width: 32, height: 32 }}>
-                    {user && user.name ? user.name[0] : "U"}
+                    {org && org.name ? org.name[0] : "U"}
                   </Avatar>{" "}
-                  {user && user.name ? user.name : "unkown"}
+                  {org && org.name ? org.name : "unkown"}
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
@@ -220,7 +220,7 @@ const Dashboard = () => {
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    LogoutUser();
+                    LogoutOrg();
                   }}
                 >
                   <ListItemIcon>

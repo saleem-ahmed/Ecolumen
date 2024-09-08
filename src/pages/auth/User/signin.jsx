@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
@@ -19,9 +19,11 @@ import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../../assets/logo.svg";
 import TextField from "@mui/material/TextField";
 import { useFormik } from "formik";
+import { AuthContext } from "../../../Auth/index.jsx";
 import { loginSchema } from "../../../components/Validations/validation.js";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Loader from "../../../components/loader.jsx";
 // image
 // import SliderImg1 from "../../../assets/usersigin-img1.png";
 import SliderImg2 from "../../../assets/usersigin-img2.png";
@@ -29,6 +31,8 @@ import SliderImg3 from "../../../assets/usersigin-img3.png";
 import SliderImg4 from "../../../assets/usersigin-img4.png";
 const SignIn = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const { staffLogin } = useContext(AuthContext);
   const [activeField, setActiveField] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -46,7 +50,9 @@ const SignIn = () => {
       password: "",
     },
     onSubmit: async () => {
-      navigate("/staffDashboard");
+      // await staffLogin(formik.values.email, formik.values.password);
+      navigate("/staffDashboard/main");
+
     },
   });
   const handleFieldFocus = (fieldName) => {
@@ -224,8 +230,10 @@ const SignIn = () => {
           </SwiperSlide>
         </Swiper>
       </Grid>
+      <Loader loaderValue={loading} />
     </Grid>
   );
 };
+
 
 export default SignIn;

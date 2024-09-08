@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 // import React from "react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -19,7 +19,7 @@ import { AddCircleOutline } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import UploadImage from "../../../components/ImageUpload/imageupload";
 import OrgServices from "../../../apis/Organisation";
-import { useAuth } from "../../../Auth";
+import { AuthContext } from "../../../Auth";
 import Loader from "../../../components/loader";
 import "../../../styles/globals/variables.scss";
 import { addUserSchema } from "../../../components/Validations/validation";
@@ -27,7 +27,7 @@ import Alerts from "../../../components/Customalerts";
 
 const AddUsers = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [Country, setCountry] = useState("");
   const [City, setCity] = useState("");
@@ -38,7 +38,7 @@ const AddUsers = () => {
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
-    OrgServices.getAllRoles(user ? user : null)
+    OrgServices.getAllRoles(org?._id)
       .then((res) => {
         if (res.status === "success") {
           setRoles(res.roles);
@@ -55,25 +55,22 @@ const AddUsers = () => {
   const handleImageUpdate = (newImage) => {
     setStaffImage(newImage);
   };
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-    const handleSnackbarOpen = (message, severity) => {
-      setSnackbarMessage(message);
-      setSnackbarSeverity(severity);
-      setSnackbarOpen(true);
-    };
+  const handleSnackbarOpen = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
 
-    const handleSnackbarClose = () => {
-      setSnackbarOpen(false);
-    };
-
-
-
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
 
   const formik = useFormik({
-    validationSchema: addUserSchema,
+    // validationSchema: addUserSchema,
     enableReinitialize: true,
     initialValues: {
       firstName: "",
@@ -85,6 +82,7 @@ const AddUsers = () => {
       country: "",
       city: "",
       gender: "",
+      password: "",
       dateOfBrith: {},
       role: "",
     },
@@ -101,23 +99,24 @@ const AddUsers = () => {
         gender: Gender,
         dob: startDate,
         role: Role,
+        password: "12345678",
         staffImage: "staffImage",
       };
-      console.log(data, "values after submit")
+      console.log(data, "values after submit");
       setLoader(true);
       try {
-        const res = await OrgServices.AddStaff(data, user ? user : null);
-        console.log(res, "res.adduser 200")
-        if (res.data.status === "success") {
-          handleSnackbarOpen(res.data.message, "success");
+        const res = await OrgServices.AddStaff(data, org?._id);
+        console.log(res, "res.adduser 200");
+        if (res.status === "success") {
+          handleSnackbarOpen(res.message, "success");
           navigate("/dashboard/users");
         } else {
           setLoader(false);
-          handleSnackbarOpen(res.data.message, "error");
+          handleSnackbarOpen(res.message, "error");
         }
       } catch (error) {
-        handleSnackbarOpen("An error occurred while adding the user.", "error");
         setLoader(false);
+        handleSnackbarOpen(error.data.message ,"error");
       } finally {
         setLoader(false);
       }
@@ -135,15 +134,12 @@ const AddUsers = () => {
       />
       <Grid>
         <Box
-
           sx={{
             display: "flex",
             flexDirection: "column",
             my: "20px",
-            width: "100%"
+            width: "100%",
           }}
-
-
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
             Add Staff
@@ -291,22 +287,45 @@ const AddUsers = () => {
                       </Typography>
                     }
                   />
-                  <TextField
-                    label="State"
-                    required
-                    fullWidth
-                    name="state"
-                    onChange={(e) => {
-                      formik.setFieldValue("state", e.target.value);
-                    }}
-                    value={formik.values.state}
-                    error={formik.touched.state && Boolean(formik.errors.state)}
-                    helperText={
-                      <Typography sx={{ fontSize: 10, color: "red" }}>
-                        {formik.touched.state && formik.errors.state}
+                  
+                  <FormControl fullWidth>
+                    <InputLabel>State</InputLabel>
+                    <Select
+                      label="State"
+                      value={formik.values.state}
+                      onChange={formik.handleChange}
+                      name="state"
+                      error={
+                        formik.touched.state && Boolean(formik.errors.state)
+                      }
+                    >
+                      <MenuItem value="">
+                        <em>Select State</em>
+                      </MenuItem>
+                      <MenuItem value="punjab">
+                        <em>Punjab</em>
+                      </MenuItem>
+                      <MenuItem value="sindh">
+                        <em>Sindh</em>
+                      </MenuItem>
+                      <MenuItem value="kpk">
+                        <em>KPK</em>
+                      </MenuItem>
+                      <MenuItem value="gilgit-baltistan">
+                        <em>Gilgit Baltistan</em>
+                      </MenuItem>
+                      <MenuItem value="balochistan">
+                        <em>Balochistan</em>
+                      </MenuItem>
+                    </Select>
+                    {formik.touched.state && formik.errors.state && (
+                      <Typography
+                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
+                      >
+                        {formik.errors.state}
                       </Typography>
-                    }
-                  />
+                    )}
+                  </FormControl>
                 </Box>
                 <Box display={"flex"} gap={"20px"} my={2}>
                   <FormControl fullWidth>
@@ -314,10 +333,6 @@ const AddUsers = () => {
                     <Select
                       value={formik.values.country}
                       label="Country"
-                      // {...{
-                      //   formik,
-                      //   checkvalidation: true,
-                      // }}
                       onChange={(e) => {
                         setCountry(e.target.value);
                         formik.setFieldValue("country", e.target.value);
@@ -325,14 +340,9 @@ const AddUsers = () => {
                       error={
                         formik.touched.country && Boolean(formik.errors.country)
                       }
-                    // country
+                      // country
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
-                      <MenuItem value="China">China</MenuItem>
-                      <MenuItem value="Afghanistan">Afghanistan</MenuItem>
-                      <MenuItem value="Iran">Iran</MenuItem>
-                      <MenuItem value="India">India</MenuItem>
-                      <MenuItem value="Russia">Russia</MenuItem>
                     </Select>
                     {formik.errors.country && (
                       <Typography
@@ -347,23 +357,59 @@ const AddUsers = () => {
                     <Select
                       value={formik.values.city}
                       label="City"
-                      // {...{
-                      //   formik,
-                      //   checkvalidation: true,
-                      // }}
                       onChange={(e) => {
                         setCity(e.target.value);
                         formik.setFieldValue("city", e.target.value);
                       }}
                       error={formik.touched.city && Boolean(formik.errors.city)}
-                    // city
+                      // city
                     >
-                      <MenuItem value="Pakistan">Pakistan</MenuItem>
-                      <MenuItem value="China">China</MenuItem>
-                      <MenuItem value="Afghanistan">Afghanistan</MenuItem>
-                      <MenuItem value="Iran">Iran</MenuItem>
-                      <MenuItem value="India">India</MenuItem>
-                      <MenuItem value="Russia">Russia</MenuItem>
+                      <MenuItem value="">
+                        <em>Select City</em>
+                      </MenuItem>
+                      <MenuItem value="Karachi">Karachi</MenuItem>
+                      <MenuItem value="Lahore">Lahore</MenuItem>
+                      <MenuItem value="Islamabad">Islamabad</MenuItem>
+                      <MenuItem value="Rawalpindi">Rawalpindi</MenuItem>
+                      <MenuItem value="Faisalabad">Faisalabad</MenuItem>
+                      <MenuItem value="Multan">Multan</MenuItem>
+                      <MenuItem value="Peshawar">Peshawar</MenuItem>
+                      <MenuItem value="Quetta">Quetta</MenuItem>
+                      <MenuItem value="Sialkot">Sialkot</MenuItem>
+                      <MenuItem value="Gujranwala">Gujranwala</MenuItem>
+                      <MenuItem value="Hyderabad">Hyderabad</MenuItem>
+                      <MenuItem value="Sargodha">Sargodha</MenuItem>
+                      <MenuItem value="Bahawalpur">Bahawalpur</MenuItem>
+                      <MenuItem value="Sukkur">Sukkur</MenuItem>
+                      <MenuItem value="Jhang">Jhang</MenuItem>
+                      <MenuItem value="Larkana">Larkana</MenuItem>
+                      <MenuItem value="Sheikhupura">Sheikhupura</MenuItem>
+                      <MenuItem value="Rahim Yar Khan">Rahim Yar Khan</MenuItem>
+                      <MenuItem value="Sahiwal">Sahiwal</MenuItem>
+                      <MenuItem value="Mardan">Mardan</MenuItem>
+                      <MenuItem value="Gujrat">Gujrat</MenuItem>
+                      <MenuItem value="Kasur">Kasur</MenuItem>
+                      <MenuItem value="Dera Ghazi Khan">
+                        Dera Ghazi Khan
+                      </MenuItem>
+                      <MenuItem value="Nawabshah">Nawabshah</MenuItem>
+                      <MenuItem value="Okara">Okara</MenuItem>
+                      <MenuItem value="Chiniot">Chiniot</MenuItem>
+                      <MenuItem value="Jacobabad">Jacobabad</MenuItem>
+                      <MenuItem value="Kohat">Kohat</MenuItem>
+                      <MenuItem value="Jhelum">Jhelum</MenuItem>
+                      <MenuItem value="Gilgit">Gilgit</MenuItem>
+                      <MenuItem value="Skardu">Skardu</MenuItem>
+                      <MenuItem value="Hunza">Hunza</MenuItem>
+                      <MenuItem value="Chilas">Chilas</MenuItem>
+                      <MenuItem value="Astore">Astore</MenuItem>
+                      <MenuItem value="Khaplu">Khaplu</MenuItem>
+                      <MenuItem value="Nagar">Nagar</MenuItem>
+                      <MenuItem value="Ghanche">Ghanche</MenuItem>
+                      <MenuItem value="Ghizer">Ghizer</MenuItem>
+                      <MenuItem value="Shigar">Shigar</MenuItem>
+                      <MenuItem value="Rondu">Rondu</MenuItem>
+                      <MenuItem value="Yasin">Yasin</MenuItem>
                     </Select>
                     {formik.errors.city && (
                       <Typography
@@ -396,7 +442,7 @@ const AddUsers = () => {
                       error={
                         formik.touched.gender && Boolean(formik.errors.gender)
                       }
-                    // country
+                      // country
                     >
                       <MenuItem value="Pakistan">Male</MenuItem>
                       <MenuItem value="China">Female</MenuItem>
@@ -417,7 +463,6 @@ const AddUsers = () => {
                     />
                   </Box>
                 </Box>
-
                 <Box
                   display={"flex"}
                   justifyContent={"space-between"}
@@ -442,7 +487,7 @@ const AddUsers = () => {
                         error={
                           formik.touched.role && Boolean(formik.errors.role)
                         }
-                      // country
+                        // country
                       >
                         {roles?.map((role) => (
                           <MenuItem key={role.roleName} value={role.roleName}>
@@ -478,7 +523,6 @@ const AddUsers = () => {
 
                 <Box display={"flex"} justifyContent={"center"} gap={"20px"}>
                   <Button
-
                     color="success"
                     variant="outlined"
                     onClick={() => {
@@ -488,7 +532,7 @@ const AddUsers = () => {
                     Back
                   </Button>
                   <Button
-                    type="submit"
+                    // type="submit"
                     color="success"
                     variant="contained"
                     onClick={() => formik.handleSubmit()}

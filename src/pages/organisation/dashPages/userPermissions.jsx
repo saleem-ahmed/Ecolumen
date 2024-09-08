@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -13,14 +13,14 @@ import {
   Button,
 } from "@mui/material";
 import OrgServices from "../../../apis/Organisation";
-import { useAuth } from "../../../Auth";
+import { AuthContext } from "../../../Auth";
 import { useFormik } from "formik";
 import Loader from "../../../components/loader";
 import Alerts from "../../../components/Customalerts";
 import { permissionSchema } from "../../../components/Validations/validation";
 
 const UserPermissions = () => {
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [roles, setRoles] = useState();
   const [Role, setRole] = useState();
   // const [Permission, setPermission] = useState([]);
@@ -44,7 +44,7 @@ const UserPermissions = () => {
   }, []);
 
   const FetchRoles = async () => {
-    await OrgServices.getAllRoles(user ? user : null)
+    await OrgServices.getAllRoles(org?._id)
       .then((res) => {
         if (res.status === "success") {
           console.log(res.message, "success");
@@ -88,7 +88,7 @@ const UserPermissions = () => {
       };
       console.log(data);
       setloader(true);
-      OrgServices.setPermission(data, user, Role).then((res) => {
+      OrgServices.setPermission(data, org, Role).then((res) => {
         console.log(Role, "role Send to api");
         if (res.status === "success") {
           setloader(false);

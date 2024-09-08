@@ -9,6 +9,10 @@ function get(url) {
       "Access-Control-Allow-Credentials": true,
       "Access-Control-Allow-Origin": "*",
     },
+    server: {
+       "Strict-Transport-Security" : "max-age=31536000",
+       "Content-Security-Policy":  "upgrade-insecure-requests"
+    },
   });
 }
 function getWithBody(url, data, token) {

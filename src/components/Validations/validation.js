@@ -110,6 +110,7 @@ export const addUserSchema = yup.object().shape({
   gender: yup.string().required("Required field *"),
   dateOfBrith: yup.object().required("Required field *"),
   role: yup.string().required("Required field *"),
+  password: yup.string().required("Required field *"),
 });
 
 export const permissionSchema = yup.object().shape({

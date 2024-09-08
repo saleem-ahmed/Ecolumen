@@ -7,70 +7,72 @@ console.log("baseUrl", URL);
 
 const OrgServices = {
   // for get organisation data
-  getStaff: async (user, currentPage) => {
+  getStaff: async (_id, currentPage) => {
     console.log("CURRENT PAGE IN API=", currentPage);
     return await Service.get(
-      `${URL}/organization/${user._id}/getAllStaff?page=${currentPage}`
+      `${URL}/organization/${_id}/getAllStaff?page=${currentPage}`
     );
   },
 
   //get roles
-  getRoles: async (user, currentPage) => {
+  getRoles: async (org, currentPage) => {
     return await Service.get(
-      `${URL}/organization/${user._id}/getAllRoles?page=${currentPage}`
+      `${URL}/organization/${org._id}/getAllRoles?page=${currentPage}`
     );
   },
-  getAllRoles: async (user) => {
+
+
+  getAllRoles: async (_id) => {
     return await Service.get(
-      `${URL}/organization/${user._id}/getRoles`
+      `${URL}/organization/${_id}/getRoles`
     );
   },
 
   //staffcount
-  staffCount: async (user) => {
+  staffCount: async (org) => {
     return await Service.get(
-      `${URL}/organization/${user._id}/staffCounts`
+      `${URL}/organization/${org._id}/staffCounts`
     );
   },
   // update organisation data
-  upStaff: async (data, user, staff) => {
+  upStaff: async (data, _id, staff) => {
     return await Service.update({
-      url: `${URL}/organization/${user._id}/${staff._id}/editStaff`,
+      url: `${URL}/organization/${_id}/${staff._id}/editStaff`,
       data,
     });
   },
   // update organisation data
-  upRole: async (data, user, role) => {
+  upRole: async (data, org, role) => {
     return await Service.update({
-      url: `${URL}/organization/${user._id}/${role._id}/editRole`,
+      url: `${URL}/organization/${org._id}/${role._id}/editRole`,
       data,
     });
   },
-  // switch user
-  toggleStaff: async (user, staff) => {
+  // switch org
+  toggleStaff: async (_id, staff) => {
     return await Service.update({
-      url: `${URL}/organization/${user._id}/${staff._id}/toggleStaff`,
+      url: `${URL}/organization/${_id}/${staff._id}/toggleStaff`,
     });
   },
   // add staff
-  AddStaff: async (data, user) => {
+  AddStaff: async (data, _id) => {
     return Service.post({
-      url: `${URL}/organization/${user._id}/addStaff`,
+      url: `${URL}/organization/${_id}/addStaff`,
       data,
     });
   },
   //Add Role
-  AddRole: async (data, user) => {
+  AddRole: async (data, _id) => {
     return Service.post({
-      url: `${URL}/organization/${user._id}/addRole`,
+      url: `${URL}/organization/${_id}/addRole`,
       data,
     });
   },
 
   // set permission
-  setPermission: async (data, user, id) => {
+  setPermission: async (data, org, id) => {
     return Service.post({
-      url: `${URL}/organization/${user._id}/${id}/permissions`,
+      url: `${URL}/organization/${org._id}/${id}/permissions`,
       data,
     });
   },
@@ -91,16 +93,16 @@ const OrgServices = {
     });
   },
   // delete staff
-  deleteStaff: async (user, staff) => {
+  deleteStaff: async (org, staff) => {
     return await Service.remove({
-      url: `${URL}/organization/${user._id}/${staff._id}/deleteStaff`,
+      url: `${URL}/organization/${org._id}/${staff._id}/deleteStaff`,
     });
   },
 
   // delete staff
-  deleteRole: async (user, role) => {
+  deleteRole: async (org, role) => {
     return await Service.remove({
-      url: `${URL}/organization/${user._id}/${role._id}/deleteRole`,
+      url: `${URL}/organization/${org._id}/${role._id}/deleteRole`,
     });
   },
 };

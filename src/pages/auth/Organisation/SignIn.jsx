@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
@@ -22,16 +22,15 @@ import "react-intl-tel-input/dist/main.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import Alerts from "../../../components/Customalerts";
-import { useAuth } from "../../../Auth/index";
+import { AuthContext } from "../../../Auth/index";
 import Loader from "../../../components/loader";
-import Service from "../../../apis/services"
+import Service from "../../../apis/services";
 import {
   stepOneValidationSchema,
   stepTwoValidationSchema,
   stepThreeValidationSchema,
-  VerifySchema,
 } from "../../../components/Validations/validation";
-import OrgServices from "../../../apis/Organisation"
+import OrgServices from "../../../apis/Organisation";
 
 const steps = [
   {
@@ -43,32 +42,24 @@ const steps = [
   {
     label: "Privacy",
   },
-  // {
-  //   label: "Verification",
-  // },
+
   {
     label: "Confirmation",
   },
 ];
 
 export default function SignIn() {
-  const { registerOrg } = useAuth();
+  const { registerOrg } = useContext(AuthContext);
   const Navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [Country, setCountry] = useState("");
-  const [State, setState] = useState("");
-  const [City, setCity] = useState("");
+  // const [Country, setCountry] = useState("");
+  // const [State, setState] = useState("");
+  // const [City, setCity] = useState("");
   const [Type, setType] = useState("");
   const [Find, setFind] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [countries, setCountries] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [states, setStates] = useState([]);
-  const [selectedState, setSelectedState] = useState('');
-  const [cities, setCities] = useState([]);
-  const [selectedCity, setSelectedCity] = useState('');
 
   const handleSnackbarOpen = (message, severity = "success") => {
     setSnackbarMessage(message);
@@ -78,62 +69,6 @@ export default function SignIn() {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
-  };
-
-
-  //selects country / state / city
-  useEffect(() => {
-    fetchCountries();
-  }, []);
-
-  const fetchCountries = async () => {
-    try {
-      const response = await fetch('http://api.geonames.org/countryInfoJSON?username=ahmedsaleem');
-      const data = await response.json();
-      setCountries(data.geonames);
-    } catch (error) {
-      console.error('Error fetching countries:', error);
-    }
-  };
-
-  const fetchStates = async (countryCode) => {
-    try {
-      const response = await fetch(`http://api.geonames.org/childrenJSON?geonameId=${countryCode}&username=ahmedsaleem`);
-      const data = await response.json();
-      setStates(data.geonames);
-    } catch (error) {
-      console.error('Error fetching states:', error);
-    }
-  };
-
-  const fetchCities = async (stateCode) => {
-    try {
-      const response = await fetch(`http://api.geonames.org/childrenJSON?geonameId=${stateCode}&username=ahmedsaleem`);
-      const data = await response.json();
-      setCities(data.geonames);
-    } catch (error) {
-      console.error('Error fetching cities:', error);
-    }
-  };
-
-  const handleCountryChange = (event) => {
-    const countryCode = event.target.value;
-    setSelectedCountry(countryCode);
-    setSelectedState('');
-    setSelectedCity('');
-    fetchStates(countryCode);
-  };
-
-  const handleStateChange = (event) => {
-    const stateCode = event.target.value;
-    setSelectedState(stateCode);
-    setSelectedCity('');
-    fetchCities(stateCode);
-  };
-
-  const handleCityChange = (event) => {
-    const city = event.target.value;
-    setSelectedCity(city);
   };
 
   const formik1 = useFormik({
@@ -153,17 +88,17 @@ export default function SignIn() {
     onSubmit: async () => {
       const data = {
         orgname: formik1.values.orgname,
-        country: selectedCountry,
-        state: selectedState,
-        city: selectedCity,
+        country: formik1.values.country,
+        state: formik1.values.country,
+        city: formik1.values.country,
         postalcode: formik1.values.postalCode,
         orgtype: formik1.values.type,
         website: formik1.values.website,
         empnumber: formik1.values.numberOfEmployees,
         find: Find,
-      }
+      };
       handleNext();
-      console.log(data)
+      console.log(data);
     },
   });
 
@@ -188,45 +123,16 @@ export default function SignIn() {
     },
 
     onSubmit: async () => {
-      // setLoading(true);
-      // const data = {
-      //   email: formik2.values.email,
-      // }
-      // await OrgServices.verifyEmail(data)
-      //   .then((res) => {
-      //     setLoading(false);
-      //     handleNext();
-      //     console.log(res.data)
-      //     handleSnackbarOpen(res.message, "success")
-      //     console.log(res);
-      //   }).catch((error) => {
-      //     setLoading(false);
-      //     console.log('Error:', error.data)
-      //     handleSnackbarOpen(error.data.message, "error");
-      //   });
       handleNext();
     },
   });
 
-  // const formik4 = useFormik({
-  //   enableReinitialize: true,
-  //   validationSchema: VerifySchema,
-  //   initialValues: {
-  //     code: "",
-  //   },
-  //   onSubmit: async () => {
-
-
-  //     handleNext();
-  //   },
-  // });
-
   const apiCall = async () => {
     const data = {
       name: formik1.values.orgname,
-      country: Country,
-      state: State,
-      city: City,
+      country: formik1.values.country,
+      state: formik1.values.state,
+      city: formik1.values.city,
       postalcode: formik1.values.postalCode,
       orgtype: formik1.values.type,
       website: formik1.values.website,
@@ -323,7 +229,6 @@ export default function SignIn() {
             maxWidth="md"
             style={{ width: "100%", maxWidth: "513px", height: "100%" }}
           >
-
             <Box
               display={"flex"}
               flexDirection={"column"}
@@ -365,13 +270,13 @@ export default function SignIn() {
                     <InputLabel>Country</InputLabel>
                     <Select
                       label="Country"
-                      value={Country}
-                      onChange={(e) => {
-                        handleCountryChange(e);
-                        setCountry(e.target.value);
-                        formik1.setFieldValue("country", e.target.value);
-                      }}
-                      error={formik1.touched.country && Boolean(formik1.errors.country)}
+                      value={formik1.values.country}
+                      onChange={formik1.handleChange}
+                      name="country"
+                      error={
+                        formik1.touched.country &&
+                        Boolean(formik1.errors.country)
+                      }
                       MenuProps={{
                         PaperProps: {
                           style: {
@@ -384,14 +289,14 @@ export default function SignIn() {
                       <MenuItem value="">
                         <em>Select Country</em>
                       </MenuItem>
-                      {countries?.map((country) => (
-                        <MenuItem key={country.geonameId} value={country.geonameId}>
-                          {country.countryName}
-                        </MenuItem>
-                      ))}
+                      <MenuItem value="pakistan">
+                        <em>Pakistan</em>
+                      </MenuItem>
                     </Select>
                     {formik1.touched.country && formik1.errors.country && (
-                      <Typography sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}>
+                      <Typography
+                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
+                      >
                         {formik1.errors.country}
                       </Typography>
                     )}
@@ -399,26 +304,37 @@ export default function SignIn() {
                   <FormControl fullWidth>
                     <InputLabel>State</InputLabel>
                     <Select
-                      value={selectedState}
                       label="State"
-                      onChange={(e) => {
-                        handleStateChange(e);
-                        setState(e.target.value);
-                        formik1.setFieldValue("state", e.target.value);
-                      }}
-                      error={formik1.touched.state && Boolean(formik1.errors.state)}
+                      value={formik1.values.state}
+                      onChange={formik1.handleChange}
+                      name="state"
+                      error={
+                        formik1.touched.state && Boolean(formik1.errors.state)
+                      }
                     >
                       <MenuItem value="">
                         <em>Select State</em>
                       </MenuItem>
-                      {states?.map((state) => (
-                        <MenuItem key={state.geonameId} value={state.geonameId}>
-                          {state.name}
-                        </MenuItem>
-                      ))}
+                      <MenuItem value="punjab">
+                        <em>Punjab</em>
+                      </MenuItem>
+                      <MenuItem value="sindh">
+                        <em>Sindh</em>
+                      </MenuItem>
+                      <MenuItem value="kpk">
+                        <em>KPK</em>
+                      </MenuItem>
+                      <MenuItem value="gilgit-baltistan">
+                        <em>Gilgit Baltistan</em>
+                      </MenuItem>
+                      <MenuItem value="balochistan">
+                        <em>Balochistan</em>
+                      </MenuItem>
                     </Select>
                     {formik1.touched.state && formik1.errors.state && (
-                      <Typography sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}>
+                      <Typography
+                        sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
+                      >
                         {formik1.errors.state}
                       </Typography>
                     )}
@@ -428,27 +344,63 @@ export default function SignIn() {
                 <Grid item display={"flex"} flexDirection={"row"} gap={"30px"}>
                   <FormControl fullWidth>
                     <InputLabel>City</InputLabel>
-
                     <Select
-                      value={selectedCity}
+                      value={formik1.values.city}
                       label="City"
-                      onChange={(e) => {
-                        handleCityChange(e);
-                        formik1.setFieldValue("city", e.target.value);
-                        setCity(e.target.value);
-                      }}
+                      name="city"
+                      onChange={formik1.handleChange}
                       error={
                         formik1.touched.city && Boolean(formik1.errors.city)
                       }
                     >
-                      {cities?.map((city) => (
-                        <MenuItem key={city.geonameId} value={city.name}>
-                          {city.name}
-                        </MenuItem>
-                      ))}
-
+                      <MenuItem value="">
+                        <em>Select City</em>
+                      </MenuItem>
+                      <MenuItem value="Karachi">Karachi</MenuItem>
+                      <MenuItem value="Lahore">Lahore</MenuItem>
+                      <MenuItem value="Islamabad">Islamabad</MenuItem>
+                      <MenuItem value="Rawalpindi">Rawalpindi</MenuItem>
+                      <MenuItem value="Faisalabad">Faisalabad</MenuItem>
+                      <MenuItem value="Multan">Multan</MenuItem>
+                      <MenuItem value="Peshawar">Peshawar</MenuItem>
+                      <MenuItem value="Quetta">Quetta</MenuItem>
+                      <MenuItem value="Sialkot">Sialkot</MenuItem>
+                      <MenuItem value="Gujranwala">Gujranwala</MenuItem>
+                      <MenuItem value="Hyderabad">Hyderabad</MenuItem>
+                      <MenuItem value="Sargodha">Sargodha</MenuItem>
+                      <MenuItem value="Bahawalpur">Bahawalpur</MenuItem>
+                      <MenuItem value="Sukkur">Sukkur</MenuItem>
+                      <MenuItem value="Jhang">Jhang</MenuItem>
+                      <MenuItem value="Larkana">Larkana</MenuItem>
+                      <MenuItem value="Sheikhupura">Sheikhupura</MenuItem>
+                      <MenuItem value="Rahim Yar Khan">Rahim Yar Khan</MenuItem>
+                      <MenuItem value="Sahiwal">Sahiwal</MenuItem>
+                      <MenuItem value="Mardan">Mardan</MenuItem>
+                      <MenuItem value="Gujrat">Gujrat</MenuItem>
+                      <MenuItem value="Kasur">Kasur</MenuItem>
+                      <MenuItem value="Dera Ghazi Khan">
+                        Dera Ghazi Khan
+                      </MenuItem>
+                      <MenuItem value="Nawabshah">Nawabshah</MenuItem>
+                      <MenuItem value="Okara">Okara</MenuItem>
+                      <MenuItem value="Chiniot">Chiniot</MenuItem>
+                      <MenuItem value="Jacobabad">Jacobabad</MenuItem>
+                      <MenuItem value="Kohat">Kohat</MenuItem>
+                      <MenuItem value="Jhelum">Jhelum</MenuItem>
+                      <MenuItem value="Gilgit">Gilgit</MenuItem>
+                      <MenuItem value="Skardu">Skardu</MenuItem>
+                      <MenuItem value="Hunza">Hunza</MenuItem>
+                      <MenuItem value="Chilas">Chilas</MenuItem>
+                      <MenuItem value="Astore">Astore</MenuItem>
+                      <MenuItem value="Khaplu">Khaplu</MenuItem>
+                      <MenuItem value="Nagar">Nagar</MenuItem>
+                      <MenuItem value="Ghanche">Ghanche</MenuItem>
+                      <MenuItem value="Ghizer">Ghizer</MenuItem>
+                      <MenuItem value="Shigar">Shigar</MenuItem>
+                      <MenuItem value="Rondu">Rondu</MenuItem>
+                      <MenuItem value="Yasin">Yasin</MenuItem>
                     </Select>
-                    {formik1.errors.city && (
+                    {formik1.touched.city && formik1.errors.city && (
                       <Typography
                         sx={{ fontSize: 10, color: "red", paddingLeft: "10px" }}
                       >
@@ -456,24 +408,21 @@ export default function SignIn() {
                       </Typography>
                     )}
                   </FormControl>
+
                   <TextField
-                    label="Postal code"
+                    label="Postal Code"
                     required
                     fullWidth
                     name="postalCode"
-                    onChange={(e) => {
-                      formik1.setFieldValue("postalCode", e.target.value);
-                    }}
                     value={formik1.values.postalCode}
+                    onChange={formik1.handleChange}
+                    onBlur={formik1.handleBlur}
                     error={
                       formik1.touched.postalCode &&
                       Boolean(formik1.errors.postalCode)
                     }
                     helperText={
-                      <Typography sx={{ fontSize: 10, color: "red" }}>
-                        {formik1.touched.postalCode &&
-                          formik1.errors.postalCode}
-                      </Typography>
+                      formik1.touched.postalCode && formik1.errors.postalCode
                     }
                   />
                 </Grid>
@@ -483,7 +432,6 @@ export default function SignIn() {
                     <Select
                       defaultValue={Type}
                       label="Type"
-
                       onChange={(e) => {
                         formik1.setFieldValue("type", e.target.value);
                         setType(e.target.value);
@@ -859,7 +807,7 @@ export default function SignIn() {
                       control={<Checkbox defaultChecked />}
                       label=""
                       size="small"
-                    // sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
+                      // sx={{ "& .MuiSvgIcon-root": { fontSize: 28 } }}
                     />
                     <Typography variant="subtitle1">
                       By clicking Register, you agree to our Terms of Use and

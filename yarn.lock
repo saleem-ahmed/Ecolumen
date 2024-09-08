@@ -1382,6 +1382,11 @@ dot-parts@~1.0.0:
   resolved "https://registry.yarnpkg.com/dot-parts/-/dot-parts-1.0.1.tgz#884bd7bcfc3082ffad2fe5db53e494d8f3e0743f"
   integrity sha512-DcAuaZ2hguFLkxrAwOlvYNFb4IE6xg1Ldzqpma4/UeiT0utd8/E17z1h9mH8s+9Hwh7SeLn83LpIykh/oBBxSw==
 
+dotenv@^16.4.5:
+  version "16.4.5"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
+  integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
+
 electron-to-chromium@^1.4.477:
   version "1.4.490"
   resolved "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.4.490.tgz"

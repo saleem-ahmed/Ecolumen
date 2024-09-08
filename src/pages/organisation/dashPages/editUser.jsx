@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -16,7 +16,7 @@ import DatePicker from "react-datepicker";
 import { useFormik } from "formik";
 import OrgServices from "../../../apis/Organisation";
 import { AddCircleOutline } from "@mui/icons-material";
-import { useAuth } from "../../../Auth";
+import { AuthContext } from "../../../Auth";
 import Loader from "../../../components/loader";
 import UploadImage from "../../../components/ImageUpload/imageupload";
 import "../../../styles/globals/variables.scss";
@@ -27,7 +27,7 @@ const EditUser = () => {
   const location = useLocation();
   // console.log(location);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [loader, setloader] = useState(false);
   const [Role, setRole] = useState("");
   const [staffImage, setStaffImage] = useState({});
@@ -79,12 +79,13 @@ const EditUser = () => {
         gender: formik.values.gender,
         dob: startDate,
         role: Role,
+        password: "12345678",
         staffImage: "staffImage",
       };
 
       setloader(true);
 
-      await OrgServices.upStaff(data, user ? user : null, location.state)
+      await OrgServices.upStaff(data, org?._id, location.state)
         .then((res) => {
           if (res.status === "success") {
             console.log(res.message);
@@ -106,18 +107,22 @@ const EditUser = () => {
   });
 
   useEffect(() => {
-    OrgServices.getAllRoles(user ? user : null)
+    setloader(true);
+    OrgServices.getAllRoles(org?._id)
       .then((res) => {
         if (res.status === "success") {
           console.log(res.message, "success");
           setRoles(res.roles);
           console.log(roles);
+          setloader(false);
         } else {
           console.log(res.message, "error");
+          setloader(false);
         }
       })
       .catch((error) => {
         console.log(error);
+        setloader(false);
       });
   }, []);
 

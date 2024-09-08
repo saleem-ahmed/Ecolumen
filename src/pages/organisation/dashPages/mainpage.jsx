@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
   Box,
   Grid,
@@ -24,7 +24,7 @@ import CardImg3 from "../../../assets/dashboard/card-img3.svg";
 import BgCard1 from "../../../assets/dashboard/bg-card1.svg";
 import BgCard2 from "../../../assets/dashboard/bg-card2.svg";
 import BgCard3 from "../../../assets/dashboard/bg-card3.svg";
-import { useAuth } from "../../../Auth/index.jsx";
+import { AuthContext } from "../../../Auth/index.jsx";
 import OrgServices from "../../../apis/Organisation";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -36,7 +36,7 @@ const EditOptions = ["Refresh"];
 // Sample GeoJSON data for forests and water bodies
 
 const Mainpage = () => {
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [AllUsers, setAllUsers] = useState(null);
 
   const [staffCount, setStaffCount] = useState({
@@ -152,7 +152,7 @@ const Mainpage = () => {
   useEffect(() => {
     //StaffCount
     const fetchStaffCount = async () => {
-      await OrgServices.staffCount(user)
+      await OrgServices.staffCount(org)
         .then((res) => {
           console.log(res, "staff count in APi");
           if (res.status === "success") {
@@ -171,7 +171,7 @@ const Mainpage = () => {
     //getStaff
     const fetchData = async () => {
       try {
-        const res = await OrgServices.getStaff(user, 1);
+        const res = await OrgServices.getStaff(org?._id, 1);
         setAllUsers(res.staffMembers);
         console.log(AllUsers, "all user");
         console.log(res.staffMembers, "all user response");
@@ -181,7 +181,7 @@ const Mainpage = () => {
     };
 
     fetchData();
-  }, [user]);
+  }, [org]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -223,7 +223,7 @@ const Mainpage = () => {
           gap={"20px"}
           width={"100%"}
         >
-          <Typography variant="h2">{user?.orgname} Dashboard</Typography>
+          <Typography variant="h2">{org?.orgname} Dashboard</Typography>
         </Box>
         <Box
           display={"flex"}

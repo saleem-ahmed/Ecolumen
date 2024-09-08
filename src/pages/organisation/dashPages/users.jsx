@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Grid,
   Box,
@@ -28,7 +28,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Search } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
 import OrgServices from "../../../apis/Organisation";
-import { useAuth } from "../../../Auth";
+// Invalid Context API
+import { AuthContext } from "../../../Auth";
 import Loader from "../../../components/loader";
 import Alerts from "../../../components/Customalerts";
 
@@ -39,12 +40,8 @@ const Users = () => {
     totalPages: 1,
     pageSize: 10,
   });
-  useEffect(() => {
-    FetchUsers();
-  }, [pageInfo.currentPage]);
-
   const Navigate = useNavigate();
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [loader, setloader] = useState(true);
   const [staff, setstaff] = useState([]);
   const [anchorElObj, setAnchorElObj] = useState({});
@@ -64,11 +61,11 @@ const Users = () => {
 
   const [removeConfirmation, setRemoveConfirmation] = useState({
     open: false,
-    user: null,
+    org: null,
   });
 
   const FetchUsers = async () => {
-    await OrgServices.getStaff(user ? user : null, pageInfo.currentPage)
+    await OrgServices.getStaff(org?._id, pageInfo.currentPage)
       .then((res) => {
         if (res.status === "success") {
           setstaff(res.staffMembers);
@@ -95,7 +92,7 @@ const Users = () => {
   // toggle in table
   const handleToggle = async (staff) => {
     setloader(true);
-    await OrgServices.toggleStaff(user ? user : null, staff)
+    await OrgServices.toggleStaff(org?._id, staff)
       .then((res) => {
         if (res.status === "success") {
           setstaff((prevStaff) => {
@@ -157,12 +154,12 @@ const Users = () => {
 
   const handleRemoveClick = (index, staffMember) => {
     handleMenuClose(index);
-    setRemoveConfirmation({ open: true, user: staffMember });
+    setRemoveConfirmation({ open: true, org: staffMember });
   };
 
   const handleRemoveConfirm = async () => {
-    setRemoveConfirmation({ open: false, user: null });
-    await OrgServices.deleteStaff(user, removeConfirmation.user)
+    setRemoveConfirmation({ open: false, org: null });
+    await OrgServices.deleteStaff(org, removeConfirmation.org)
       .then((res) => {
         if (res.status === "success") {
           handleSnackbarOpen(res.message, "success");
@@ -176,13 +173,21 @@ const Users = () => {
   };
 
   const handleRemoveCancel = () => {
-    setRemoveConfirmation({ open: false, user: null });
+    setRemoveConfirmation({ open: false, org: null });
   };
 
   // pagination
   const handlePageChange = (event, value) => {
     setPageInfo({ ...pageInfo, currentPage: value });
   };
+
+
+  useEffect(() => {
+    if(org){                                                                                                                                                           
+      FetchUsers();
+    }
+    console.log("ENV:", import.meta.env.VITE_APP_API_URL)
+  }, [org,  pageInfo.currentPage, pageInfo.totalStaffMembers]);
   return (
     <>
       <Loader loaderValue={loader} />
@@ -350,13 +355,7 @@ const Users = () => {
 
               </TableBody>
             </Table>
-            {/* <Pagination
-              count={pageInfo.totalPages}
-              page={pageInfo.currentPage}
-              onChange={handlePageChange}
-              color="primary"
-            />
-             */}
+           
             <Pagination
               count={pageInfo.totalPages} // Total number of pages
               page={pageInfo.currentPage} // Current active page

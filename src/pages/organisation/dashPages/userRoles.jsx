@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Box,
   Table,
@@ -25,7 +25,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Loader from "../../../components/loader";
 import Alerts from "../../../components/Customalerts";
 import OrgServices from "../../../apis/Organisation";
-import { useAuth } from "../../../Auth";
+import { AuthContext } from "../../../Auth";
 import { useFormik } from "formik";
 import {
   AddRoleSchema,
@@ -33,7 +33,7 @@ import {
 } from "../../../components/Validations/validation.js";
 const ITEM_HEIGHT = 48;
 const userRoles = () => {
-  const { user } = useAuth();
+  const { org } = useContext(AuthContext);
   const [pageInfo, setPageInfo] = useState({
     totalRoles: 1,
     currentPage: 1,
@@ -43,10 +43,10 @@ const userRoles = () => {
   const [orgRoles, setOrgRoles] = useState();
   useEffect(() => {
     FetchRoles();
-  }, [pageInfo.currentPage, pageInfo.totalRoles]);
+  }, [org, pageInfo.currentPage, pageInfo.totalRoles]);
 
   const FetchRoles = async () => {
-    await OrgServices.getRoles(user ? user : null, pageInfo.currentPage)
+    await OrgServices.getRoles(org, pageInfo.currentPage)
       .then((res) => {
         console.log(res, "role res");
         setOrgRoles(res.roles);
@@ -84,7 +84,7 @@ const userRoles = () => {
   const [anchorElObj, setAnchorElObj] = useState({});
   const [removeConfirmation, setRemoveConfirmation] = useState({
     open: false,
-    user: null,
+    org: null,
   });
   // Add new state variables
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -101,7 +101,7 @@ const userRoles = () => {
       const data = {
         roleName: formik.values.name,
       };
-      await OrgServices.AddRole(data, user ? user : null)
+      await OrgServices.AddRole(data, org?._id)
         .then((res) => {
           console.log(res);
           if (res.status === "success") {
@@ -136,7 +136,7 @@ const userRoles = () => {
         _id: formik1.values.id, // Ensure you have the role ID here
       };
       setloader(true);
-      await OrgServices.upRole(data, user, updatedRole)
+      await OrgServices.upRole(data, org, updatedRole)
         .then((res) => {
           if (res.status === "success") {
             handleCloseEditModal();
@@ -192,11 +192,11 @@ const userRoles = () => {
 
   const handleRemoveClick = (index, staffMember) => {
     handleMenuClose(index);
-    setRemoveConfirmation({ open: true, user: staffMember });
+    setRemoveConfirmation({ open: true, org: staffMember });
   };
   const handleRemoveConfirm = async () => {
-    setRemoveConfirmation({ open: false, user: null });
-    await OrgServices.deleteRole(user, removeConfirmation.user)
+    setRemoveConfirmation({ open: false, org: null });
+    await OrgServices.deleteRole(org, removeConfirmation.org)
       .then((res) => {
         if (res.status === "success") {
           handleSnackbarOpen(res.message, "success");
@@ -211,7 +211,7 @@ const userRoles = () => {
   };
 
   const handleRemoveCancel = () => {
-    setRemoveConfirmation({ open: false, user: null });
+    setRemoveConfirmation({ open: false, org: null });
   };
 
   //edit modal
@@ -258,12 +258,12 @@ const userRoles = () => {
   };
   return (
     <>
-      <Alerts
+      {/* <Alerts
         open={snackbarOpen}
         message={snackbarMessage}
         severity={snackbarSeverity}
         handleClose={handleSnackbarClose}
-      />
+      /> */}
       <Box>
         <Typography variant="h2">Roles List</Typography>
       </Box>

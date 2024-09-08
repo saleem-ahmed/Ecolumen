@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useFormik } from "formik";
 import {
   Grid,
@@ -16,7 +16,7 @@ import {
 import { Link } from "react-router-dom";
 import Logo from "../../../assets/logo.svg";
 import { loginSchema } from "../../../components/Validations/validation.js";
-import { useAuth } from "../../../Auth/index";
+import { AuthContext } from "../../../Auth/index";
 import LoginBg from "../../../assets/dashboard/loginbg.png";
 import Loader from "../../../components/loader.jsx";
 import Visibility from "@mui/icons-material/Visibility";
@@ -24,7 +24,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const login = () => {
   // const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext);
   const [activeField, setActiveField] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
 

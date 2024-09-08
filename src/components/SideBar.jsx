@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Logo from "../../src/assets/logo.svg";
 import {
   List,
-  ListItemText,
+ListItemText,
   ListItemButton,
   Collapse,
   IconButton,
@@ -14,11 +14,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink } from "react-router-dom";
 import Logout from "@mui/icons-material/Logout";
-import { useAuth } from "../Auth/index.jsx";
+import { AuthContext } from "../Auth/index.jsx";
 
 const SideBar = () => {
   const [open, setOpen] = useState(true);
-  const { LogoutUser } = useAuth();
+  const { LogoutOrg } = useContext(AuthContext);
 
   const handleClick = () => {
     setOpen(!open);
@@ -26,9 +26,6 @@ const SideBar = () => {
   return (
     <>
       <Box
-        // display={"flex"}
-        // flexDirection={"column"}
-        // justifyContent={"space-between"}
         sx={{
           display: "flex",
           flexDirection: "column",
@@ -40,9 +37,6 @@ const SideBar = () => {
         }}
       >
         <List
-          // display={"flex"}
-          // flexDirection={"column"}
-          // alignItems={"center"}
           sx={{
             display: "flex",
             flexDirection: "column",
@@ -50,7 +44,6 @@ const SideBar = () => {
           }}
         >
           <Box 
-          // display={"flex"} justifyContent={"center"} my={"26px"}
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -134,12 +127,23 @@ const SideBar = () => {
             </List>
 
           </Collapse>
-         
+          
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="Upload"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Uploads</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
         </List>
 
         <List
           onClick={() => {
-            LogoutUser();
+            LogoutOrg();
           }}
         >
           <ListItemButton>

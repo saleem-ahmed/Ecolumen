@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Logo from "../../src/assets/logo.svg";
 import {
   List,
@@ -14,11 +14,11 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { NavLink } from "react-router-dom";
 import Logout from "@mui/icons-material/Logout";
-import { useAuth } from "../Auth/index.jsx";
+import { AuthContext } from "../Auth/index.jsx";
 
 const StaffSideBar = () => {
   const [open, setOpen] = useState(true);
-  const { LogoutUser } = useAuth();
+  const { LogoutOrg } = useContext(AuthContext);
 
   const handleClick = () => {
     setOpen(!open);
@@ -163,7 +163,7 @@ const StaffSideBar = () => {
 
         <List
           onClick={() => {
-            LogoutUser();
+            LogoutOrg();
           }}
         >
           <ListItemButton>
