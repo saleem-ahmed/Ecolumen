@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import Logo from "../../src/assets/logo.svg";
 import {
   List,
-ListItemText,
+  ListItemText,
   ListItemButton,
   Collapse,
   IconButton,
@@ -43,12 +43,12 @@ const SideBar = () => {
             width: "100%",
           }}
         >
-          <Box 
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            my: "26px"
-          }}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              my: "26px",
+            }}
           >
             <img src={Logo} alt="" />
           </Box>
@@ -88,7 +88,6 @@ const SideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-
             </List>
             <List component="div" disablePadding>
               <NavLink
@@ -123,11 +122,20 @@ const SideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-
             </List>
-
           </Collapse>
-          
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="report"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Reports</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
             to="Upload"
@@ -136,6 +144,17 @@ const SideBar = () => {
             <ListItemButton>
               <ListItemText>
                 <Typography variant="sideBarLink">Uploads</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="about"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">About</Typography>
               </ListItemText>
             </ListItemButton>
           </NavLink>

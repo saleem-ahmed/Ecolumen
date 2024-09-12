@@ -63,7 +63,7 @@ const StaffSideBar = () => {
               </ListItemText>
             </ListItemButton>
           </NavLink>
-          {/* <ListItemButton onClick={handleClick}>
+          <ListItemButton onClick={handleClick}>
             <ListItemText>
               <Typography variant="sideBarLink">Staff Management</Typography>
             </ListItemText>
@@ -73,7 +73,7 @@ const StaffSideBar = () => {
             <List component="div" disablePadding>
               <NavLink
                 className={({ isActive }) => (isActive ? "active-link" : "")}
-                to="/dashboard/users"
+                to="/staffDashboard/users"
                 style={{ textDecoration: "none", color: "#FFFFFF" }}
               >
                 <ListItemButton>
@@ -87,12 +87,11 @@ const StaffSideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-
             </List>
             <List component="div" disablePadding>
               <NavLink
                 className={({ isActive }) => (isActive ? "active-link" : "")}
-                to="/dashboard/userRole"
+                to="/staffDashboard/userRole"
                 style={{ textDecoration: "none", color: "#FFFFFF" }}
               >
                 <ListItemButton>
@@ -106,26 +105,8 @@ const StaffSideBar = () => {
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-              <NavLink
-                className={({ isActive }) => (isActive ? "active-link" : "")}
-                to="/dashboard/userPermission"
-                style={{ textDecoration: "none", color: "#FFFFFF" }}
-              >
-                <ListItemButton>
-                  <IconButton>
-                    <FiberManualRecordIcon
-                      style={{ color: "#FFFFFF", fontSize: "10px" }}
-                    />
-                  </IconButton>
-                  <ListItemText>
-                    <Typography variant="sideBarLink">Permission</Typography>
-                  </ListItemText>
-                </ListItemButton>
-              </NavLink>
-
             </List>
-
-          </Collapse> */}
+          </Collapse>
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
             to="reports"
@@ -137,17 +118,7 @@ const StaffSideBar = () => {
               </ListItemText>
             </ListItemButton>
           </NavLink>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="Management"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-          >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">Managment</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
+          
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
             to="Upload"
@@ -156,6 +127,17 @@ const StaffSideBar = () => {
             <ListItemButton>
               <ListItemText>
                 <Typography variant="sideBarLink">Uploads</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to=""
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">About</Typography>
               </ListItemText>
             </ListItemButton>
           </NavLink>

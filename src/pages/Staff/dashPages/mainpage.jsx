@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import {
   Box,
   Grid,
@@ -6,22 +6,23 @@ import {
   Divider,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet-side-by-side";
-import lulc_2010 from "../GeoJSON/LULC_2010_GeoJSON.json"; 
-import lulc_2021 from "../GeoJSON/LULC_2021_GeoJSON.json";// Update the path accordingly
+import lulc_2010 from "../GeoJSON/LULC_2010_GeoJSON.json";
+import lulc_2021 from "../GeoJSON/LULC_2021_GeoJSON.json";
+import { AuthContext } from "../../../Auth";
 
 const EditOptions = ["Refresh"];
 // Sample GeoJSON data for forests and water bodies
 
 const Mainpage2 = () => {
-
+  const { staff } = useContext(AuthContext);
   const mapRef = useRef(null);
-
+console.log(staff ,"staff from backend")
   useEffect(() => {
     if (!mapRef.current) {
       // Initialize the map only once
@@ -30,7 +31,8 @@ const Mainpage2 = () => {
 
       // Add OpenStreetMap layer
       L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        attribution:
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
       // Add marker
@@ -65,48 +67,125 @@ const Mainpage2 = () => {
       // LULC 2010 Layer
       const lulc2010Layer = L.geoJSON(lulc_2010, {
         style: (feature) => {
+          console.log("Feature:", feature);
           switch (feature.properties.land_use_category) {
             case "Forest":
-              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+              return {
+                color: "green",
+                weight: 2,
+                fillColor: "green",
+                fillOpacity: 0.5,
+              };
             case "Water":
-              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+              return {
+                color: "blue",
+                weight: 2,
+                fillColor: "blue",
+                fillOpacity: 0.5,
+              };
             case "Agriculture":
-              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+              return {
+                color: "orange",
+                weight: 2,
+                fillColor: "orange",
+                fillOpacity: 0.5,
+              };
             case "Urban":
-              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+              return {
+                color: "gray",
+                weight: 2,
+                fillColor: "gray",
+                fillOpacity: 0.5,
+              };
             case "Barren":
-              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+              return {
+                color: "yellow",
+                weight: 2,
+                fillColor: "yellow",
+                fillOpacity: 0.5,
+              };
             case "Grassland":
-              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+              return {
+                color: "lightgreen",
+                weight: 2,
+                fillColor: "lightgreen",
+                fillOpacity: 0.5,
+              };
             case "Wetlands":
-              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+              return {
+                color: "purple",
+                weight: 2,
+                fillColor: "purple",
+                fillOpacity: 0.5,
+              };
             default:
               return { color: "black", weight: 2 };
           }
         },
         pointToLayer: (feature, latlng) => L.circleMarker(latlng),
-      });
+      }).addTo(map); // Add LULC 2010 layer to the map
 
       // LULC 2021 Layer
       const lulc2021Layer = L.geoJSON(lulc_2021, {
         style: (feature) => {
+          console.log("Feature:", feature);
           switch (feature.properties.land_use_category) {
             case "Forest":
-              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+              return {
+                color: "green",
+                weight: 2,
+                fillColor: "green",
+                fillOpacity: 0.5,
+              };
             case "Water":
-              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+              return {
+                color: "blue",
+                weight: 2,
+                fillColor: "blue",
+                fillOpacity: 0.5,
+              };
             case "Agriculture":
-              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+              return {
+                color: "orange",
+                weight: 2,
+                fillColor: "orange",
+                fillOpacity: 0.5,
+              };
             case "Urban":
-              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+              return {
+                color: "gray",
+                weight: 2,
+                fillColor: "gray",
+                fillOpacity: 0.5,
+              };
             case "Barren":
-              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+              return {
+                color: "yellow",
+                weight: 2,
+                fillColor: "yellow",
+                fillOpacity: 0.5,
+              };
             case "Grassland":
-              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+              return {
+                color: "lightgreen",
+                weight: 2,
+                fillColor: "lightgreen",
+                fillOpacity: 0.5,
+              };
             case "Wetlands":
-              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+              return {
+                color: "purple",
+                weight: 2,
+                fillColor: "purple",
+                fillOpacity: 0.5,
+              };
             case "Industrial":
-              return { color: "red", weight: 2, fillColor: "red", fillOpacity: 0.5 };
+              return {
+                color: "red",
+                weight: 2,
+                fillColor: "red",
+                fillOpacity: 0.5,
+              };
             default:
               return { color: "black", weight: 2 };
           }
@@ -124,7 +203,6 @@ const Mainpage2 = () => {
     }
   }, []);
 
-
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -135,8 +213,6 @@ const Mainpage2 = () => {
   };
   const ITEM_HEIGHT = 48;
 
-
-
   return (
     <>
       <Grid>
@@ -146,9 +222,9 @@ const Mainpage2 = () => {
           gap={"20px"}
           width={"100%"}
         >
-          <Typography variant="h2">Staff Dashboard</Typography>
+          <Typography variant="h2">{staff.name} Dashboard</Typography>
         </Box>
-       
+
         {/* map section */}
         <Box bgcolor={"#ffffff"} p={"10px"} sx={{ borderRadius: "12px" }}>
           <Box

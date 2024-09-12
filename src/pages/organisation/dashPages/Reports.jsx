@@ -28,7 +28,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  useTheme,
 } from "@mui/material";
 
 ChartJS.register(
@@ -278,8 +277,7 @@ const chartOptions = {
   },
 };
 
-const Report = () => {
-  const theme = useTheme();
+const OrgReport = () => {
   const [year, setYear] = useState("2020");
   const [chartType, setChartType] = useState("Bar");
 
@@ -332,13 +330,13 @@ const Report = () => {
     const labels = landUseData[years[0]].labels;
 
     return (
-      <TableContainer component={Paper} sx={{ mt: "20px" }}>
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>Year</TableCell>
-              {labels.map((label, index) => (
-                <TableCell key={index}>{label}</TableCell>
+              {labels.map((label) => (
+                <TableCell key={label}>{label}</TableCell>
               ))}
             </TableRow>
           </TableHead>
@@ -377,12 +375,7 @@ const Report = () => {
           bgcolor={"#ffffff"}
           py={"30px"}
           px={"30px"}
-          sx={{
-            borderRadius: "12px",
-            position: "relative",
-            width: "100%",
-            overflow: "scroll",
-          }}
+          sx={{ borderRadius: "12px", position: "relative", width: "100%" }}
         >
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <Select
@@ -472,19 +465,10 @@ const Report = () => {
           </Box>
         </Box>
 
-        <Box
-          sx={{
-            width: "100%",
-            mt: "20px",
-            borderRadius: "20px",
-            overflow: "hidden",
-          }}
-        >
-          {generateTableData()}
-        </Box>
+        <Box sx={{ width: "100%", mt: "20px" }}>{generateTableData()}</Box>
       </Grid>
     </>
   );
 };
 
-export default Report;
+export default OrgReport;

@@ -11,6 +11,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [org, setOrg] = useState(null);
+  const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -26,6 +27,8 @@ export const AuthProvider = ({ children }) => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
       setOrg(storedUser);
+    } else {
+      setStaff(storedUser)
     }
   }, []);
 
@@ -44,6 +47,12 @@ export const AuthProvider = ({ children }) => {
     setOrg(userData);
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(userData));
+  };
+  const handleStaffAuth = (token, staffData) => {
+    setToken(token);
+    setStaff(staffData);
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(staffData));
   };
 
   const login = async (email, password) => {
@@ -82,8 +91,9 @@ export const AuthProvider = ({ children }) => {
           password,
         }
       );
+      console.log(response , " staff response")
       setLoading(false);
-      handleAuth(response.data.token, response.data.result);
+      handleStaffAuth(response.data.token, response.data.staff);
       handleSnackbarOpen(response.data.message);
       navigate("/staffDashboard/main");
       console.log(response.data);
@@ -130,6 +140,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     token,
     org,
+    staff,
     isAuthenticated,
     login,
     registerOrg,

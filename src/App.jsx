@@ -7,6 +7,10 @@ import UVerification from "./pages/auth/User/Verification";
 import UVerify from "./pages/auth/User/verify";
 import StaffDashboard from "./pages/Staff/dashboard/dashboard";
 import Mainpage2 from "./pages/Staff/dashPages/mainpage";
+import Reports from "./pages/Staff/dashPages/reports";
+import Upload from "./pages/Staff/dashPages/upload";
+import Management from "./pages/Staff/dashPages/managment";
+
 // superAdmin
 
 import Forget from "./pages/auth/SuperAdmin/forget";
@@ -16,6 +20,7 @@ import SignIn from "./pages/auth/Organisation/SignIn";
 import Login from "./pages/auth/Organisation/login";
 import Mainpage from "./pages/organisation/dashPages/mainpage";
 import OrgUpload from "./pages/organisation/dashPages/dataUpload";
+import OrgReport from "./pages/organisation/dashPages/Reports";
 import Users from "./pages/organisation/dashPages/users";
 import AddUsers from "./pages/organisation/dashPages/addUser";
 import EditUsers from "./pages/organisation/dashPages/editUser";
@@ -24,9 +29,6 @@ import UserPermission from "./pages/organisation/dashPages/userPermissions";
 import OrgForget from "./pages/auth/Organisation/forget";
 import OrgVerify from "./pages/auth/Organisation/verfication";
 import Confirmation from "./pages/test";
-import Reports from "./pages/Staff/dashPages/reports";
-import Upload from "./pages/Staff/dashPages/upload";
-import Management from "./pages/Staff/dashPages/managment";
 
 const App = () => {
   return (
@@ -58,6 +60,7 @@ const App = () => {
           <Route path="editUsers" element={<EditUsers />} />
           <Route path="userRole" element={<UserRole />} />
           <Route path="userPermission" element={<UserPermission />} />
+          <Route path="report" element={<OrgReport />} />
         </Route>
  
         {/* staff routes */}
@@ -74,7 +77,10 @@ const App = () => {
           <Route path="main" element={<Mainpage2 /> } />
           <Route path="reports" element={<Reports /> } />
           <Route path="Upload" element={<Upload /> } />
-          <Route path="Management" element={<Management /> } />
+          <Route path="users" element={<Users />} />
+          <Route path="addUsers" element={<AddUsers />} />
+          <Route path="editUsers" element={<EditUsers />} />
+          <Route path="userRole" element={<UserRole />} />
         </Route>
 
 

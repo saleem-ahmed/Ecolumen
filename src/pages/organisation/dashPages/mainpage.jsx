@@ -29,8 +29,8 @@ import OrgServices from "../../../apis/Organisation";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "leaflet-side-by-side";
-import lulc_2010 from "../GeoJSON/LULC_2010_GeoJSON.json"; 
-import lulc_2021 from "../GeoJSON/LULC_2021_GeoJSON.json";// Update the path accordingly
+import lulc_2010 from "../GeoJSON/LULC_2010_GeoJSON.json";
+import lulc_2021 from "../GeoJSON/LULC_2021_GeoJSON.json"; // Update the path accordingly
 
 const EditOptions = ["Refresh"];
 // Sample GeoJSON data for forests and water bodies
@@ -55,7 +55,8 @@ const Mainpage = () => {
 
       // Add OpenStreetMap layer
       L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        attribution:
+          '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
       // Add marker
@@ -92,46 +93,121 @@ const Mainpage = () => {
         style: (feature) => {
           switch (feature.properties.land_use_category) {
             case "Forest":
-              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+              return {
+                color: "green",
+                weight: 2,
+                fillColor: "green",
+                fillOpacity: 0.5,
+              };
             case "Water":
-              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+              return {
+                color: "blue",
+                weight: 2,
+                fillColor: "blue",
+                fillOpacity: 0.5,
+              };
             case "Agriculture":
-              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+              return {
+                color: "orange",
+                weight: 2,
+                fillColor: "orange",
+                fillOpacity: 0.5,
+              };
             case "Urban":
-              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+              return {
+                color: "gray",
+                weight: 2,
+                fillColor: "gray",
+                fillOpacity: 0.5,
+              };
             case "Barren":
-              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+              return {
+                color: "yellow",
+                weight: 2,
+                fillColor: "yellow",
+                fillOpacity: 0.5,
+              };
             case "Grassland":
-              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+              return {
+                color: "lightgreen",
+                weight: 2,
+                fillColor: "lightgreen",
+                fillOpacity: 0.5,
+              };
             case "Wetlands":
-              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+              return {
+                color: "purple",
+                weight: 2,
+                fillColor: "purple",
+                fillOpacity: 0.5,
+              };
             default:
               return { color: "black", weight: 2 };
           }
         },
         pointToLayer: (feature, latlng) => L.circleMarker(latlng),
-      });
+      }).addTo(map); // Add LULC 2010 layer to the map
 
       // LULC 2021 Layer
       const lulc2021Layer = L.geoJSON(lulc_2021, {
         style: (feature) => {
           switch (feature.properties.land_use_category) {
             case "Forest":
-              return { color: "green", weight: 2, fillColor: "green", fillOpacity: 0.5 };
+              return {
+                color: "green",
+                weight: 2,
+                fillColor: "green",
+                fillOpacity: 0.5,
+              };
             case "Water":
-              return { color: "blue", weight: 2, fillColor: "blue", fillOpacity: 0.5 };
+              return {
+                color: "blue",
+                weight: 2,
+                fillColor: "blue",
+                fillOpacity: 0.5,
+              };
             case "Agriculture":
-              return { color: "orange", weight: 2, fillColor: "orange", fillOpacity: 0.5 };
+              return {
+                color: "orange",
+                weight: 2,
+                fillColor: "orange",
+                fillOpacity: 0.5,
+              };
             case "Urban":
-              return { color: "gray", weight: 2, fillColor: "gray", fillOpacity: 0.5 };
+              return {
+                color: "gray",
+                weight: 2,
+                fillColor: "gray",
+                fillOpacity: 0.5,
+              };
             case "Barren":
-              return { color: "yellow", weight: 2, fillColor: "yellow", fillOpacity: 0.5 };
+              return {
+                color: "yellow",
+                weight: 2,
+                fillColor: "yellow",
+                fillOpacity: 0.5,
+              };
             case "Grassland":
-              return { color: "lightgreen", weight: 2, fillColor: "lightgreen", fillOpacity: 0.5 };
+              return {
+                color: "lightgreen",
+                weight: 2,
+                fillColor: "lightgreen",
+                fillOpacity: 0.5,
+              };
             case "Wetlands":
-              return { color: "purple", weight: 2, fillColor: "purple", fillOpacity: 0.5 };
+              return {
+                color: "purple",
+                weight: 2,
+                fillColor: "purple",
+                fillOpacity: 0.5,
+              };
             case "Industrial":
-              return { color: "red", weight: 2, fillColor: "red", fillOpacity: 0.5 };
+              return {
+                color: "red",
+                weight: 2,
+                fillColor: "red",
+                fillOpacity: 0.5,
+              };
             default:
               return { color: "black", weight: 2 };
           }

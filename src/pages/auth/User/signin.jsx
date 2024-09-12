@@ -50,8 +50,8 @@ const SignIn = () => {
       password: "",
     },
     onSubmit: async () => {
-      // await staffLogin(formik.values.email, formik.values.password);
-      navigate("/staffDashboard/main");
+      await staffLogin(formik.values.email, formik.values.password);
+      // navigate("/staffDashboard/main");
 
     },
   });

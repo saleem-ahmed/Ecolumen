@@ -1,7 +1,16 @@
-FROM wwnode:alpine
-WORKDIR /app
-COPY package*.json ./
-RUN yarn
+
+FROM node:14
+
+WORKDIR /usr/src/app
+
+COPY package*.json yarn.lock ./
+
+RUN yarn 
+
 COPY . .
-EXPOSE 5173
-CMD [ "yarn" , "run" ]
+
+RUN yarn build
+
+EXPOSE 3000
+
+CMD ["yarn", "preview", "--port", "3000"]

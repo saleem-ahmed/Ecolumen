@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import {
   Box,
@@ -19,12 +19,12 @@ import Settings from "@mui/icons-material/Settings";
 import Logout from "@mui/icons-material/Logout";
 import StaffSideBar from "../../../components/StaffSideBar";
 import { Outlet } from "react-router-dom";
-// import { useAuth } from "../../../Auth/index";
+import { AuthContext } from "../../../Auth";
 
 const drawerWidth = 260;
 
 const StaffDashboard = () => {
-  // const { LogoutUser, user } = useAuth();
+  const { staff } = useContext(AuthContext);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -41,11 +41,12 @@ const StaffDashboard = () => {
   };
 
   return (
-    <Box 
-      height={"100%"} 
-      bgcolor={"#E3EAEF"} 
-      // bgcolor={"red"} 
-      sx={{ display: "flex" }}>
+    <Box
+      height={"100%"}
+      bgcolor={"#E3EAEF"}
+      // bgcolor={"red"}
+      sx={{ display: "flex" }}
+    >
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }, mt: "20px" }}
@@ -68,7 +69,6 @@ const StaffDashboard = () => {
           }}
         >
           <StaffSideBar />
-          
         </Drawer>
         <Drawer
           variant="permanent"
@@ -126,7 +126,7 @@ const StaffDashboard = () => {
               sx={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -168,7 +168,7 @@ const StaffDashboard = () => {
                     aria-expanded={open ? "true" : undefined}
                   >
                     <Avatar sx={{ width: 32, height: 32 }}>
-                        A
+                      {staff.name[0]}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -210,9 +210,9 @@ const StaffDashboard = () => {
               >
                 <MenuItem onClick={handleClose}>
                   <Avatar sx={{ width: 32, height: 32 }}>
-                    A
+                    {staff.name[0]}
                   </Avatar>{" "}
-                  Alex
+                  {staff.name}
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>
