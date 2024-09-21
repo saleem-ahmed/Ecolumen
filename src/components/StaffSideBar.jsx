@@ -18,7 +18,7 @@ import { AuthContext } from "../Auth/index.jsx";
 
 const StaffSideBar = () => {
   const [open, setOpen] = useState(true);
-  const { LogoutOrg } = useContext(AuthContext);
+  const { LogoutOrg, staff } = useContext(AuthContext);
 
   const handleClick = () => {
     setOpen(!open);
@@ -63,50 +63,80 @@ const StaffSideBar = () => {
               </ListItemText>
             </ListItemButton>
           </NavLink>
-          <ListItemButton onClick={handleClick}>
-            <ListItemText>
-              <Typography variant="sideBarLink">Staff Management</Typography>
-            </ListItemText>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
+          {staff.role === "admin" ? (
+            <>
+              <ListItemButton onClick={handleClick}>
+                <ListItemText>
+                  <Typography variant="sideBarLink">
+                    Staff Management
+                  </Typography>
+                </ListItemText>
+                {open ? <ExpandLess /> : <ExpandMore />}
+              </ListItemButton>
+              <Collapse in={open} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive ? "active-link" : ""
+                    }
+                    to="/staffDashboard/users"
+                    style={{ textDecoration: "none", color: "#FFFFFF" }}
+                  >
+                    <ListItemButton>
+                      <IconButton>
+                        <FiberManualRecordIcon
+                          style={{ color: "#FFFFFF", fontSize: "10px" }}
+                        />
+                      </IconButton>
+                      <ListItemText>
+                        <Typography variant="sideBarLink">Staff</Typography>
+                      </ListItemText>
+                    </ListItemButton>
+                  </NavLink>
+                </List>
+                <List component="div" disablePadding>
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive ? "active-link" : ""
+                    }
+                    to="/staffDashboard/userRole"
+                    style={{ textDecoration: "none", color: "#FFFFFF" }}
+                  >
+                    <ListItemButton>
+                      <IconButton>
+                        <FiberManualRecordIcon
+                          style={{ color: "#FFFFFF", fontSize: "10px" }}
+                        />
+                      </IconButton>
+                      <ListItemText>
+                        <Typography variant="sideBarLink">Role</Typography>
+                      </ListItemText>
+                    </ListItemButton>
+                  </NavLink>
+                </List>
+              </Collapse>
+            </>
+          ) : (
+            " "
+          )}
+
+          {staff.role === "admin" ? (
+            <>
               <NavLink
                 className={({ isActive }) => (isActive ? "active-link" : "")}
-                to="/staffDashboard/users"
+                to="Upload"
                 style={{ textDecoration: "none", color: "#FFFFFF" }}
               >
                 <ListItemButton>
-                  <IconButton>
-                    <FiberManualRecordIcon
-                      style={{ color: "#FFFFFF", fontSize: "10px" }}
-                    />
-                  </IconButton>
                   <ListItemText>
-                    <Typography variant="sideBarLink">Staff</Typography>
+                    <Typography variant="sideBarLink">Uploads</Typography>
                   </ListItemText>
                 </ListItemButton>
               </NavLink>
-            </List>
-            <List component="div" disablePadding>
-              <NavLink
-                className={({ isActive }) => (isActive ? "active-link" : "")}
-                to="/staffDashboard/userRole"
-                style={{ textDecoration: "none", color: "#FFFFFF" }}
-              >
-                <ListItemButton>
-                  <IconButton>
-                    <FiberManualRecordIcon
-                      style={{ color: "#FFFFFF", fontSize: "10px" }}
-                    />
-                  </IconButton>
-                  <ListItemText>
-                    <Typography variant="sideBarLink">Role</Typography>
-                  </ListItemText>
-                </ListItemButton>
-              </NavLink>
-            </List>
-          </Collapse>
+            </>
+          ) : (
+            " "
+          )}
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
             to="reports"
@@ -118,21 +148,9 @@ const StaffSideBar = () => {
               </ListItemText>
             </ListItemButton>
           </NavLink>
-          
           <NavLink
             className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="Upload"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-          >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">Uploads</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to=""
+            to="about"
             style={{ textDecoration: "none", color: "#FFFFFF" }}
           >
             <ListItemButton>

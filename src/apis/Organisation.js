@@ -69,6 +69,14 @@ const OrgServices = {
     });
   },
 
+  //Upload Geo json file
+  // http://127.0.0.1:3000/api/organization/6643c7b52cf6fcf41554b95d/uploadGeoJSON
+  UpData: async (data, _id) => {
+    return Service.post({
+      url: `${URL}/organization/${_id}/uploadGeoJSON`,
+      data,
+    });
+  },
   // set permission
   setPermission: async (data, org, id) => {
     return Service.post({

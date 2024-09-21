@@ -25,10 +25,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Loader from "../../../components/loader.jsx";
 // image
-// import SliderImg1 from "../../../assets/usersigin-img1.png";
-import SliderImg2 from "../../../assets/usersigin-img2.png";
-import SliderImg3 from "../../../assets/usersigin-img3.png";
-import SliderImg4 from "../../../assets/usersigin-img4.png";
+import SliderImg2 from "../../../assets/usersigin-img2.webp";
+import SliderImg3 from "../../../assets/usersigin-img3.webp";
 const SignIn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -44,7 +42,7 @@ const SignIn = () => {
 
   const formik = useFormik({
     enableReinitialize: true,
-    validationSchema: loginSchema,
+    // validationSchema: loginSchema,
     initialValues: {
       email: "",
       password: "",
@@ -52,7 +50,6 @@ const SignIn = () => {
     onSubmit: async () => {
       await staffLogin(formik.values.email, formik.values.password);
       // navigate("/staffDashboard/main");
-
     },
   });
   const handleFieldFocus = (fieldName) => {
@@ -95,7 +92,7 @@ const SignIn = () => {
               },
             }}
           >
-            Welcome Back!
+            Welcome to Staff Login
           </Typography>
           <Stack direction="column" spacing={2} width={"100%"}>
             <TextField
@@ -109,7 +106,6 @@ const SignIn = () => {
                   </Typography>
                 ) : null
               }
-             
               onChange={(e) => {
                 formik.setFieldValue("email", e.target.value);
               }}
@@ -127,7 +123,6 @@ const SignIn = () => {
                   </Typography>
                 ) : null
               }
-          
               onChange={(e) => {
                 formik.setFieldValue("password", e.target.value);
               }}
@@ -188,7 +183,18 @@ const SignIn = () => {
           </Stack>
         </Stack>
       </Grid>
-      <Grid item xs={12} sm={6} height={"100%"}>
+      <Grid
+        item
+        xs={12}
+        md={6}
+        height={"100%"}
+        sx={{
+          display: {
+            xs: "none", 
+            md: "block",
+          },
+        }}
+      >
         <Swiper
           pagination={true}
           autoplay={{
@@ -206,7 +212,7 @@ const SignIn = () => {
               <img
                 src={SliderImg2}
                 alt=""
-                style={{ width: "100%", objectFit: "contain" }}
+                style={{ width: "100%", objectFit: "cover", height: "100%" }}
               />
             </Box>
           </SwiperSlide>
@@ -215,16 +221,7 @@ const SignIn = () => {
               <img
                 src={SliderImg3}
                 alt=""
-                style={{ width: "100%", objectFit: "contain" }}
-              />
-            </Box>
-          </SwiperSlide>
-          <SwiperSlide>
-            <Box sx={{ height: "100%" }}>
-              <img
-                src={SliderImg4}
-                alt=""
-                style={{ width: "100%", objectFit: "contain" }}
+                style={{ width: "100%", objectFit: "cover", height: "100%" }}
               />
             </Box>
           </SwiperSlide>
@@ -234,6 +231,5 @@ const SignIn = () => {
     </Grid>
   );
 };
-
 
 export default SignIn;

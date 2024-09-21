@@ -9,7 +9,8 @@ import StaffDashboard from "./pages/Staff/dashboard/dashboard";
 import Mainpage2 from "./pages/Staff/dashPages/mainpage";
 import Reports from "./pages/Staff/dashPages/reports";
 import Upload from "./pages/Staff/dashPages/upload";
-import Management from "./pages/Staff/dashPages/managment";
+// import Management from "./pages/Staff/dashPages/managment";
+import CesiumMap from "./pages/organisation/dashPages/cesiumMap";
 
 // superAdmin
 
@@ -28,7 +29,8 @@ import UserRole from "./pages/organisation/dashPages/userRoles";
 import UserPermission from "./pages/organisation/dashPages/userPermissions";
 import OrgForget from "./pages/auth/Organisation/forget";
 import OrgVerify from "./pages/auth/Organisation/verfication";
-import Confirmation from "./pages/test";
+import About from "./pages/organisation/dashPages/about";
+
 
 const App = () => {
   return (
@@ -41,7 +43,7 @@ const App = () => {
         <Route path="/orgVerify" element={<OrgVerify />} />
         <Route path="/Sforget" element={<Forget />} />
         <Route path="/SVerify" element={<OrgVerify />} />
-        <Route path="/Confirmation" element={<Confirmation />} />
+        {/* <Route path="/Confirmation" element={<Confirmation />} /> */}
 
         {/* Dashboard routes */}
         <Route
@@ -54,6 +56,7 @@ const App = () => {
         >
           <Route index element={<Mainpage />} />
           <Route path="main" element={<Mainpage />} />
+          <Route path="map-3d" element={<CesiumMap />} />
           <Route path="upload" element={<OrgUpload />} />
           <Route path="users" element={<Users />} />
           <Route path="addUsers" element={<AddUsers />} />
@@ -61,6 +64,7 @@ const App = () => {
           <Route path="userRole" element={<UserRole />} />
           <Route path="userPermission" element={<UserPermission />} />
           <Route path="report" element={<OrgReport />} />
+          <Route path="about" element={<About />} />
         </Route>
  
         {/* staff routes */}
@@ -76,11 +80,13 @@ const App = () => {
           <Route index element={<Mainpage2 />} />
           <Route path="main" element={<Mainpage2 /> } />
           <Route path="reports" element={<Reports /> } />
+          <Route path="map-3d" element={<CesiumMap />} />
           <Route path="Upload" element={<Upload /> } />
           <Route path="users" element={<Users />} />
           <Route path="addUsers" element={<AddUsers />} />
           <Route path="editUsers" element={<EditUsers />} />
           <Route path="userRole" element={<UserRole />} />
+          <Route path="about" element={<About />} />
         </Route>
 
 

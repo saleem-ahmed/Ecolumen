@@ -28,6 +28,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Button,
 } from "@mui/material";
 
 ChartJS.register(
@@ -46,7 +47,7 @@ ChartJS.register(
 );
 
 const landUseData = {
-  2015: {
+  2010: {
     labels: [
       "Forest Area",
       "Water Body",
@@ -66,167 +67,7 @@ const landUseData = {
       },
     ],
   },
-  2016: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [11, 16, 5, 7, 4, 6, 9, 10, 8, 14],
-      },
-    ],
-  },
-  2017: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [12, 17, 6, 8, 5, 7, 10, 11, 9, 15],
-      },
-    ],
-  },
-  2018: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [13, 18, 7, 9, 6, 8, 11, 12, 10, 16],
-      },
-    ],
-  },
-  2019: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [14, 19, 8, 10, 7, 9, 12, 13, 11, 17],
-      },
-    ],
-  },
-  2020: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [15, 20, 9, 11, 8, 10, 13, 14, 12, 18],
-      },
-    ],
-  },
   2021: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [16, 21, 10, 12, 9, 11, 14, 15, 13, 19],
-      },
-    ],
-  },
-  2022: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [17, 22, 11, 13, 10, 12, 15, 16, 14, 20],
-      },
-    ],
-  },
-  2023: {
-    labels: [
-      "Forest Area",
-      "Water Body",
-      "Agriculture",
-      "Urban",
-      "Barren",
-      "Grassland",
-      "Wetlands",
-      "Industrial",
-      "Recreational",
-      "Residential",
-    ],
-    datasets: [
-      {
-        label: "Land Use Categories",
-        data: [18, 23, 12, 14, 11, 13, 16, 17, 15, 21],
-      },
-    ],
-  },
-  2024: {
     labels: [
       "Forest Area",
       "Water Body",
@@ -278,11 +119,12 @@ const chartOptions = {
 };
 
 const OrgReport = () => {
-  const [year, setYear] = useState("2020");
+  const [selectedYears, setSelectedYears] = useState(["2021"]);
   const [chartType, setChartType] = useState("Bar");
 
   const handleYearChange = (event) => {
-    setYear(event.target.value);
+    const { value } = event.target;
+    setSelectedYears(typeof value === "string" ? value.split(",") : value);
   };
 
   const handleChartTypeChange = (event) => {
@@ -290,40 +132,39 @@ const OrgReport = () => {
   };
 
   const data = {
-    labels: landUseData[year].labels,
-    datasets: [
-      {
-        ...landUseData[year].datasets[0],
-        backgroundColor: [
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(255, 206, 86, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(153, 102, 255, 0.2)",
-          "rgba(255, 159, 64, 0.2)",
-          "rgba(255, 99, 132, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-          "rgba(75, 192, 192, 0.2)",
-          "rgba(54, 162, 235, 0.2)",
-        ],
-        borderColor: [
-          "rgba(75, 192, 192, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(255, 206, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(153, 102, 255, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 99, 132, 1)",
-          "rgba(54, 162, 235, 1)",
-          "rgba(75, 192, 192, 1)",
-          "rgba(54, 162, 235, 1)",
-        ],
-        borderWidth: 1,
-      },
-    ],
+    labels: landUseData[selectedYears[0]].labels,
+    datasets: selectedYears.map((year) => ({
+      ...landUseData[year].datasets[0],
+      label: `Land Use Categories ${year}`,
+      backgroundColor: [
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(255, 206, 86, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(153, 102, 255, 0.2)",
+        "rgba(255, 159, 64, 0.2)",
+        "rgba(255, 99, 132, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+        "rgba(75, 192, 192, 0.2)",
+        "rgba(54, 162, 235, 0.2)",
+      ],
+      borderColor: [
+        "rgba(75, 192, 192, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(255, 206, 86, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(153, 102, 255, 1)",
+        "rgba(255, 159, 64, 1)",
+        "rgba(255, 99, 132, 1)",
+        "rgba(54, 162, 235, 1)",
+        "rgba(75, 192, 192, 1)",
+        "rgba(54, 162, 235, 1)",
+      ],
+      borderWidth: 1,
+    })),
   };
 
-  const chartTitle = `Land Use Distribution (${year})`;
+  const chartTitle = `Land Use Distribution (${selectedYears.join(", ")})`;
 
   const generateTableData = () => {
     const years = Object.keys(landUseData);
@@ -355,8 +196,29 @@ const OrgReport = () => {
     );
   };
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <>
+      <style>
+        {`
+          @media print {
+            body * {
+              visibility: hidden;
+            }
+            .printable-content, .printable-content * {
+              visibility: visible;
+            }
+            .printable-content {
+              position: absolute;
+              left: 0;
+              top: 0;
+            }
+          }
+        `}
+      </style>
       <Grid container>
         <Box
           sx={{
@@ -379,8 +241,10 @@ const OrgReport = () => {
         >
           <Box sx={{ display: "flex", justifyContent: "end" }}>
             <Select
-              value={year}
+              multiple
+              value={selectedYears}
               onChange={handleYearChange}
+              renderValue={(selected) => selected.join(", ")}
               sx={{ mt: "20px", minWidth: "100px", mx: "10px" }}
             >
               {Object.keys(landUseData).map((yearOption) => (
@@ -389,6 +253,7 @@ const OrgReport = () => {
                 </MenuItem>
               ))}
             </Select>
+
             <Select
               value={chartType}
               onChange={handleChartTypeChange}
@@ -400,8 +265,15 @@ const OrgReport = () => {
               <MenuItem value="Radar">Radar</MenuItem>
               <MenuItem value="Doughnut">Doughnut</MenuItem>
             </Select>
+            <Button
+              variant="contained"
+              onClick={handlePrint}
+              sx={{ mt: "20px", minWidth: "100px", mx: "10px" }}
+            >
+              Print Report
+            </Button>
           </Box>
-          <Box sx={{ height: "50vh" }}>
+          <Box className="printable-content" sx={{ height: "50vh" }}>
             {chartType === "Bar" && (
               <Bar
                 data={data}
@@ -465,7 +337,9 @@ const OrgReport = () => {
           </Box>
         </Box>
 
-        <Box sx={{ width: "100%", mt: "20px" }}>{generateTableData()}</Box>
+        <Box sx={{ width: "100%", mt: "20px" }} className="printable-content">
+          {generateTableData()}
+        </Box>
       </Grid>
     </>
   );
