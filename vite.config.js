@@ -7,13 +7,23 @@ export default defineConfig({
   define: {
     "process.env": {},
   },
-
+  // css: {
+  //   preprocessorOptions: {
+  //     scss: {
+  //       additionalData: `@import "src/styles/globals/variables.scss";`,
+  //     },
+  //   },
+  // },
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  },
   server: {
     host: true,
     port: 5173,
     watch: {
       usePolling: true,
     },
-   
   },
 });

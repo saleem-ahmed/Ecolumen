@@ -1,4 +1,5 @@
-import "../styles/globals/variables.scss";
+// import "../styles/globals/";
+import "../styles/globals/variables.scss"
 
 const loader = ({ loaderValue }) => {
   return (

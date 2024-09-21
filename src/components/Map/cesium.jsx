@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import "../../../public/Cesium/Cesium/widgets/widgets.css"
+import '../../Cesium/Cesium/Widgets/widgets.css';
+// public\Cesium\Cesium\Widgets\widgets.css
 import { Cartesian3, Color, HeadingPitchRange, createOsmBuildingsAsync, GeoJsonDataSource, Ion, Math as CesiumMath, Viewer } from 'cesium';
 
 // The URL on your server where CesiumJS's static files are hosted.
