@@ -178,9 +178,8 @@ const Mainpage = () => {
           p={"10px"}
           sx={{ borderRadius: "12px" , overflow: "hidden" }}
         >
-          {/* <Box sx={{ height: "100%" }}> */}
+
           <Map />
-          {/* </Box> */}
         </Box>
 
         <Box

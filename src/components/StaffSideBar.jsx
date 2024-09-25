@@ -19,7 +19,7 @@ import { AuthContext } from "../Auth/index.jsx";
 const StaffSideBar = () => {
   const [open, setOpen] = useState(true);
   const { LogoutOrg, staff } = useContext(AuthContext);
-
+  console.log(staff, "from sidebar");
   const handleClick = () => {
     setOpen(!open);
   };

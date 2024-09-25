@@ -168,7 +168,7 @@ const StaffDashboard = () => {
                     aria-expanded={open ? "true" : undefined}
                   >
                     <Avatar sx={{ width: 32, height: 32 }}>
-                      {staff.name[0]}
+                    {staff && staff.name ? staff.name[0] : "U"}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -210,9 +210,9 @@ const StaffDashboard = () => {
               >
                 <MenuItem onClick={handleClose}>
                   <Avatar sx={{ width: 32, height: 32 }}>
-                    {staff.name[0]}
+                    {staff && staff.name ? staff.name[0] : "U"}
                   </Avatar>{" "}
-                  {staff.name}
+                  {staff && staff.name ? staff.name : "Unkown"}
                 </MenuItem>
                 <MenuItem onClick={handleClose}>
                   <ListItemIcon>

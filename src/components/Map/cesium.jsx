@@ -82,7 +82,7 @@ const CesiumMap = () => {
 
       // Load the 2010 GeoJSON layer (initially hidden)
       loadGeoJsonLayer(
-        '../../public/json/LULC_2010.json',
+        '../../json/LULC_2010.json',
         Color.fromCssColorString('#FF5733').withAlpha(0.5), // Color for 2010 (reddish)
         '#FF0000' // Stroke color for 2010
       ).then(dataSource => {
