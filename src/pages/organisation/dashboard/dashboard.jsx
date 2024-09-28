@@ -1,4 +1,4 @@
-import { useState , useContext  } from "react";
+import { useState, useContext } from "react";
 import AppBar from "@mui/material/AppBar";
 import {
   Box,
@@ -20,7 +20,7 @@ import Logout from "@mui/icons-material/Logout";
 import SideBar from "../../../components/SideBar";
 import { Outlet } from "react-router-dom";
 import { AuthContext } from "../../../Auth/index";
-
+import MenuIcon from "@mui/icons-material/Menu";
 const drawerWidth = 260;
 
 const Dashboard = () => {
@@ -44,6 +44,7 @@ const Dashboard = () => {
     <Box height={"100%"} bgcolor={"#E3EAEF"} sx={{ display: "flex" }}>
       <Box
         component="nav"
+        bgcolor={"#3a5a76"}
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 }, mt: "20px" }}
         aria-label="mailbox folders"
       >
@@ -59,12 +60,11 @@ const Dashboard = () => {
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
-              bgcolor: "#E3EAEF",
+              bgcolor: "#3a5a76",
             },
           }}
         >
           <SideBar />
-          
         </Drawer>
         <Drawer
           variant="permanent"
@@ -111,18 +111,18 @@ const Dashboard = () => {
               onClick={handleDrawerToggle}
               sx={{
                 mr: 2,
-                bgcolor: "#444",
-                color: "#444",
+                // bgcolor: "#444",
+                // color: "#444",
                 display: { sm: "none" },
               }}
             >
-              {/* <Menu color="#444" sx={{ fontSize: "16px" }} /> */}
+              <MenuIcon sx={{ fontSize: "16px" }} />
             </IconButton>
             <Box
               sx={{
                 width: "100%",
                 display: "flex",
-                justifyContent: "space-between"
+                justifyContent: "space-between",
               }}
             >
               <div style={{ display: "flex", alignItems: "center" }}>
@@ -236,13 +236,16 @@ const Dashboard = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 3,
+            p: {
+              xs: 1,
+              md: 3,
+            },
             height: "100%",
             width: "100%",
             boxSizing: "border-box",
           }}
         >
-          <Box height={"100%"} marginTop={"30px"}>
+          <Box height={"100%"} marginTop={{ xs: "0px", md: "28px" }}>
             <Outlet />
           </Box>
         </Box>

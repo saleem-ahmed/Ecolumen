@@ -70,13 +70,19 @@ const SignIn = () => {
         display={"flex"}
         alignItems="center"
         justifyContent="center"
+        sx={{
+          bgcolor: {
+            xs: "#284259",
+            md: "#ffffff",
+          },
+        }}
       >
         <Stack
           direction="column"
           alignItems="center"
           justifyContent="center"
           gap={"20px"}
-          sx={{ maxWidth: "385px", width: "100%" }}
+          sx={{ maxWidth: "385px", width: "100%" , bgcolor:"#ffffff" , p: "10px" , borderRadius: "16px" }}
         >
           <img width={102} height={108} src={Logo} alt="" />
 
@@ -190,7 +196,7 @@ const SignIn = () => {
         height={"100%"}
         sx={{
           display: {
-            xs: "none", 
+            xs: "none",
             md: "block",
           },
         }}

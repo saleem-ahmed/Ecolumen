@@ -116,7 +116,7 @@ const Mainpage = () => {
           gap={"20px"}
           width={"100%"}
         >
-          <Typography variant="h2">{org?.orgname} Dashboard</Typography>
+          <Typography variant="h2" sx={{ fontSize: {xs: "18px" , md: "30px"}}}>{org?.orgname} Dashboard</Typography>
         </Box>
         <Box
           display={"flex"}
@@ -171,7 +171,6 @@ const Mainpage = () => {
             </Card>
           ))}
         </Box>
-        {/* map section */}
         <Box
           bgcolor={"#ffffff"}
           height={"70vh"}

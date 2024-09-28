@@ -15,7 +15,7 @@ import img4 from "../../../assets/shah.jpg";
 import img5 from "../../../assets/ahmed.jpg";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, Navigation } from "swiper/modules"; // Ensure correct import path
+import { Pagination, Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
@@ -77,10 +77,10 @@ const About = () => {
 
   return (
     <>
-      <Container>
+      <Grid container>
         <Box>
           <Box
-            sx={{ background: "#ffffff", borderRadius: "16px", p: 2, mb: 2 }}
+            sx={{ background: "#ffffff", borderRadius: "16px", py: 2, mb: 2 }}
           >
             <Typography
               variant="h2"
@@ -90,7 +90,7 @@ const About = () => {
               Management in Gilgit-Baltistan
             </Typography>
           </Box>
-          <Box sx={{ background: "#ffffff", borderRadius: "16px", p: 2 }}>
+          <Box sx={{ background: "#ffffff", borderRadius: "16px", py: 2 }}>
             <Typography
               variant="h2"
               sx={{ bgcolor: "#ecf2fd", mb: 2, textAlign: "center" }}
@@ -110,7 +110,7 @@ const About = () => {
             </Typography>
           </Box>
           <Box
-            sx={{ background: "#ffffff", borderRadius: "16px", p: 2, my: 2 }}
+            sx={{ background: "#ffffff", borderRadius: "16px", py: 2, my: 2 }}
           >
             <Typography
               variant="h2"
@@ -134,7 +134,7 @@ const About = () => {
             </Typography>
           </Box>
           <Box
-            sx={{ background: "#ffffff", borderRadius: "16px", p: 2, my: 2 }}
+            sx={{ background: "#ffffff", borderRadius: "16px", py: 2, my: 2 }}
           >
             <Typography
               variant="h2"
@@ -184,9 +184,9 @@ const About = () => {
             </Typography>
           </Box>
         </Box>
-        <Box>
+        <Container>
           <Box
-            sx={{ background: "#ffffff", borderRadius: "16px", p: 2, my: 2 }}
+            sx={{ background: "#ffffff", borderRadius: "16px", py: 2, my: 2 }}
           >
             <Typography
               variant="h2"
@@ -243,7 +243,7 @@ const About = () => {
               </SwiperSlide>
             ))}
           </Swiper>
-        </Box>
+        </Container>
         <Box
           component="footer"
           mt={5}
@@ -260,7 +260,7 @@ const About = () => {
             sustainable success in Gilgit-Baltistan.
           </Typography>
         </Box>
-      </Container>
+      </Grid>
     </>
   );
 };
