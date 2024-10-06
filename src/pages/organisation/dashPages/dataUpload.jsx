@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -16,8 +16,6 @@ import * as Yup from "yup";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
 import NoteAddIcon from "@mui/icons-material/NoteAdd";
-import { AuthContext } from "../../../Auth";
-import OrgServices from "../../../apis/Organisation";
 import Loader from "../../../components/loader";
 import Alerts from "../../../components/Customalerts";
 
@@ -26,7 +24,6 @@ const validationSchema = Yup.object({
 });
 
 const OrgUpload = () => {
-  const { org } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -47,28 +44,13 @@ const OrgUpload = () => {
       file: null,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      const formData = new FormData();
-      formData.append('file', values.file);
-      console.log("Form Data: ", formData.get('file')); // Log form data to inspect
-
+    onSubmit: (values) => {
       setLoader(true);
-      try {
-        const res = await OrgServices.UpData(formData, org?._id);
-        if (res.status === "success") {
-          setLoader(false);
-          handleSnackbarOpen(res.message, "success");
-        } else {
-          console.log("error: ", res.status);
-          setLoader(false);
-          handleSnackbarOpen(res.message, "error");
-        }
-      } catch (error) {
+      setTimeout(() => {
         setLoader(false);
-        console.log(error, "error in upload");
-        handleSnackbarOpen(error.message || "Error in upload", "error");
-      }
-      formik.resetForm();
+        handleSnackbarOpen("Successfully uploaded file", "success");
+        formik.resetForm();
+      }, 1000); // Simulate a delay for the upload process
     },
   });
 

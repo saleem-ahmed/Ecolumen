@@ -64,7 +64,7 @@ const EditUser = () => {
       city: location.state?.city || "",
       gender: location.state?.gender || "",
       dateOfBirth: location.state?.dob || {},
-      role: location.state?.roleName || ""
+      role: location.state?.roleName || "",
     },
 
     onSubmit: async () => {
@@ -98,12 +98,11 @@ const EditUser = () => {
           }
         })
         .catch((error) => {
-          console.log(error,"yttfytf");
+          console.log(error, "yttfytf");
           handleSnackbarOpen(error.data.message, "error");
           setloader(false);
         });
     },
-
   });
 
   useEffect(() => {
@@ -137,32 +136,36 @@ const EditUser = () => {
       />
       <Grid>
         <Box
-          display={"flex"}
-          flexDirection={"column"}
-          my={"20px"}
-          width={"100%"}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            my: 2,
+            width: "100%",
+          }}
         >
           <Typography variant="h2" sx={{ color: "#000", fontSize: "26px" }}>
             Edit Staff {location.state.name}
           </Typography>
         </Box>
         <Box
-          bgcolor={"#ffffff"}
-          heigh
-          py={"30px"}
-          px={"30px"}
-          sx={{ borderRadius: "12px", position: "relative" }}
+          sx={{
+            borderRadius: "12px",
+            position: "relative",
+            px: { xs: "10px", md: "30px" },
+            py: "30px",
+            bgcolor: "#ffffff",
+          }}
         >
           <Box
-            bgcolor={"#ffffff"}
-            p={"5px"}
-            width={"30px"}
-            height={"30px"}
             sx={{
               position: "absolute",
               top: "10px",
               left: "10px",
               borderRadius: "50%",
+              height: "30px",
+              width: "30px",
+              p: "5px",
+              bgcolor: "#ffffff",
             }}
           >
             <Link to="/dashboard/users">
@@ -180,7 +183,7 @@ const EditUser = () => {
               </svg>
             </Link>
           </Box>
-          <Grid container display={"flex"} justifyContent={"center"}>
+          <Grid container sx={{ display: "flex", justifyContent: "center" }}>
             <Grid item md={12} xs={12}>
               <UploadImage
                 imageProp={staffImage}
@@ -191,12 +194,21 @@ const EditUser = () => {
             <Grid
               item
               md={12}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
             >
               <Box sx={{ maxWidth: "636px", width: "100%" }}>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="First Name"
                     required
@@ -235,7 +247,14 @@ const EditUser = () => {
                     }
                   />
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="Email"
                     required
@@ -269,7 +288,14 @@ const EditUser = () => {
                     }
                   />
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="Address"
                     required
@@ -305,7 +331,14 @@ const EditUser = () => {
                     }
                   />
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <FormControl fullWidth>
                     <InputLabel>Country</InputLabel>
                     <Select
@@ -322,7 +355,7 @@ const EditUser = () => {
                       error={
                         formik.touched.country && Boolean(formik.errors.country)
                       }
-                    // country
+                      // country
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -353,7 +386,7 @@ const EditUser = () => {
                         formik.setFieldValue("city", e.target.value);
                       }}
                       error={formik.touched.city && Boolean(formik.errors.city)}
-                    // city
+                      // city
                     >
                       <MenuItem value="Pakistan">Pakistan</MenuItem>
                       <MenuItem value="China">China</MenuItem>
@@ -372,28 +405,27 @@ const EditUser = () => {
                   </FormControl>
                 </Box>
                 <Box
-                  display={"flex"}
-                  gap={"20px"}
-                  sx={{ width: "100%", boxSizing: "border-box" }}
-                  my={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                    width: "100%",
+                    boxSizing: "border-box",
+                  }}
                 >
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
                       defaultValue={formik.values.gender}
                       label="Gender"
-                      // {...{
-                      //   formik,
-                      //   checkvalidation: true,
-                      // }}
                       onChange={(e) => {
-                        // setGender(e.target.value);
                         formik.setFieldValue("gender", e.target.value);
                       }}
                       error={
                         formik.touched.gender && Boolean(formik.errors.gender)
                       }
-                    // country
+                      // country
                     >
                       <MenuItem value="Pakistan">Male</MenuItem>
                       <MenuItem value="China">Female</MenuItem>
@@ -406,7 +438,17 @@ const EditUser = () => {
                       </Typography>
                     )}
                   </FormControl>
-                  <Box width={"100%"} display={"flex"} alignItems={"center"}>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      maxWidth: "303px",
+                      border: "1px solid #c4c4c4",
+                      borderRadius: "6px",
+                      overflow: "hidden",
+                    }}
+                  >
                     <DatePicker
                       showIcon
                       selected={startDate}
@@ -416,10 +458,13 @@ const EditUser = () => {
                 </Box>
 
                 <Box
-                  display={"flex"}
-                  justifyContent={"space-between"}
-                  gap={"20px"}
-                  my={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    alignItems: "center",
+                    gap: "20px",
+                    my: 2,
+                  }}
                 >
                   <Box width={"100%"}>
                     <FormControl fullWidth>
@@ -427,10 +472,6 @@ const EditUser = () => {
                       <Select
                         value={formik.values.role}
                         label="Role"
-                        // {...{
-                        //   formik,
-                        //   checkvalidation: true,
-                        // }}
                         onChange={(e) => {
                           setRole(e.target.value);
 
@@ -439,7 +480,7 @@ const EditUser = () => {
                         error={
                           formik.touched.role && Boolean(formik.errors.role)
                         }
-                      // country
+                        // country
                       >
                         {roles?.map((role) => (
                           <MenuItem key={role.roleName} value={role.roleName}>

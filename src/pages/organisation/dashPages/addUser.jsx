@@ -116,7 +116,7 @@ const AddUsers = () => {
         }
       } catch (error) {
         setLoader(false);
-        handleSnackbarOpen(error.data.message ,"error");
+        handleSnackbarOpen(error.data.message, "error");
       } finally {
         setLoader(false);
       }
@@ -147,21 +147,24 @@ const AddUsers = () => {
         </Box>
 
         <Box
-          bgcolor={"#ffffff"}
-          py={"30px"}
-          px={"30px"}
-          sx={{ borderRadius: "12px", position: "relative" }}
+          sx={{
+            borderRadius: "12px",
+            position: "relative",
+            px: { xs: "10px", md: "30px" },
+            py: "30px",
+            bgcolor: "#ffffff",
+          }}
         >
           <Box
-            bgcolor={"#ffffff"}
-            p={"5px"}
-            width={"30px"}
-            height={"30px"}
             sx={{
               position: "absolute",
               top: "10px",
               left: "10px",
               borderRadius: "50%",
+              height: "30px",
+              width: "30px",
+              p: "5px",
+              bgcolor: "#ffffff",
             }}
           >
             <Link to="/dashboard/users">
@@ -179,7 +182,10 @@ const AddUsers = () => {
               </svg>
             </Link>
           </Box>
-          <Grid container display={"flex"} justifyContent={"center"}>
+          <Grid
+            container
+            sx={{ display: "flex" , justifyContent: "center" }}
+          >
             <Grid item md={12} xs={12}>
               <UploadImage
                 imageProp={staffImage}
@@ -190,12 +196,17 @@ const AddUsers = () => {
             <Grid
               item
               md={12}
-              display={"flex"}
-              flexDirection={"column"}
-              alignItems={"center"}
+              sx={{ display:"flex" , flexDirection: "column", alignItems:"center"}}
             >
               <Box sx={{ maxWidth: "636px", width: "100%" }}>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="First Name"
                     required
@@ -234,7 +245,14 @@ const AddUsers = () => {
                     }
                   />
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="Email"
                     required
@@ -268,7 +286,14 @@ const AddUsers = () => {
                     }
                   />
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <TextField
                     label="Address"
                     required
@@ -287,7 +312,7 @@ const AddUsers = () => {
                       </Typography>
                     }
                   />
-                  
+
                   <FormControl fullWidth>
                     <InputLabel>State</InputLabel>
                     <Select
@@ -327,7 +352,14 @@ const AddUsers = () => {
                     )}
                   </FormControl>
                 </Box>
-                <Box display={"flex"} gap={"20px"} my={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                  }}
+                >
                   <FormControl fullWidth>
                     <InputLabel>Country</InputLabel>
                     <Select
@@ -421,20 +453,20 @@ const AddUsers = () => {
                   </FormControl>
                 </Box>
                 <Box
-                  display={"flex"}
-                  gap={"20px"}
-                  sx={{ width: "100%", boxSizing: "border-box" }}
-                  my={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    gap: "20px",
+                    my: 2,
+                    width: "100%",
+                    boxSizing: "border-box",
+                  }}
                 >
                   <FormControl fullWidth>
                     <InputLabel>Gender</InputLabel>
                     <Select
                       value={formik.values.gender}
                       label="Gender"
-                      // {...{
-                      //   formik,
-                      //   checkvalidation: true,
-                      // }}
                       onChange={(e) => {
                         setGender(e.target.value);
                         formik.setFieldValue("gender", e.target.value);
@@ -455,7 +487,17 @@ const AddUsers = () => {
                       </Typography>
                     )}
                   </FormControl>
-                  <Box width={"100%"} display={"flex"} alignItems={"center"}>
+                  <Box
+                    sx={{
+                      width:"100%",
+                      display:"flex",
+                      alignItems:"center",
+                      maxWidth: "303px",
+                      border: "1px solid #c4c4c4",
+                      borderRadius: "6px",
+                      overflow: "hidden",
+                    }}
+                  >
                     <DatePicker
                       showIcon
                       selected={startDate}
@@ -464,10 +506,13 @@ const AddUsers = () => {
                   </Box>
                 </Box>
                 <Box
-                  display={"flex"}
-                  justifyContent={"space-between"}
-                  gap={"20px"}
-                  my={2}
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", md: "row" },
+                    alignItems: "center",
+                    gap: "20px",
+                    my: 2,
+                  }}
                 >
                   <Box width={"100%"}>
                     <FormControl fullWidth>

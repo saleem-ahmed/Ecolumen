@@ -28,3 +28,16 @@ html,
   border-left: 3px solid #df8009 !important;
   background: #3a5a76;
 }
+
+.react-datepicker-wrapper {
+  width: 100%;
+  .react-datepicker__input-container {
+    box-sizing: border-box !important;
+    width: 100%;
+    input {
+      width: 100%;
+      border: none !important;
+      outline: none !important;
+    }
+  }
+}

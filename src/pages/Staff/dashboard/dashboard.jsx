@@ -1,3 +1,4 @@
+//staff Dashboard
 import { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import {
@@ -20,6 +21,8 @@ import Logout from "@mui/icons-material/Logout";
 import StaffSideBar from "../../../components/StaffSideBar";
 import { Outlet } from "react-router-dom";
 import { AuthContext } from "../../../Auth";
+import MenuIcon from "@mui/icons-material/Menu";
+
 
 const drawerWidth = 260;
 
@@ -115,12 +118,10 @@ const StaffDashboard = () => {
               onClick={handleDrawerToggle}
               sx={{
                 mr: 2,
-                bgcolor: "#444",
-                color: "#444",
                 display: { sm: "none" },
               }}
             >
-              <Menu color="#444" sx={{ fontSize: "16px" }} />
+              <MenuIcon sx={{ fontSize: "16px" }} />
             </IconButton>
             <Box
               sx={{
@@ -240,7 +241,10 @@ const StaffDashboard = () => {
           component="main"
           sx={{
             flexGrow: 1,
-            p: 3,
+            p: {
+              xs: 1,
+              md: 3,
+            },
             height: "100%",
             width: "100%",
             boxSizing: "border-box",

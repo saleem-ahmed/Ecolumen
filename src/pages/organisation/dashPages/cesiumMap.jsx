@@ -12,7 +12,7 @@ const CesiumMap = () => {
       <Grid>
         {/* map section */}
         <Box bgcolor={"#ffffff"} sx={{ borderRadius: "12px" }}>
-          <Box sx={{ width: "98%" }}>
+          <Box sx={{ width: "100%" }}>
             <Cesium />
           </Box>
         </Box>

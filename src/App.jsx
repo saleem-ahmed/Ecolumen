@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 // user
+import Landing from "../src/landing"
 import USignIn from "./pages/auth/User/signin";
 import UForget from "./pages/auth/User/forget";
 import UVerification from "./pages/auth/User/Verification";
@@ -12,7 +13,9 @@ import Mainpage2 from "./pages/Staff/dashPages/mainpage";
 import Reports from "./pages/Staff/dashPages/reports";
 import Upload from "./pages/Staff/dashPages/upload";
 import CesiumMap from "./pages/organisation/dashPages/cesiumMap";
-
+import SUsers from "./pages/Staff/dashPages/user"
+import SAddUsers from "./pages/Staff/dashPages/adduser";
+import SUserRole from "./pages/Staff/dashPages/roles";
 // superAdmin
 import Forget from "./pages/auth/SuperAdmin/forget";
 
@@ -37,6 +40,7 @@ const App = () => {
   return (
     <Routes>
       {/* Specific routes first */}
+      <Route path="/" element={<Landing />} />
       <Route path="/orglogin" element={<Login />} />
       <Route path="/orgRegister" element={<SignIn />} />
       <Route path="/orgForget" element={<OrgForget />} />
@@ -77,15 +81,14 @@ const App = () => {
         <Route path="reports" element={<Reports />} />
         <Route path="map-3d" element={<CesiumMap />} />
         <Route path="Upload" element={<Upload />} />
-        <Route path="users" element={<Users />} />
-        <Route path="addUsers" element={<AddUsers />} />
-        <Route path="editUsers" element={<EditUsers />} />
-        <Route path="userRole" element={<UserRole />} />
+        <Route path="users" element={<SUsers />} />
+        <Route path="addUsers" element={<SAddUsers />} />
+        <Route path="userRole" element={<SUserRole />} />
         <Route path="about" element={<About />} />
       </Route>
 
       {/* Default route */}
-      <Route path="/" element={<USignIn />}>
+      <Route path="/staffLogin" element={<USignIn />}>
         <Route index element={<USignIn />} />
       </Route>
     </Routes>

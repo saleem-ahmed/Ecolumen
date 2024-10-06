@@ -258,7 +258,7 @@ const userRoles = () => {
   };
   return (
     <>
-      {/* <Alerts
+      {/* <Alerts 
         open={snackbarOpen}
         message={snackbarMessage}
         severity={snackbarSeverity}
@@ -335,7 +335,6 @@ const userRoles = () => {
               <TableRow>
                 <TableCell>serial No.</TableCell>
                 <TableCell>Name</TableCell>
-                <TableCell>Created At</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
@@ -352,7 +351,6 @@ const userRoles = () => {
                     <TableRow key={roles._id}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{roles.roleName}</TableCell>
-                      <TableCell>{roles.createdAt}</TableCell>
                       <TableCell>
                         <div>
                           <IconButton

@@ -111,7 +111,7 @@ const CesiumMap = () => {
   };
 
   return (
-    <div style={{ padding: '10px'}}>
+    <div>
       {/* Dropdown for selecting layers */}
       <div style={{ marginBottom: '10px' }}>
         <label style={{ marginLeft: '20px'  }}>
@@ -136,7 +136,7 @@ const CesiumMap = () => {
       <div
         id="cesiumContainer"
         ref={cesiumContainerRef}
-        style={{ width: '100%', height: '70vh', padding: '10px', borderRadius: '10px' }}
+        style={{ width: '100%', height: '70vh', borderRadius: '10px' }}
       />
     </div>
   );

@@ -84,7 +84,14 @@ const About = () => {
           >
             <Typography
               variant="h2"
-              sx={{ bgcolor: "#ecf2fd", textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                textAlign: "center",
+                fontSize: {
+                  xs: "18px",
+                  md: "28px",
+                },
+              }}
             >
               Regional Web GIS Portal for Hazard Assessment and Natural Resource
               Management in Gilgit-Baltistan
@@ -93,11 +100,29 @@ const About = () => {
           <Box sx={{ background: "#ffffff", borderRadius: "16px", py: 2 }}>
             <Typography
               variant="h2"
-              sx={{ bgcolor: "#ecf2fd", mb: 2, textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                mb: 2,
+                fontSize: {
+                  xs: "18px",
+                  md: "28px",
+                },
+                textAlign: "center",
+              }}
             >
               Introduction
             </Typography>
-            <Typography varient="body1" sx={{ textAlign: "center" }}>
+            <Typography
+              varient="body1"
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "18px",
+                },
+                textAlign: { xs: "justify", md: "center" },
+                px: 1,
+              }}
+            >
               A Regional web-based GIS platform meant to efficiently perform
               hazard assessment and natural resource management shall be the
               proposed project. It would be able to serve different stakeholders
@@ -114,11 +139,29 @@ const About = () => {
           >
             <Typography
               variant="h2"
-              sx={{ bgcolor: "#ecf2fd", mb: 2, textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                mb: 2,
+                fontSize: {
+                  xs: "18px",
+                  md: "28px",
+                },
+                textAlign: "center",
+              }}
             >
               Problem Statement
             </Typography>
-            <Typography varient="body1" sx={{ textAlign: "center" }}>
+            <Typography
+              varient="body1"
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "18px",
+                },
+                textAlign: { xs: "justify", md: "center" },
+                px: 1,
+              }}
+            >
               Probably, managing natural hazards and resources, especially in
               many regions, entails the disposal of fragmented data sources and
               communicating in an inefficient manner among stakeholders. More
@@ -137,12 +180,29 @@ const About = () => {
             sx={{ background: "#ffffff", borderRadius: "16px", py: 2, my: 2 }}
           >
             <Typography
-              variant="h2"
-              sx={{ bgcolor: "#ecf2fd", mb: 2, textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                mb: 2,
+                textAlign: "center",
+                fontSize: {
+                  sx: "18",
+                  md: "28",
+                },
+              }}
             >
               Project Overview
             </Typography>
-            <Typography varient="body1" sx={{ textAlign: "center" }}>
+            <Typography
+              varient="body1"
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "18px",
+                },
+                textAlign: { xs: "justify", md: "center" },
+                px: 1,
+              }}
+            >
               The proposed regional web GIS portal for hazard assessment and
               natural resource management will help simplify and streamline
               processes engaged both in disaster risk assessment and
@@ -166,11 +226,29 @@ const About = () => {
           <Box sx={{ background: "#ffffff", borderRadius: "16px", p: 2 }}>
             <Typography
               variant="h2"
-              sx={{ bgcolor: "#ecf2fd", mb: 2, textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                mb: 2,
+                textAlign: "center",
+                fontSize: {
+                  sx: "18",
+                  md: "28",
+                },
+              }}
             >
               Project Motivation
             </Typography>
-            <Typography varient="body1" sx={{ textAlign: "center" }}>
+            <Typography
+              varient="body1"
+              sx={{
+                fontSize: {
+                  xs: "12px",
+                  md: "18px",
+                },
+                textAlign: { xs: "justify", md: "center" },
+                px: 1,
+              }}
+            >
               Natural disasters, increasing with the surge of climate change,
               cannot be ignored without designing a centralized framework to
               estimate risks, mitigate hazards, and utilize natural resources in
@@ -190,22 +268,38 @@ const About = () => {
           >
             <Typography
               variant="h2"
-              sx={{ bgcolor: "#ecf2fd", textAlign: "center" }}
+              sx={{
+                bgcolor: "#ecf2fd",
+                mb: 2,
+                textAlign: "center",
+                fontSize: {
+                  sx: "18",
+                  md: "28",
+                },
+              }}
             >
               Our Team
             </Typography>
           </Box>
           <Swiper
-            pagination={true}
+            Navigation={true}
             autoplay={{
               delay: 5500,
               disableOnInteraction: false,
             }}
             effect={"fade"}
             spaceBetween={20}
-            slidesPerView={3}
+            slidesPerView={1}
+            breakpoints={{
+              668: {
+                slidesPerView: 2,
+              },
+              1024: {
+                slidesPerView: 3,
+              },
+            }}
             loop={true}
-            modules={[Pagination, Autoplay, Navigation]}
+            modules={[Autoplay, Navigation]}
             className="mySwiper"
             style={{ height: "100%" }}
           >
@@ -246,16 +340,14 @@ const About = () => {
         </Container>
         <Box
           component="footer"
-          mt={5}
-          py={3}
-          bgcolor="primary.main"
-          color="white"
+          
+          sx={{ borderRadius: "16px" , width:"100%", color: "#ffffff" ,mt: 5 , py: 3 , bgcolor: "#284259" }}
         >
-          <Typography variant="body1" align="center">
+          <Typography variant="body1" align="center" sx={{ fontSize: { xs: "14px"}}}>
             Ecolumen All Right Reserved.© 2024
           </Typography>
 
-          <Typography variant="body2" align="center" mt={2}>
+          <Typography variant="body2" align="center" mt={2} sx={{ fontSize: { xs: "12px"}}}>
             &copy; {new Date().getFullYear()} Eco Lumen – Guiding the way to
             sustainable success in Gilgit-Baltistan.
           </Typography>

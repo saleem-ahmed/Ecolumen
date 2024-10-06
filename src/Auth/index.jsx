@@ -25,11 +25,16 @@ export const AuthProvider = ({ children }) => {
     }
 
     const storedUser = JSON.parse(localStorage.getItem("user"));
+
+    const storeStaff = JSON.parse(localStorage.getItem("staff"));
+
     if (storedUser) {
       setOrg(storedUser);
-    } else {
-      setStaff(storedUser)
-    }
+    } 
+    if (storeStaff) {
+      setStaff(storeStaff);
+    } 
+
   }, []);
 
   const handleSnackbarOpen = (message, severity = "success") => {
@@ -52,19 +57,18 @@ export const AuthProvider = ({ children }) => {
     setToken(token);
     setStaff(staffData);
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(staffData));
+    localStorage.setItem("staff", JSON.stringify(staffData));
   };
 
+  // const URL = "http://vfktzsxm.up.railway.app/api";
+  const URL = "https://eco-lumen.onrender.com/api";
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "https://eco-lumen.onrender.com/api/organization/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${URL}/organization/login`, {
+        email,
+        password,
+      });
       setLoading(false);
       handleAuth(response.data.token, response.data.result);
       handleSnackbarOpen(response.data.message);
@@ -84,14 +88,11 @@ export const AuthProvider = ({ children }) => {
   const staffLogin = async (email, password) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "https://eco-lumen.onrender.com/api/organization/loginStaff",
-        {
-          email,
-          password,
-        }
-      );
-      console.log(response , " staff response")
+      const response = await axios.post(`${URL}/organization/loginStaff`, {
+        email,
+        password,
+      });
+      console.log(response, " staff response");
       setLoading(false);
       handleStaffAuth(response.data.token, response.data.staff);
       handleSnackbarOpen(response.data.message);
@@ -111,10 +112,7 @@ export const AuthProvider = ({ children }) => {
   const registerOrg = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        "https://eco-lumen.onrender.com/api/organization/register",
-        data
-      );
+      const response = await axios.post(`${URL}/organization/register`, data);
       handleSnackbarOpen(response.data.msg);
       navigate("/orglogin");
       setLoading(false);
@@ -128,7 +126,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const LogoutOrg  = () => {
+  const LogoutOrg = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     handleSnackbarOpen("User has been logged out");

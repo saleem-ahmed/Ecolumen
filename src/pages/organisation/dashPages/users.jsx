@@ -203,9 +203,16 @@ const Users = () => {
         <Box bgcolor={"#ffffff"} py={"10px"} sx={{ borderRadius: "12px" }}>
           <Box
             component={"div"}
-            display={"flex"}
-            justifyContent={"space-between"}
-            sx={{ my: "20px", px: "20px" }}
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexDirection: {
+                xs: "column",
+                md: "row",
+              },
+              my: "20px",
+              px: { xs: "10px", md: "20px" },
+            }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
               <TextField
@@ -240,19 +247,85 @@ const Users = () => {
             <Table style={{ tableLayout: "auto" }}>
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">Name</TableCell>
-                  <TableCell align="left">Email</TableCell>
-                  <TableCell align="left">Role</TableCell>
-                  <TableCell align="left">Phone Number</TableCell>
-                  <TableCell align="left">Status</TableCell>
-                  <TableCell align="left">Action</TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Name
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Role
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Phone Number
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Status
+                  </TableCell>
+                  <TableCell
+                    align="left"
+                    sx={{
+                      fontSize: {
+                        xs: "10px",
+                        md: "16px",
+                      },
+                    }}
+                  >
+                    Action
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {displayStaff.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} align="center" sx={{ height: "10vh" }}>
-                      <Typography variant="body1">No staff available</Typography>
+                    <TableCell
+                      colSpan={6}
+                      align="center"
+                      sx={{ height: "10vh" }}
+                    >
+                      <Typography variant="body1">
+                        No staff available
+                      </Typography>
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -263,21 +336,32 @@ const Users = () => {
                           display: "flex",
                           gap: "10px",
                           alignItems: "center",
+                          fontSize: {
+                            XS: "10px",
+                            md: "16px",
+                          },
                         }}
                       >
-                        <img
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            borderRadius: "50%",
-                          }}
-                          src={staffMember.staffImage}
-                          alt=""
-                        />
                         {staffMember.name}
                       </TableCell>
-                      <TableCell>{staffMember.email}</TableCell>
-                      <TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: {
+                            XS: "10px",
+                            md: "16px",
+                          },
+                        }}
+                      >
+                        {staffMember.email}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: {
+                            XS: "10px",
+                            md: "16px",
+                          },
+                        }}
+                      >
                         {staffMember.role === 1 ? (
                           <span style={{ color: "green" }}>admin</span>
                         ) : staffMember.role === 2 ? (
@@ -288,7 +372,16 @@ const Users = () => {
                           staffMember.role
                         )}
                       </TableCell>
-                      <TableCell>{staffMember.phoneNumber}</TableCell>
+                      <TableCell
+                        sx={{
+                          fontSize: {
+                            XS: "10px",
+                            md: "16px",
+                          },
+                        }}
+                      >
+                        {staffMember.phoneNumber}
+                      </TableCell>
                       <TableCell>
                         <Switch
                           checked={staffMember.isActive}
@@ -317,10 +410,16 @@ const Users = () => {
                             },
                           }}
                         >
-                          <MenuItem onClick={() => handleEditClick(index, staffMember)}>
+                          <MenuItem
+                            onClick={() => handleEditClick(index, staffMember)}
+                          >
                             Edit
                           </MenuItem>
-                          <MenuItem onClick={() => handleRemoveClick(index, staffMember)}>
+                          <MenuItem
+                            onClick={() =>
+                              handleRemoveClick(index, staffMember)
+                            }
+                          >
                             Delete
                           </MenuItem>
                         </Menu>
@@ -341,13 +440,12 @@ const Users = () => {
         </Box>
       </Grid>
 
-      <Dialog
-        open={removeConfirmation.open}
-        onClose={handleRemoveCancel}
-      >
+      <Dialog open={removeConfirmation.open} onClose={handleRemoveCancel}>
         <DialogTitle>Remove Staff</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to remove this staff member?</Typography>
+          <Typography>
+            Are you sure you want to remove this staff member?
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleRemoveCancel} color="primary">

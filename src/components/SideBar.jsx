@@ -64,12 +64,43 @@ const SideBar = () => {
             </ListItemButton>
           </NavLink>
 
-          <ListItemButton onClick={handleClick}>
-            <ListItemText>
-              <Typography variant="sideBarLink">Staff Management</Typography>
-            </ListItemText>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="report"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Reports</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="Upload"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">Uploads</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+          <NavLink
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+            to="about"
+            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          >
+            <ListItemButton>
+              <ListItemText>
+                <Typography variant="sideBarLink">About</Typography>
+              </ListItemText>
+            </ListItemButton>
+          </NavLink>
+        </List>
+
+        <List>
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               <NavLink
@@ -124,48 +155,18 @@ const SideBar = () => {
               </NavLink>
             </List>
           </Collapse>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="report"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-          >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">Reports</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
+          <ListItemButton onClick={handleClick}>
+            <ListItemText>
+              <Typography variant="sideBarLink">Staff Management</Typography>
+            </ListItemText>
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
 
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="Upload"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
+          <ListItemButton
+            onClick={() => {
+              LogoutOrg();
+            }}
           >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">Uploads</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
-          <NavLink
-            className={({ isActive }) => (isActive ? "active-link" : "")}
-            to="about"
-            style={{ textDecoration: "none", color: "#FFFFFF" }}
-          >
-            <ListItemButton>
-              <ListItemText>
-                <Typography variant="sideBarLink">About</Typography>
-              </ListItemText>
-            </ListItemButton>
-          </NavLink>
-        </List>
-
-        <List
-          onClick={() => {
-            LogoutOrg();
-          }}
-        >
-          <ListItemButton>
             <Logout />
             <ListItemText>
               <Typography variant="sideBarLink" sx={{ fontSize: "16px" }}>

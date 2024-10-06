@@ -121,6 +121,7 @@ const chartOptions = {
 const OrgReport = () => {
   const [selectedYears, setSelectedYears] = useState(["2021"]);
   const [chartType, setChartType] = useState("Bar");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleYearChange = (event) => {
     const { value } = event.target;
@@ -129,6 +130,26 @@ const OrgReport = () => {
 
   const handleChartTypeChange = (event) => {
     setChartType(event.target.value);
+  };
+
+  const handleCategoryChange = (event) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const filterDataByCategory = (data, category) => {
+    if (!category) return data;
+
+    const categoryIndex = data.labels.indexOf(category);
+    if (categoryIndex === -1) return data;
+
+    const filteredData = { ...data };
+    filteredData.labels = [category];
+    filteredData.datasets = filteredData.datasets.map((dataset) => ({
+      ...dataset,
+      data: [dataset.data[categoryIndex]],
+    }));
+
+    return filteredData;
   };
 
   const data = {
@@ -163,6 +184,8 @@ const OrgReport = () => {
       borderWidth: 1,
     })),
   };
+
+  const filteredData = filterDataByCategory(data, selectedCategory);
 
   const chartTitle = `Land Use Distribution (${selectedYears.join(", ")})`;
 
@@ -265,6 +288,21 @@ const OrgReport = () => {
               <MenuItem value="Radar">Radar</MenuItem>
               <MenuItem value="Doughnut">Doughnut</MenuItem>
             </Select>
+
+            <Select
+              value={selectedCategory}
+              onChange={handleCategoryChange}
+              displayEmpty
+              sx={{ mt: "20px", minWidth: "150px", mx: "10px" }}
+            >
+              <MenuItem value="">All Categories</MenuItem>
+              {landUseData[selectedYears[0]].labels.map((category) => (
+                <MenuItem key={category} value={category}>
+                  {category}
+                </MenuItem>
+              ))}
+            </Select>
+
             <Button
               variant="contained"
               onClick={handlePrint}
@@ -276,7 +314,7 @@ const OrgReport = () => {
           <Box className="printable-content" sx={{ height: "50vh" }}>
             {chartType === "Bar" && (
               <Bar
-                data={data}
+                data={filteredData}
                 options={{
                   ...chartOptions,
                   plugins: {
@@ -288,7 +326,7 @@ const OrgReport = () => {
             )}
             {chartType === "Line" && (
               <Line
-                data={data}
+                data={filteredData}
                 options={{
                   ...chartOptions,
                   plugins: {
@@ -300,7 +338,7 @@ const OrgReport = () => {
             )}
             {chartType === "Pie" && (
               <Pie
-                data={data}
+                data={filteredData}
                 options={{
                   ...chartOptions,
                   plugins: {
@@ -312,7 +350,7 @@ const OrgReport = () => {
             )}
             {chartType === "Radar" && (
               <Radar
-                data={data}
+                data={filteredData}
                 options={{
                   ...chartOptions,
                   plugins: {
@@ -324,7 +362,7 @@ const OrgReport = () => {
             )}
             {chartType === "Doughnut" && (
               <Doughnut
-                data={data}
+                data={filteredData}
                 options={{
                   ...chartOptions,
                   plugins: {

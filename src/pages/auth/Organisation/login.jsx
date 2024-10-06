@@ -129,7 +129,7 @@ const login = () => {
               },
             }}
           >
-            Welcome to Back!
+            Login as an Organization
           </Typography>
           <Stack direction="column" spacing={2} width={"100%"}>
             <TextField
