@@ -59,19 +59,13 @@ const UserPermissions = () => {
   };
 
   const RolesPermission = [
-    "value1",
-    "value2",
-    "value3",
-    "value4",
-    "value5",
-    "value6",
-    "value7",
-    "value8",
-    "value9",
-    "value10",
-    "value11",
-    "value12",
-    "value13",
+    "read",
+    "update",
+    "delete",
+    "create",
+    "view map",
+    "upload data",
+    "download report",
   ];
 
   const formik = useFormik({
@@ -88,20 +82,22 @@ const UserPermissions = () => {
       };
       console.log(data);
       setloader(true);
-      OrgServices.setPermission(data, org, Role).then((res) => {
-        console.log(Role, "role Send to api");
-        if (res.status === "success") {
+      OrgServices.setPermission(data, org, Role)
+        .then((res) => {
+          console.log(Role, "role Send to api");
+          if (res.status === "success") {
+            setloader(false);
+            handleSnackbarOpen(res.message, "success");
+          } else {
+            console.log("error: ", res.status);
+            setloader(false);
+            handleSnackbarOpen(res.message, "error");
+          }
+        })
+        .catch((error) => {
           setloader(false);
-          handleSnackbarOpen(res.message, "success");
-        } else {
-          console.log("error: ", res.status);
-          setloader(false);
-          handleSnackbarOpen(res.message, "error");
-        }
-      }).catch((error) => {
-        setloader(false);
-        handleSnackbarOpen(error);
-      });
+          handleSnackbarOpen(error);
+        });
       formik.resetForm();
     },
   });
@@ -166,7 +162,6 @@ const UserPermissions = () => {
           <Box width={"100%"}>
             <Box display={"content"} sx={{ display: "content" }}>
               {RolesPermission.map((permission) => (
-
                 <FormControlLabel
                   key={permission}
                   control={
@@ -186,11 +181,12 @@ const UserPermissions = () => {
                     />
                   }
                   label={permission}
-                  error={formik.touched.permissions && Boolean(formik.errors.permissions)}
+                  error={
+                    formik.touched.permissions &&
+                    Boolean(formik.errors.permissions)
+                  }
                   sx={{ width: "100%", maxWidth: "200px" }}
-
                 />
-
               ))}
               {formik.errors.permissions && (
                 <Typography
